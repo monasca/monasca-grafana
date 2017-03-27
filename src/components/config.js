@@ -15,7 +15,22 @@
  */
 
 export class MonascaAppConfigCtrl {
-  constructor() {
+  constructor(backendSrv) {
+    this.datasources = [];
+
+    backendSrv.get('/api/datasources')
+      .then(response => {
+	console.log(response);
+	this.datasources = response
+	  .filter(ds => ds.type == 'monasca-grafana-datasource')
+	  .map(ds => ds.name);
+
+	// If a datasource has not been selected yet, choose the first one.
+	if (!this.appModel.jsonData.datasourceName && this.datasources.length > 0) {
+	  this.appModel.jsonData.datasourceName = this.datasources[0];
+	}
+      })
+      .catch(err => { throw err; });
   }
 }
 MonascaAppConfigCtrl.templateUrl = 'components/config.html';

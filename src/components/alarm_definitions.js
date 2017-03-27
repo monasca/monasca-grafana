@@ -10,7 +10,7 @@ export class AlarmDefinitionsPageCtrl {
     //this.isOrgEditor = contextSrv.hasRole('Editor') || contextSrv.hasRole('Admin');
     this.isOrgEditor = true;
     this.alertSrv = alertSrv;
-    this.monasca = new MonascaClient(datasourceSrv);
+    this.monasca = new MonascaClient(backendSrv, datasourceSrv);
     this.pageLoaded = false;
     this.loadFailed = false;
     this.alarm_definitions = [];

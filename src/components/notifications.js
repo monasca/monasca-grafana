@@ -26,7 +26,7 @@ export class NotificationsPageCtrl {
     this.isOrgEditor = true;
     this.datasourceSrv = datasourceSrv
     this.alertSrv = alertSrv
-    this.monasca = new MonascaClient(datasourceSrv);
+    this.monasca = new MonascaClient(backendSrv, datasourceSrv);
     this.pageLoaded = false;
     this.loadFailed = false;
     this.notifications = [];

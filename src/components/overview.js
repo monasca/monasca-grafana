@@ -27,7 +27,7 @@ export class OverviewPageCtrl {
     this.isOrgEditor = true;
     this.datasourceSrv = datasourceSrv;
     this.alertSrv = alertSrv;
-    this.monasca = new MonascaClient(datasourceSrv);
+    this.monasca = new MonascaClient(backendSrv, datasourceSrv);
     this.backendSrv = backendSrv;
     this.pageLoaded = false;
     this.loadFailed = false;

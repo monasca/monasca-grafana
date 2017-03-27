@@ -19,8 +19,9 @@ import appEvents from 'app/core/app_events';
 
 export default class MonascaClient {
 
-  constructor(datasourceSrv) {
-    this.name = config.bootData.user.name;
+  constructor(backendSrv, datasourceSrv) {
+    this.ds = null;
+    this.backendSrv = backendSrv;
     this.datasourceSrv = datasourceSrv;
   }
 
@@ -163,7 +164,23 @@ export default class MonascaClient {
   };
 
   _getDataSource() {
-    return this.datasourceSrv.get('Monasca');
+    if (this.ds) {
+      return Promise.resolve(this.ds);
+    }
+    
+    return this.backendSrv.get("api/plugins/monasca-app/settings")
+      .then(response => {
+	if (!response.jsonData || !response.jsonData.datasourceName) {
+	  throw { message: 'No datasource selected in app configuration' };
+	}
+	return this.datasourceSrv.get(response.jsonData.datasourceName)
+	  .then(ds => {
+	    this.ds = ds;
+	    return this.ds;
+	  })
+	  .catch(err => { throw err; });
+      })
+      .catch(err => { throw err; });
   }
   
   _request(method, path, params, data) {

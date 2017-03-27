@@ -30,8 +30,7 @@ export class EditNotificationPageCtrl {
     this.backendSrv = backendSrv;
     this.$q = $q;
 
-
-    this.monasca = new MonascaClient(datasourceSrv);
+    this.monasca = new MonascaClient(backendSrv, datasourceSrv);
     
     this.updating = true;
     this.updateFailed = false;
