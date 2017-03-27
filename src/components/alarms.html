@@ -115,8 +115,12 @@
       </td>
       <td>{{alarm.alarm_definition.name}}</td>
       <td>
-	<div ng-repeat="metric in alarm.metrics">
-	  {{metric.name}} {{ metric.dimensions }} <br />
+	<div ng-repeat="metric in alarm.metrics" bs-tooltip="'{{metric.name}}<br />{{metric.dimensions}}'">
+	  {{metric.name}} 
+	  <span style="font-style: italic; font-size: 80%;" ng-repeat="dimension in metric.dimensions">
+	    {{dimension}}
+	  </span>
+	  <br />
 	</div>
       </td>
       
