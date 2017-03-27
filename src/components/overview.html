@@ -20,6 +20,29 @@
 
 <section class="card-section" layout-mode>
   <layout-selector></layout-selector>
+
+  <div
+     ng-if="ctrl.totals"
+     style="font-weight: bold; font-size: 110%;">
+    [
+    <span class="{{ctrl.totals.OK>0?'alert-state-ok':'alert-state-pending'}}">
+      {{ctrl.totals.OK}} OK
+    </span>
+    <span class="alert-state-pending">
+      |
+    </span>
+    <span class="{{ctrl.totals.ALARM>0?'alert-state-critical':'alert-state-pending'}}">
+      {{ctrl.totals.ALARM}} ALARM
+    </span>
+    <span class="alert-state-pending">
+      |
+    </span>
+    <span class="{{ctrl.totals.UNDETERMINED>0?'':'alert-state-pending'}}">
+      {{ctrl.totals.UNDETERMINED}} UNDETERMINED
+    </span>
+    ]
+  </div>
+  
 </section>
 
 <div ng-repeat="set in ctrl.alarm_sets">

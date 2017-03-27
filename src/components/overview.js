@@ -31,9 +31,35 @@ export class OverviewPageCtrl {
     this.backendSrv = backendSrv;
     this.pageLoaded = false;
     this.loadFailed = false;
+
+    this.totals = null;
+    this.loadTotals();
     
     this.loadAlarmSets();
   }
+
+  loadTotals() {
+    this.monasca.countAlarms(['state']).then(data => {
+      var col_count = data.columns.indexOf('count');
+      var col_state = data.columns.indexOf('state');
+
+      var totals = {
+	OK: 0,
+	ALARM: 0,
+	UNDETERMINED: 0
+      }
+      data.counts.forEach(row => {
+	var count = row[col_count];
+	var state = row[col_state];
+	totals[state] = count;
+      });
+
+      this.totals = totals;
+      
+    }).catch(err => {
+      this.alertSrv.set("Failed to get alarm total counts.", err.message, 'error', 10000);
+    });
+  }  
 
   loadAlarmSets() {
     this.monasca.countAlarms(['state', 'dimension_name', 'dimension_value']).then(data => {
@@ -77,7 +103,7 @@ export class OverviewPageCtrl {
       ];
     
     }).catch(err => {
-      this.alertSrv.set("Failed to get alarms.", err.message, 'error', 10000);
+      this.alertSrv.set("Failed to get alarm counts.", err.message, 'error', 10000);
       this.loadFailed = true;
     }).then(() => {
       this.pageLoaded = true;
