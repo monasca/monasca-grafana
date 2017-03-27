@@ -37,10 +37,11 @@ System.register(['app/core/config', 'app/core/app_events'], function (_export, _
       }();
 
       MonascaClient = function () {
-        function MonascaClient(datasourceSrv) {
+        function MonascaClient(backendSrv, datasourceSrv) {
           _classCallCheck(this, MonascaClient);
 
-          this.name = config.bootData.user.name;
+          this.ds = null;
+          this.backendSrv = backendSrv;
           this.datasourceSrv = datasourceSrv;
         }
 
@@ -233,7 +234,25 @@ System.register(['app/core/config', 'app/core/app_events'], function (_export, _
         }, {
           key: '_getDataSource',
           value: function _getDataSource() {
-            return this.datasourceSrv.get('Monasca');
+            var _this = this;
+
+            if (this.ds) {
+              return Promise.resolve(this.ds);
+            }
+
+            return this.backendSrv.get("api/plugins/monasca-app/settings").then(function (response) {
+              if (!response.jsonData || !response.jsonData.datasourceName) {
+                throw { message: 'No datasource selected in app configuration' };
+              }
+              return _this.datasourceSrv.get(response.jsonData.datasourceName).then(function (ds) {
+                _this.ds = ds;
+                return _this.ds;
+              }).catch(function (err) {
+                throw err;
+              });
+            }).catch(function (err) {
+              throw err;
+            });
           }
         }, {
           key: '_request',

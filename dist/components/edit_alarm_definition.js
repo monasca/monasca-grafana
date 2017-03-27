@@ -54,7 +54,7 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client', '
           this.backendSrv = backendSrv;
           this.$q = $q;
 
-          this.monasca = new MonascaClient(datasourceSrv);
+          this.monasca = new MonascaClient(backendSrv, datasourceSrv);
 
           this.updating = true;
           this.updateFailed = false;

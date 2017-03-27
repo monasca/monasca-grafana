@@ -86,7 +86,7 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
           this.isOrgEditor = true;
           this.datasourceSrv = datasourceSrv;
           this.alertSrv = alertSrv;
-          this.monasca = new MonascaClient(datasourceSrv);
+          this.monasca = new MonascaClient(backendSrv, datasourceSrv);
           this.filters = [];
           this.editFilterIndex = -1;
 
