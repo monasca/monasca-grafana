@@ -2,7 +2,25 @@
 
 Plugin for Grafana to implement an "app" to provide screens for viewing or
 configuring parts of Monasca which do not fit the traditional dashboard
-format. This currently includes:
+format. It is intended for deployments of Monasca which for whatever
+reason so not have the Horizion UI component of Monasca deployed, e.g.
+
+- Monitoring of non-OpenStack systems (e.g. Kubernetes) or bare-metal
+- Inability/unwillingness to modify pre-existing Horizon deployment
+
+The design is intended to roughly follow that of the Monasca Horizon
+UI component. This currently includes the ability to view and configure:
+
+- Alarm Definitions
+- Alarms
+- Notifications
+
+![Menu](https://raw.githubusercontent.com/stackhpc/monasca-grafana-app/master/src/img/monasca_menu.png)
+![Overview](https://raw.githubusercontent.com/stackhpc/monasca-grafana-app/master/src/img/monasca_overview.png)
+![Alarm Definitions](https://raw.githubusercontent.com/stackhpc/monasca-grafana-app/master/src/img/monasca_alarm_definitions.png)
+![Alarms](https://raw.githubusercontent.com/stackhpc/monasca-grafana-app/master/src/img/monasca_alarms.png)
+![Notifications](https://raw.githubusercontent.com/stackhpc/monasca-grafana-app/master/src/img/monasca_notifications.png)
+
 
 ## Installation
 
