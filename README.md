@@ -30,8 +30,8 @@ to proxy requests to the monasca-api services. Having that in place, do the
 following:
 
 ```
-git clone https://github.com/stackhpc/monasca-grafana-app /var/lib/grafana/plugins
-service grafana-server restart
+sudo git clone https://github.com/stackhpc/monasca-grafana-app /var/lib/grafana/plugins/monasca-grafana-app
+sudo service grafana-server restart
 ```
 
 Navigate to the "Plugins" screen of Grafana, then to the "Apps" section. Choose
