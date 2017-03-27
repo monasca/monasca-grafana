@@ -21,10 +21,7 @@ import MonascaClient from './monasca_client';
 export class AlarmsPageCtrl {
 
   /** @ngInject */
-  constructor($scope, $injector, $location, $q, backendSrv, datasourceSrv, contextSrv, alertSrv) {
-    //this.isOrgEditor = contextSrv.hasRole('Editor') || contextSrv.hasRole('Admin');
-    this.isOrgEditor = true;
-    this.datasourceSrv = datasourceSrv
+  constructor($scope, $injector, $location, backendSrv, datasourceSrv, alertSrv) {
     this.alertSrv = alertSrv
     this.monasca = new MonascaClient(backendSrv, datasourceSrv);
     this.filters = [];

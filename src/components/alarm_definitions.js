@@ -5,10 +5,7 @@ import MonascaClient from './monasca_client';
 export class AlarmDefinitionsPageCtrl {
 
   /** @ngInject */
-  constructor($scope, $injector, $location, $q, backendSrv, datasourceSrv, contextSrv, alertSrv) {
-    this.name = config.bootData.user.name;
-    //this.isOrgEditor = contextSrv.hasRole('Editor') || contextSrv.hasRole('Admin');
-    this.isOrgEditor = true;
+  constructor($scope, $injector, backendSrv, datasourceSrv, alertSrv) {
     this.alertSrv = alertSrv;
     this.monasca = new MonascaClient(backendSrv, datasourceSrv);
     this.pageLoaded = false;

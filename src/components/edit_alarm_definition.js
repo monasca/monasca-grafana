@@ -22,17 +22,10 @@ import _ from 'lodash';
 export class EditAlarmDefinitionPageCtrl {
 
   /** @ngInject */
-  constructor($scope, $injector, $location, $q, backendSrv, datasourceSrv, contextSrv, alertSrv) {
-    this.name = config.bootData.user.name;
+  constructor($scope, $injector, $location, backendSrv, datasourceSrv, alertSrv) {
     this.$location = $location;
-    //this.isOrgEditor = contextSrv.hasRole('Editor') || contextSrv.hasRole('Admin');
-    this.isOrgEditor = true;
     this.alertSrv = alertSrv;
-    this.backendSrv = backendSrv;
-    this.$q = $q;
-
     this.monasca = new MonascaClient(backendSrv, datasourceSrv);
-    
     this.updating = true;
     this.updateFailed = false;
 
