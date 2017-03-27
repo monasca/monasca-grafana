@@ -3,7 +3,7 @@
 Plugin for Grafana to implement an "app" to provide screens for viewing or
 configuring parts of Monasca which do not fit the traditional dashboard
 format. It is intended for deployments of Monasca which for whatever
-reason so not have the Horizion UI component of Monasca deployed, e.g.
+reason do not have the Horizion UI component of Monasca deployed, e.g.
 
 - Monitoring of non-OpenStack systems (e.g. Kubernetes) or bare-metal
 - Inability/unwillingness to modify pre-existing Horizon deployment
