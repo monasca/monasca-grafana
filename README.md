@@ -25,7 +25,7 @@ UI component. This currently includes the ability to view and configure:
 ## Installation
 
 To install into an existing Grafana deployment, firstly ensure the Monasca
-datasource plugin for Grafana is deployed an operational. This will be used
+datasource plugin for Grafana is deployed and operational. This will be used
 to proxy requests to the monasca-api services. Having that in place, do the
 following:
 
