@@ -36,7 +36,6 @@ export class AlarmsPageCtrl {
 	.map(kv => kv.split(':'))
 	.map(([k, v]) => ({ key: k, value: v}));
     }
-    console.log(this.filters);
     
     this.pageLoaded = false;
     this.loadFailed = false;

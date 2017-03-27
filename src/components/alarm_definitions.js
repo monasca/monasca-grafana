@@ -60,7 +60,6 @@ export class AlarmDefinitionsPageCtrl {
     this.setAlarmDefinitionEnabling(id, true);
     
     this.monasca.enableAlarmDefinition(id, actions_enabled).then(alarm_definition => {
-      console.log(alarm_definition);
       this.setAlarmDefinitionActionsEnabled(id, alarm_definition.actions_enabled);
     }).catch(err => {
       this.alertSrv.set("Failed to enable or disable alarm definition.", err.message, 'error', 10000);

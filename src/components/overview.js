@@ -42,8 +42,6 @@ export class OverviewPageCtrl {
       var col_dim_name = data.columns.indexOf('dimension_name');
       var col_dim_value = data.columns.indexOf('dimension_value');
 
-      console.log(data);
-      
       var counts = {};
       
       data.counts.forEach(row => {
@@ -54,8 +52,6 @@ export class OverviewPageCtrl {
 	counts[dim_name][dim_value][row[col_state]] = row[col_count];
       });
 
-      console.log(counts);
-      
       var entities = _.fromPairs(
 	Object.entries(counts)
 	  .map(([dim_name, entry]) => {
@@ -71,8 +67,6 @@ export class OverviewPageCtrl {
 	  })
       );
 
-      console.log(entities);
-      
       this.alarm_sets = [
 	{ title: 'OpenStack Services',
 	  dimension: 'service',

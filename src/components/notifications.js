@@ -33,17 +33,6 @@ export class NotificationsPageCtrl {
     this.loadNotifications();
     this.backendSrv = backendSrv;
   }
-
-  createExampleData() {
-    this.createNotification({ name: 'Default Email', type: 'EMAIL', address: 'blah@example.com' })
-      .then(id => {
-	console.log(id);
-      }).catch(err => { throw err; });
-    this.createNotification({ name: 'Default Web', type: 'WEBHOOK', address: 'http://www.example.com/something' })
-      .then(id => {
-	console.log(id);
-      }).catch(err => { throw err; });
-  }
   
   loadNotifications() {
     this.monasca.listNotifications().then(notifications => {

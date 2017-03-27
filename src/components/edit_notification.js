@@ -68,7 +68,6 @@ export class EditNotificationPageCtrl {
 
     this.monasca.getNotification(this.id)
       .then(notification => {
-	console.log(notification);
 	this.savedNotification = {
 	  name: notification.name,
 	  type: notification.type,
@@ -89,7 +88,6 @@ export class EditNotificationPageCtrl {
     if (this.id) {
       this.monasca.patchNotification(this.id, this.newNotification)
 	.then(notification => {
-	  console.log(notification);
 	  
 	  this.savedNotification = {
 	    name: notification.name,

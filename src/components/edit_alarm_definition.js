@@ -80,7 +80,6 @@ export class EditAlarmDefinitionPageCtrl {
 
     this.monasca.getAlarmDefinition(this.id)
       .then(alarm_definition => {
-	console.log(alarm_definition);
 	this.savedAlarmDefinition = this.pickKnownFields(alarm_definition);
 	this.newAlarmDefinition = _.cloneDeep(this.savedAlarmDefinition);
       }).catch(err => {
@@ -102,7 +101,6 @@ export class EditAlarmDefinitionPageCtrl {
     if (this.id) {
       this.monasca.patchAlarmDefinition(this.id, this.newAlarmDefinition)
 	.then(alarm_definition => {
-	  console.log(alarm_definition);
 	  this.savedAlarmDefinition = this.pickKnownFields(alarm_definition);
 	}).catch(err => {
 	  this.alertSrv.set("Failed to save alarm definition.", err.message, 'error', 10000);
