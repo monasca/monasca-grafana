@@ -41,19 +41,15 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
       _export('NotificationsPageCtrl', NotificationsPageCtrl = function () {
 
         /** @ngInject */
-        function NotificationsPageCtrl($scope, $injector, $location, $q, backendSrv, datasourceSrv, contextSrv, alertSrv) {
+        function NotificationsPageCtrl($scope, $injector, backendSrv, datasourceSrv, alertSrv) {
           _classCallCheck(this, NotificationsPageCtrl);
 
-          //this.isOrgEditor = contextSrv.hasRole('Editor') || contextSrv.hasRole('Admin');
-          this.isOrgEditor = true;
-          this.datasourceSrv = datasourceSrv;
           this.alertSrv = alertSrv;
           this.monasca = new MonascaClient(backendSrv, datasourceSrv);
           this.pageLoaded = false;
           this.loadFailed = false;
           this.notifications = [];
           this.loadNotifications();
-          this.backendSrv = backendSrv;
         }
 
         _createClass(NotificationsPageCtrl, [{

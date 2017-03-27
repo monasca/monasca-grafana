@@ -79,12 +79,9 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
       _export('AlarmsPageCtrl', AlarmsPageCtrl = function () {
 
         /** @ngInject */
-        function AlarmsPageCtrl($scope, $injector, $location, $q, backendSrv, datasourceSrv, contextSrv, alertSrv) {
+        function AlarmsPageCtrl($scope, $injector, $location, backendSrv, datasourceSrv, alertSrv) {
           _classCallCheck(this, AlarmsPageCtrl);
 
-          //this.isOrgEditor = contextSrv.hasRole('Editor') || contextSrv.hasRole('Admin');
-          this.isOrgEditor = true;
-          this.datasourceSrv = datasourceSrv;
           this.alertSrv = alertSrv;
           this.monasca = new MonascaClient(backendSrv, datasourceSrv);
           this.filters = [];

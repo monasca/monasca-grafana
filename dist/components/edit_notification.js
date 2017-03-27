@@ -41,19 +41,12 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
       _export('EditNotificationPageCtrl', EditNotificationPageCtrl = function () {
 
         /** @ngInject */
-        function EditNotificationPageCtrl($scope, $injector, $location, $q, backendSrv, datasourceSrv, contextSrv, alertSrv) {
+        function EditNotificationPageCtrl($scope, $injector, $location, backendSrv, datasourceSrv, alertSrv) {
           _classCallCheck(this, EditNotificationPageCtrl);
 
-          this.name = config.bootData.user.name;
           this.$location = $location;
-          //this.isOrgEditor = contextSrv.hasRole('Editor') || contextSrv.hasRole('Admin');
-          this.isOrgEditor = true;
           this.alertSrv = alertSrv;
-          this.backendSrv = backendSrv;
-          this.$q = $q;
-
           this.monasca = new MonascaClient(backendSrv, datasourceSrv);
-
           this.updating = true;
           this.updateFailed = false;
 

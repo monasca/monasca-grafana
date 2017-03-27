@@ -43,19 +43,12 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client', '
       _export('EditAlarmDefinitionPageCtrl', EditAlarmDefinitionPageCtrl = function () {
 
         /** @ngInject */
-        function EditAlarmDefinitionPageCtrl($scope, $injector, $location, $q, backendSrv, datasourceSrv, contextSrv, alertSrv) {
+        function EditAlarmDefinitionPageCtrl($scope, $injector, $location, backendSrv, datasourceSrv, alertSrv) {
           _classCallCheck(this, EditAlarmDefinitionPageCtrl);
 
-          this.name = config.bootData.user.name;
           this.$location = $location;
-          //this.isOrgEditor = contextSrv.hasRole('Editor') || contextSrv.hasRole('Admin');
-          this.isOrgEditor = true;
           this.alertSrv = alertSrv;
-          this.backendSrv = backendSrv;
-          this.$q = $q;
-
           this.monasca = new MonascaClient(backendSrv, datasourceSrv);
-
           this.updating = true;
           this.updateFailed = false;
 

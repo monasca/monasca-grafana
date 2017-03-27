@@ -41,12 +41,9 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
       _export('AlarmDefinitionsPageCtrl', AlarmDefinitionsPageCtrl = function () {
 
         /** @ngInject */
-        function AlarmDefinitionsPageCtrl($scope, $injector, $location, $q, backendSrv, datasourceSrv, contextSrv, alertSrv) {
+        function AlarmDefinitionsPageCtrl($scope, $injector, backendSrv, datasourceSrv, alertSrv) {
           _classCallCheck(this, AlarmDefinitionsPageCtrl);
 
-          this.name = config.bootData.user.name;
-          //this.isOrgEditor = contextSrv.hasRole('Editor') || contextSrv.hasRole('Admin');
-          this.isOrgEditor = true;
           this.alertSrv = alertSrv;
           this.monasca = new MonascaClient(backendSrv, datasourceSrv);
           this.pageLoaded = false;

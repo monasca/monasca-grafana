@@ -81,12 +81,9 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client', '
       _export('OverviewPageCtrl', OverviewPageCtrl = function () {
 
         /* * @ngInject */
-        function OverviewPageCtrl($scope, $injector, $location, $q, backendSrv, datasourceSrv, contextSrv, alertSrv) {
+        function OverviewPageCtrl($scope, $injector, backendSrv, datasourceSrv, alertSrv) {
           _classCallCheck(this, OverviewPageCtrl);
 
-          //this.isOrgEditor = contextSrv.hasRole('Editor') || contextSrv.hasRole('Admin');
-          this.isOrgEditor = true;
-          this.datasourceSrv = datasourceSrv;
           this.alertSrv = alertSrv;
           this.monasca = new MonascaClient(backendSrv, datasourceSrv);
           this.backendSrv = backendSrv;
