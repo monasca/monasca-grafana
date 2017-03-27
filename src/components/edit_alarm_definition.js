@@ -48,12 +48,14 @@ export class EditAlarmDefinitionPageCtrl {
     this.saving = false;
     this.deleting = false;
     this.loadAlarmDefinition();
+
+    this.suggestMatchBy = this._suggestMatchBy.bind(this);
   }
 
   // UI Elements
  
-  suggestMatchBy() {
-    return []
+  _suggestMatchBy(query, callback) {
+    this.monasca.listDimensionNames().then(callback);
   }
   
   addMatchBy() {
