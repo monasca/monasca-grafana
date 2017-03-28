@@ -20,6 +20,9 @@ System.register([], function (_export, _context) {
         _classCallCheck(this, MonascaAppConfigCtrl);
 
         this.datasources = [];
+        if (!this.appModel.jsonData) {
+          this.appModel.jsonData = {};
+        }
 
         backendSrv.get('/api/datasources').then(function (response) {
           console.log(response);

@@ -17,6 +17,9 @@
 export class MonascaAppConfigCtrl {
   constructor(backendSrv) {
     this.datasources = [];
+    if (!this.appModel.jsonData) {
+      this.appModel.jsonData = {};
+    }
 
     backendSrv.get('/api/datasources')
       .then(response => {
