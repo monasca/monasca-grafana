@@ -24,10 +24,12 @@ System.register([], function (_export, _context) {
           this.appModel.jsonData = {};
         }
 
+        var show_types = ['monasca-grafana-datasource', 'monasca-datasource'];
+
         backendSrv.get('/api/datasources').then(function (response) {
           console.log(response);
           _this.datasources = response.filter(function (ds) {
-            return ds.type == 'monasca-grafana-datasource';
+            return show_types.indexOf(ds.type) >= 0;
           }).map(function (ds) {
             return ds.name;
           });
