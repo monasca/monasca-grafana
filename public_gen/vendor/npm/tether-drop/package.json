@@ -1,0 +1,87 @@
+{
+  "_args": [
+    [
+      "tether-drop@git+https://github.com/torkelo/drop.git",
+      "/home/habeeb/go/src/github.com/grafana/grafana"
+    ]
+  ],
+  "_from": "git+https://github.com/torkelo/drop.git",
+  "_id": "tether-drop@1.5.0",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/tether-drop",
+  "_phantomChildren": {},
+  "_requested": {
+    "hosted": {
+      "directUrl": "https://raw.githubusercontent.com/torkelo/drop/master/package.json",
+      "gitUrl": "git://github.com/torkelo/drop.git",
+      "httpsUrl": "git+https://github.com/torkelo/drop.git",
+      "shortcut": "github:torkelo/drop",
+      "ssh": "git@github.com:torkelo/drop.git",
+      "sshUrl": "git+ssh://git@github.com/torkelo/drop.git",
+      "type": "github"
+    },
+    "name": "tether-drop",
+    "raw": "tether-drop@git+https://github.com/torkelo/drop.git",
+    "rawSpec": "git+https://github.com/torkelo/drop.git",
+    "scope": null,
+    "spec": "git+https://github.com/torkelo/drop.git",
+    "type": "hosted"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "git+https://github.com/torkelo/drop.git#fc83ca88db0076fbf6359cbe1743a9ef0f1ee6e1",
+  "_shasum": "cca5ddd7f664d94bbdead01c00fc59e979c1affe",
+  "_shrinkwrap": null,
+  "_spec": "tether-drop@git+https://github.com/torkelo/drop.git",
+  "_where": "/home/habeeb/go/src/github.com/grafana/grafana",
+  "authors": [
+    "Adam Schwartz <adam.flynn.schwartz@gmail.com>",
+    "Zack Bloom <zackbloom@gmail.com>"
+  ],
+  "bugs": {
+    "url": "https://github.com/HubSpot/drop/issues"
+  },
+  "dependencies": {
+    "tether": "^1.1.0"
+  },
+  "description": "Client-side library for creating dropdowns",
+  "devDependencies": {
+    "del": "^1.1.1",
+    "eslint": "^1.7.3",
+    "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^2.3.1",
+    "gulp-babel": "^5.1.0",
+    "gulp-bump": "^0.3.0",
+    "gulp-header": "^1.2.2",
+    "gulp-minify-css": "^1.1.6",
+    "gulp-plumber": "^1.0.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.0.1",
+    "gulp-uglify": "^1.2.0",
+    "gulp-wrap-umd": "^0.2.1"
+  },
+  "gitHead": "fc83ca88db0076fbf6359cbe1743a9ef0f1ee6e1",
+  "homepage": "https://github.com/HubSpot/drop#readme",
+  "license": "MIT",
+  "main": "dist/js/drop.js",
+  "maintainers": [
+    {
+      "name": "Nicholas Hwang",
+      "email": "nick.joosung.hwang@gmail.com"
+    }
+  ],
+  "name": "tether-drop",
+  "optionalDependencies": {},
+  "readme": "## Drop\n\n[![GitHub\nversion](https://badge.fury.io/gh/HubSpot%2Fdrop.svg)](http://badge.fury.io/gh/HubSpot%2Fdrop)\n\nDrop.js is a powerful Javascript and CSS library for creating dropdowns and other floating displays.\n\n[![Drop Docs](http://i.imgur.com/sgmx9aJ.png)](http://github.hubspot.com/drop/)\n\n\n## Install\n\n__Dependencies__\n\n* __[Tether](https://github.com/HubSpot/tether)__\n\n__npm__\n```sh\n$ npm install tether-drop\n```\n\n__bower__\n```sh\n$ bower install tether-drop\n```\n\n## Usage\n\n```javascript\nlet dropInstance = new Drop({\n  target: document.querySelector('.drop-target'),\n  content: 'Welcome to the future',\n  classes: 'drop-theme-arrows',\n  position: 'bottom left',\n  openOn: 'click'\n})\n```\n\n[API documentation](http://github.hubspot.com/drop)\n\n[Demo](http://github.hubspot.com/drop/docs/welcome)\n\n\n## Contributing\n\nWe encourage contributions of all kinds. If you would like to contribute in some way, please review our [guidelines for contributing](CONTRIBUTING.md).\n\n\n## License\nCopyright &copy; 2015 HubSpot - [MIT License](LICENSE)\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HubSpot/drop.git"
+  },
+  "scripts": {
+    "build": "gulp build"
+  },
+  "version": "1.5.0"
+}
