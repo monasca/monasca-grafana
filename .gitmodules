@@ -1,0 +1,3 @@
+[submodule "data/plugins/monasca-grafana-app"]
+	path = data/plugins/monasca-grafana-app
+	url = https://github.com/stackhpc/monasca-grafana-app
