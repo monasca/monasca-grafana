@@ -91,9 +91,6 @@ export class OverviewPageCtrl {
       );
 
       this.alarm_sets = [
-	{ title: 'OpenStack Services',
-	  dimension: 'service',
-	  entities: entities.service },
 	{ title: 'Hosts',
 	  dimension: 'hostname',
 	  entities: entities.hostname },

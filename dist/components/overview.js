@@ -161,9 +161,7 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client', '
                 })];
               }));
 
-              _this2.alarm_sets = [{ title: 'OpenStack Services',
-                dimension: 'service',
-                entities: entities.service }, { title: 'Hosts',
+              _this2.alarm_sets = [{ title: 'Hosts',
                 dimension: 'hostname',
                 entities: entities.hostname }];
             }).catch(function (err) {
