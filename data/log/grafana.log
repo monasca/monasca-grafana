@@ -171,3 +171,59 @@ t=2017-06-14T09:32:02-0600 lvl=info msg="Request Completed" logger=context userI
 t=2017-06-14T09:32:02-0600 lvl=info msg="Request Completed" logger=context userId=1 orgId=1 uname=admin method=GET path=/v2.0/alarms/count status=502 remote_addr=127.0.0.1 time_ms=2 size=0 referer=http://localhost:3001/plugins/monasca-app/page/overview
 t=2017-06-14T09:32:10-0600 lvl=info msg="Shutdown started" logger=server code=0 reason="system signal: interrupt"
 t=2017-06-14T09:32:10-0600 lvl=info msg="stopped http server" logger=http.server
+t=2017-06-14T09:44:53-0600 lvl=info msg="Starting Grafana" logger=main version=4.4.0-pre1 commit=01ff3bb compiled=2017-06-07T14:03:10-0600
+t=2017-06-14T09:44:53-0600 lvl=info msg="Config loaded from" logger=settings file=/home/habeeb/monasca-grafana/conf/defaults.ini
+t=2017-06-14T09:44:53-0600 lvl=info msg="Path Home" logger=settings path=/home/habeeb/monasca-grafana
+t=2017-06-14T09:44:53-0600 lvl=info msg="Path Data" logger=settings path=/home/habeeb/monasca-grafana/data
+t=2017-06-14T09:44:53-0600 lvl=info msg="Path Logs" logger=settings path=/home/habeeb/monasca-grafana/data/log
+t=2017-06-14T09:44:53-0600 lvl=info msg="Path Plugins" logger=settings path=/home/habeeb/monasca-grafana/data/plugins
+t=2017-06-14T09:44:53-0600 lvl=info msg="Initializing DB" logger=sqlstore dbtype=sqlite3
+t=2017-06-14T09:44:53-0600 lvl=info msg="Starting DB migration" logger=migrator
+t=2017-06-14T09:44:53-0600 lvl=info msg="Executing migration" logger=migrator id="copy data account to org"
+t=2017-06-14T09:44:53-0600 lvl=info msg="Skipping migration condition not fulfilled" logger=migrator id="copy data account to org"
+t=2017-06-14T09:44:53-0600 lvl=info msg="Executing migration" logger=migrator id="copy data account_user to org_user"
+t=2017-06-14T09:44:53-0600 lvl=info msg="Skipping migration condition not fulfilled" logger=migrator id="copy data account_user to org_user"
+t=2017-06-14T09:44:53-0600 lvl=info msg="Starting plugin search" logger=plugins
+t=2017-06-14T09:44:53-0600 lvl=info msg="Registering plugin" logger=plugins name=Monasca
+t=2017-06-14T09:44:53-0600 lvl=info msg="Registering plugin" logger=plugins name=Monasca
+t=2017-06-14T09:44:53-0600 lvl=info msg="Initializing Alerting" logger=alerting.engine
+t=2017-06-14T09:44:53-0600 lvl=info msg="Initializing CleanUpService" logger=cleanup
+t=2017-06-14T09:44:53-0600 lvl=info msg="Initializing Stream Manager"
+t=2017-06-14T09:44:53-0600 lvl=info msg="Initializing HTTP Server" logger=http.server address=0.0.0.0:3001 protocol=http subUrl= socket=
+t=2017-06-14T09:44:58-0600 lvl=info msg="Request Completed" logger=context userId=0 orgId=0 uname= method=GET path=/plugins/monasca-app/page/overview status=302 remote_addr=127.0.0.1 time_ms=0 size=29 referer=
+t=2017-06-14T09:44:58-0600 lvl=info msg="Request Completed" logger=context userId=0 orgId=0 uname= method=GET path=/login status=302 remote_addr=127.0.0.1 time_ms=6 size=57 referer=
+t=2017-06-14T09:45:00-0600 lvl=info msg="Request Completed" logger=context userId=1 orgId=1 uname=admin method=GET path=/v2.0/alarms/count status=502 remote_addr=127.0.0.1 time_ms=2 size=0 referer=http://localhost:3001/plugins/monasca-app/page/overview
+t=2017-06-14T09:45:00-0600 lvl=info msg="Request Completed" logger=context userId=1 orgId=1 uname=admin method=GET path=/v2.0/alarms/count status=502 remote_addr=127.0.0.1 time_ms=2 size=0 referer=http://localhost:3001/plugins/monasca-app/page/overview
+t=2017-06-14T10:15:44-0600 lvl=info msg="Request Completed" logger=context userId=1 orgId=1 uname=admin method=DELETE path=/v2.0/notification-methods/6641274a-fe0d-461e-86ef-468414dd359f status=204 remote_addr=127.0.0.1 time_ms=201 size=0 referer=http://localhost:3001/plugins/monasca-app/page/notifications
+t=2017-06-14T10:22:03-0600 lvl=info msg="Request Completed" logger=context userId=1 orgId=1 uname=admin method=DELETE path=/v2.0/alarm-definitions/61949bd3-ecbb-41e2-ac40-d839251423e9 status=204 remote_addr=127.0.0.1 time_ms=370 size=0 referer=http://localhost:3001/plugins/monasca-app/page/alarm-definitions
+t=2017-06-14T10:22:18-0600 lvl=info msg="Request Completed" logger=context userId=1 orgId=1 uname=admin method=DELETE path=/v2.0/alarm-definitions/69751788-00af-45aa-80b9-d6909fa81ee7 status=204 remote_addr=127.0.0.1 time_ms=178 size=0 referer=http://localhost:3001/plugins/monasca-app/page/alarm-definitions
+t=2017-06-14T10:22:21-0600 lvl=info msg="Request Completed" logger=context userId=1 orgId=1 uname=admin method=DELETE path=/v2.0/alarm-definitions/3d25ca4a-e5b9-466b-946c-22ca03ebe71e status=204 remote_addr=127.0.0.1 time_ms=319 size=0 referer=http://localhost:3001/plugins/monasca-app/page/alarm-definitions
+t=2017-06-14T10:45:21-0600 lvl=info msg="Shutdown started" logger=server code=0 reason="system signal: interrupt"
+t=2017-06-14T10:45:21-0600 lvl=info msg="stopped http server" logger=http.server
+t=2017-06-14T10:45:21-0600 lvl=info msg="Stopped CleanUpService" logger=cleanup reason="context canceled"
+t=2017-06-14T10:45:21-0600 lvl=info msg="Stopped Alerting" logger=alerting.engine reason="context canceled"
+t=2017-06-14T10:45:22-0600 lvl=info msg="Starting Grafana" logger=main version=4.4.0-pre1 commit=01ff3bb compiled=2017-06-07T14:03:10-0600
+t=2017-06-14T10:45:22-0600 lvl=info msg="Config loaded from" logger=settings file=/home/habeeb/monasca-grafana/conf/defaults.ini
+t=2017-06-14T10:45:22-0600 lvl=info msg="Path Home" logger=settings path=/home/habeeb/monasca-grafana
+t=2017-06-14T10:45:22-0600 lvl=info msg="Path Data" logger=settings path=/home/habeeb/monasca-grafana/data
+t=2017-06-14T10:45:22-0600 lvl=info msg="Path Logs" logger=settings path=/home/habeeb/monasca-grafana/data/log
+t=2017-06-14T10:45:22-0600 lvl=info msg="Path Plugins" logger=settings path=/home/habeeb/monasca-grafana/data/plugins
+t=2017-06-14T10:45:22-0600 lvl=info msg="Initializing DB" logger=sqlstore dbtype=sqlite3
+t=2017-06-14T10:45:22-0600 lvl=info msg="Starting DB migration" logger=migrator
+t=2017-06-14T10:45:22-0600 lvl=info msg="Executing migration" logger=migrator id="copy data account to org"
+t=2017-06-14T10:45:22-0600 lvl=info msg="Skipping migration condition not fulfilled" logger=migrator id="copy data account to org"
+t=2017-06-14T10:45:22-0600 lvl=info msg="Executing migration" logger=migrator id="copy data account_user to org_user"
+t=2017-06-14T10:45:22-0600 lvl=info msg="Skipping migration condition not fulfilled" logger=migrator id="copy data account_user to org_user"
+t=2017-06-14T10:45:22-0600 lvl=info msg="Starting plugin search" logger=plugins
+t=2017-06-14T10:45:22-0600 lvl=info msg="Registering plugin" logger=plugins name=Monasca
+t=2017-06-14T10:45:22-0600 lvl=info msg="Registering plugin" logger=plugins name=Monasca
+t=2017-06-14T10:45:22-0600 lvl=info msg="Initializing Alerting" logger=alerting.engine
+t=2017-06-14T10:45:22-0600 lvl=info msg="Initializing CleanUpService" logger=cleanup
+t=2017-06-14T10:45:22-0600 lvl=info msg="Initializing Stream Manager"
+t=2017-06-14T10:45:22-0600 lvl=info msg="Initializing HTTP Server" logger=http.server address=0.0.0.0:3001 protocol=http subUrl= socket=
+t=2017-06-14T10:46:56-0600 lvl=info msg="Request Completed" logger=context userId=1 orgId=1 uname=admin method=GET path=/v2.0/alarm-definitions status=401 remote_addr=127.0.0.1 time_ms=34 size=114 referer=http://localhost:3001/plugins/monasca-app/page/alarm-definitions
+t=2017-06-14T10:46:56-0600 lvl=info msg="Request Completed" logger=context userId=1 orgId=1 uname=admin method=GET path=/v2.0/alarm-definitions status=401 remote_addr=127.0.0.1 time_ms=4 size=114 referer=http://localhost:3001/plugins/monasca-app/page/alarm-definitions
+t=2017-06-14T10:47:02-0600 lvl=info msg="Request Completed" logger=context userId=1 orgId=1 uname=admin method=GET path=/v2.0/alarms/count status=401 remote_addr=127.0.0.1 time_ms=72 size=114 referer=http://localhost:3001/plugins/monasca-app/page/overview
+t=2017-06-14T10:47:02-0600 lvl=info msg="Request Completed" logger=context userId=1 orgId=1 uname=admin method=GET path=/v2.0/alarms/count status=401 remote_addr=127.0.0.1 time_ms=89 size=114 referer=http://localhost:3001/plugins/monasca-app/page/overview
+t=2017-06-14T10:47:02-0600 lvl=info msg="Request Completed" logger=context userId=1 orgId=1 uname=admin method=GET path=/v2.0/alarms/count status=401 remote_addr=127.0.0.1 time_ms=10 size=114 referer=http://localhost:3001/plugins/monasca-app/page/overview
+t=2017-06-14T10:47:02-0600 lvl=info msg="Request Completed" logger=context userId=1 orgId=1 uname=admin method=GET path=/v2.0/alarms/count status=401 remote_addr=127.0.0.1 time_ms=5 size=114 referer=http://localhost:3001/plugins/monasca-app/page/overview
