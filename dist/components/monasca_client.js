@@ -78,9 +78,16 @@ System.register(['app/core/config', 'app/core/app_events'], function (_export, _
             var params = {};
             if (dimensions) {
               params.metric_dimensions = dimensions.map(function (d) {
-                return d.key + ':' + d.value;
-              }).join(',');
+                return d.metric_dimensions;
+              }); //.join(',');
+              params.state = dimensions.map(function (d) {
+                return d.state;
+              });
+              params.severity = dimensions.map(function (d) {
+                return d.severity;
+              });
             }
+            console.log(params);
             return this._get('/v2.0/alarms/', params).then(function (resp) {
               return resp.data.elements;
             }).catch(function (err) {

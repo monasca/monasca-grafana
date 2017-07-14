@@ -85,6 +85,9 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
           this.alertSrv = alertSrv;
           this.monasca = new MonascaClient(backendSrv, datasourceSrv);
           this.filters = [];
+          this.filters2 = [];
+          this.filters3 = [];
+          this.totalFilters = [];
           this.editFilterIndex = -1;
 
           if ('dimensions' in $location.search()) {
@@ -95,7 +98,7 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
                   k = _ref2[0],
                   v = _ref2[1];
 
-              return { key: k, value: v };
+              return { metric_dimensions: k + ":" + v };
             });
           }
 
@@ -132,6 +135,16 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
             this.filters.push({});
           }
         }, {
+          key: 'addFilter2',
+          value: function addFilter2() {
+            this.filters2.push({});
+          }
+        }, {
+          key: 'addFilter3',
+          value: function addFilter3() {
+            this.filters3.push({});
+          }
+        }, {
           key: 'removeFilter',
           value: function removeFilter(index) {
             var filter = this.filters[index];
@@ -143,11 +156,34 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
             }
           }
         }, {
+          key: 'removeFilter2',
+          value: function removeFilter2(index) {
+            var filter = this.filters2[index];
+            this.filters2.splice(index, 1);
+
+            // Don't refresh if the filter was never valid enough to be applied.
+            if (filter.value) {
+              this.refreshAlarms();
+            }
+          }
+        }, {
+          key: 'removeFilter3',
+          value: function removeFilter3(index) {
+            var filter = this.filters3[index];
+            this.filters3.splice(index, 1);
+
+            // Don't refresh if the filter was never valid enough to be applied.
+            if (filter.value) {
+              this.refreshAlarms();
+            }
+          }
+        }, {
           key: 'applyFilter',
           value: function applyFilter() {
             // Check filter is complete before applying.
             if (this.filters.every(function (f) {
-              return f.key && f.value;
+              f.metric_dimensions = f.key + ":" + f.value;
+              return f.metric_dimensions;
             })) {
               this.refreshAlarms();
             }
@@ -158,14 +194,34 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
             if (this.pageLoaded) {
               this.pageLoaded = false;
               this.loadAlarms();
+              this.pageLoaded = true;
             }
           }
         }, {
           key: 'loadAlarms',
           value: function loadAlarms() {
             var _this = this;
-
-            this.monasca.listAlarms(this.filters).then(function (alarms) {
+            this.totalFilters = [];
+            console.log(this.filters);
+            console.log(this.filters2);
+            console.log(this.filters3);
+            if(this.filters){
+              for (var i = 0; i < this.filters.length; i++){
+                this.totalFilters.push(this.filters[i]);
+              }
+            }
+            if(this.filters2){
+              for (var i = 0; i < this.filters2.length; i++){
+                this.totalFilters.push(this.filters2[i]);
+              }
+            }
+            if(this.filters3){
+              for (var i = 0; i < this.filters3.length; i++){
+                this.totalFilters.push(this.filters3[i]);
+              }
+            }
+            console.log(this.totalFilters);
+            this.monasca.listAlarms(this.totalFilters).then(function (alarms) {
               _this.alarms = alarms;
             }).catch(function (err) {
               _this.alertSrv.set("Failed to get alarms.", err.message, 'error', 10000);
