@@ -149,33 +149,18 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
           value: function removeFilter(index) {
             var filter = this.filters[index];
             this.filters.splice(index, 1);
-
-            // Don't refresh if the filter was never valid enough to be applied.
-            if (filter.key && filter.value) {
-              this.refreshAlarms();
-            }
           }
         }, {
           key: 'removeFilter2',
           value: function removeFilter2(index) {
             var filter = this.filters2[index];
             this.filters2.splice(index, 1);
-
-            // Don't refresh if the filter was never valid enough to be applied.
-            if (filter.value) {
-              this.refreshAlarms();
-            }
           }
         }, {
           key: 'removeFilter3',
           value: function removeFilter3(index) {
             var filter = this.filters3[index];
             this.filters3.splice(index, 1);
-
-            // Don't refresh if the filter was never valid enough to be applied.
-            if (filter.value) {
-              this.refreshAlarms();
-            }
           }
         }, {
           key: 'applyFilter',
