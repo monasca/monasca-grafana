@@ -41,9 +41,11 @@
 
 <form name="alarmDefinitionForm">
   <div class="gf-form-group">
+
+		<!--Metric Dimension Form-->
     <div class="gf-form-inline">
       <div class="gf-form">
-        <label class="gf-form-label max-width-7">Filter</label>
+        <label class="gf-form-label max-width-11">Metric Dimensions</label>
       </div>
       <div class="gf-form" ng-repeat="filter in ctrl.filters track by $index">
         <input
@@ -53,11 +55,10 @@
            ng-model="filter.key"
 	   ng-disabled="ctrl.id"
            bs-typeahead="ctrl.suggestDimensionNames"
-	   ng-blur="ctrl.applyFilter()"
            data-min-length=0
 	   required
            style="margin-right:0;">
-	
+
         <label class="gf-form-label query-segment-operator" style="margin-right:0">=</label>
 
 	<input
@@ -68,15 +69,18 @@
 	   ng-disabled="ctrl.id"
            bs-typeahead="ctrl.suggestDimensionValues"
 	   ng-focus="ctrl.editFilter($index)"
-	   ng-blur="ctrl.applyFilter()"
            data-min-length=0
 	   required
            style="margin-right:0;">
 
-        <label class="gf-form-label" ng-hide="ctrl.id">
-	  <a class="pointer" ng-click="ctrl.removeFilter($index)"><i class="fa fa-close"></i></a>
-	</label>
+
       </div>
+		<div>
+			<label class="gf-form-label" ng-hide="ctrl.id">
+				<a class="pointer" ng-click="ctrl.removeFilter($index)"><i class="fa fa-close"></i></a>
+			</label>
+		</div>
+
       <div class="gf-form" ng-hide="ctrl.id">
         <label class="gf-form-label">
           <a class="pointer" ng-click="ctrl.addFilter()"><i class="fa fa-plus"></i></a>
@@ -84,9 +88,74 @@
       </div>
 
     </div>
+		<!--State Form-->
+		<div class="gf-form-inline">
+			<div class="gf-form">
+				<label class="gf-form-label max-width-9">Alarm State</label>
+			</div>
+			<div class="gf-form-select-wrapper" ng-repeat="filter2 in ctrl.filters2 track by $index">
+				<select
+					 class="gf-form-input"
+					 placeholder="OK"
+					 ng-model="filter2.state"
+		 		 	 ng-disabled="ctrl.id"
+					 ng-options="f for f in ['UNDETERMINED', 'OK', 'ALARM']">
+				</select>
 
+			</div>
 
-    
+			<div class="gf-form" ng-hide="ctrl.id">
+				<label class="gf-form-label" style="margin-right:0;">
+					<a class="pointer" ng-click="ctrl.removeFilter2($index)"><i class="fa fa-close"></i></a>
+				</label>
+
+			</div>
+
+			<div class="gf-form" ng-hide="ctrl.id">
+				<label class="gf-form-label">
+					<a class="pointer" ng-click="ctrl.addFilter2()"><i class="fa fa-plus"></i></a>
+				</label>
+
+			</div>
+
+		</div>
+
+		<!--Severity Form-->
+		<div class="gf-form-inline">
+			<div class="gf-form">
+				<label class="gf-form-label max-width-9">Alarm Severity</label>
+			</div>
+			<div class="gf-form-select-wrapper" ng-repeat="filter3 in ctrl.filters3 track by $index">
+				<select
+					 class="gf-form-input"
+					 placeholder="OK"
+					 ng-model="filter3.severity"
+					 ng-disabled="ctrl.id"
+					 ng-options="f for f in ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']">
+				</select>
+
+			</div>
+
+			<div class="gf-form" ng-hide="ctrl.id">
+				<label class="gf-form-label" style="margin-right:0;">
+					<a class="pointer" ng-click="ctrl.removeFilter3($index)"><i class="fa fa-close"></i></a>
+				</label>
+
+			</div>
+
+			<div class="gf-form" ng-hide="ctrl.id">
+				<label class="gf-form-label">
+					<a class="pointer" ng-click="ctrl.addFilter3()"><i class="fa fa-plus"></i></a>
+				</label>
+
+			</div>
+
+		</div>
+
+		<!--Apply Button-->
+		<br>
+		<button class="btn btn-inverse" ng-click="ctrl.applyFilter()">Apply Filters</button>
+
   </div>
 </form>
 
@@ -116,14 +185,14 @@
       <td>{{alarm.alarm_definition.name}}</td>
       <td>
 	<div ng-repeat="metric in alarm.metrics" bs-tooltip="'{{metric.name}}<br />{{metric.dimensions}}'">
-	  {{metric.name}} 
+	  {{metric.name}}
 	  <span style="font-style: italic; font-size: 80%;" ng-repeat="dimension in metric.dimensions">
 	    {{dimension}}
 	  </span>
 	  <br />
 	</div>
       </td>
-      
+
       <td style="text-align: center;">
 	<!--
 	<a href="plugins/monasca-app/page/alarm-history?id={{alarm.id}}">
@@ -138,7 +207,7 @@
 	  <i ng-class="icon" class="icon-gf icon-gf-settings" bs-tooltip="'Edit Alarm Definition'"></i>
 	</a>
       </td>
-      
+
       <td ng-if="!alarm.deleting">
 	<a ng-click="ctrl.deleteAlarm(alarm)"  class="btn btn-danger btn-mini">
 	  <i class="fa fa-trash" bs-tooltip="'Delete Alarm'"></i>
