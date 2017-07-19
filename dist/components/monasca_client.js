@@ -87,6 +87,9 @@ System.register(['app/core/config', 'app/core/app_events'], function (_export, _
                   if(dimensions[i].severity){
                     params.severity = dimensions[i].severity;
                   }
+                  if(dimensions[i].alarm_definition_id){
+                    params.alarm_definition_id = dimensions[i].alarm_definition_id;
+                  }
 
                 }
 
@@ -100,6 +103,18 @@ System.register(['app/core/config', 'app/core/app_events'], function (_export, _
             });
           }
         }, {
+          key: 'listAlarmsByID',
+          value: function listAlarmsByID(id) {
+            var params = {};
+            params.alarm_definition_id = id;
+            console.log(params);
+            return this._get('/v2.0/alarms/', params).then(function (resp) {
+              return resp.data.elements;
+            }).catch(function (err) {
+              throw err;
+            });
+          }
+        },{
           key: 'deleteAlarm',
           value: function deleteAlarm(id) {
             return this._delete('/v2.0/alarms/' + id).then(function (resp) {

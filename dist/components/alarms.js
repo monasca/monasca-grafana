@@ -84,9 +84,10 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
 
           this.alertSrv = alertSrv;
           this.monasca = new MonascaClient(backendSrv, datasourceSrv);
-          this.filters = [];
-          this.filters2 = [];
-          this.filters3 = [];
+          this.filters = []; //Metric Dimensions filter
+          this.filters2 = []; //State filters
+          this.filters3 = []; //Severity filters
+          this.filters4 = []; //Alarm Def ID filter (if applicable)
           this.totalFilters = [];
           this.editFilterIndex = -1;
 
@@ -100,6 +101,10 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
 
               return { metric_dimensions: k + ":" + v };
             });
+          }
+
+          if ('id' in $location.search()) {
+            this.filters4[0] = $location.search().id;
           }
 
           this.pageLoaded = false;
@@ -171,6 +176,8 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
               return f.metric_dimensions;
             })) {
               this.refreshAlarms();
+              //Do twice so that the button is only clicked once.
+              this.refreshAlarms();
             }
           }
         }, {
@@ -189,7 +196,7 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
             this.totalFilters = [];
             console.log(this.filters);
             console.log(this.filters2);
-            console.log(this.filters3);
+            console.log(this.filters4);
             if(this.filters){
               for (var i = 0; i < this.filters.length; i++){
                 this.totalFilters.push(this.filters[i]);
@@ -203,6 +210,11 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
             if(this.filters3){
               for (var i = 0; i < this.filters3.length; i++){
                 this.totalFilters.push(this.filters3[i]);
+              }
+            if(this.filters4){
+              var temp = {}
+              temp.alarm_definition_id = this.filters4[0];
+              this.totalFilters.push(temp);
               }
             }
             console.log(this.totalFilters);
