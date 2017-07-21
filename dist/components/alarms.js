@@ -84,7 +84,7 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
 
           this.alertSrv = alertSrv;
           this.monasca = new MonascaClient(backendSrv, datasourceSrv);
-          this.filters = []; //Metric Dimensions filter
+          this.filters = []; //Metric Dimensions filter *NAMING CONVENTIONS!!!
           this.filters2 = []; //State filters
           this.filters3 = []; //Severity filters
           this.filters4 = []; //Alarm Def ID filter (if applicable)
@@ -98,7 +98,7 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
               var _ref2 = _slicedToArray(_ref, 2),
                   k = _ref2[0],
                   v = _ref2[1];
-
+                  console.log(k + v);
               return { metric_dimensions: k + ":" + v };
             });
           }

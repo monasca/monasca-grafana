@@ -1,139 +1,291 @@
-/*
- *   Copyright 2017 StackHPC
- *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
- */
+'use strict';
 
-import config from 'app/core/config';
-import appEvents from 'app/core/app_events';
-import MonascaClient from './monasca_client';
+System.register(['app/core/config', 'app/core/app_events', './monasca_client'], function (_export, _context) {
+  "use strict";
 
-export class AlarmsPageCtrl {
+  var config, appEvents, MonascaClient, _slicedToArray, _createClass, AlarmsPageCtrl;
 
-  /** @ngInject */
-  constructor($scope, $injector, $location, backendSrv, datasourceSrv, alertSrv) {
-    this.alertSrv = alertSrv
-    this.monasca = new MonascaClient(backendSrv, datasourceSrv);
-    this.filters = [];
-    this.editFilterIndex = -1;
-
-    if ('dimensions' in $location.search()) {
-      this.filters = $location.search().dimensions
-	.split(',')
-	.map(kv => kv.split(':'))
-	.map(([k, v]) => ({ key: k, value: v}));
-    }
-    
-    this.pageLoaded = false;
-    this.loadFailed = false;
-    this.alarms = [];
-    this.loadAlarms();
-    
-    this.suggestDimensionNames = this._suggestDimensionNames.bind(this);
-    this.suggestDimensionValues = this._suggestDimensionValues.bind(this);
-  }
-
-  _suggestDimensionNames(query, callback) {
-    this.monasca.listDimensionNames().then(callback);
-  }
-
-  _suggestDimensionValues(query, callback) {
-    var filter = this.filters[this.editFilterIndex];
-    if (filter && filter.key) {
-      this.monasca.listDimensionValues(filter.key).then(callback);
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
     }
   }
 
-  editFilter(index) {
-    this.editFilterIndex = index;
-  }
+  return {
+    setters: [function (_appCoreConfig) {
+      config = _appCoreConfig.default;
+    }, function (_appCoreApp_events) {
+      appEvents = _appCoreApp_events.default;
+    }, function (_monasca_client) {
+      MonascaClient = _monasca_client.default;
+    }],
+    execute: function () {
+      _slicedToArray = function () {
+        function sliceIterator(arr, i) {
+          var _arr = [];
+          var _n = true;
+          var _d = false;
+          var _e = undefined;
 
-  addFilter() {
-    this.filters.push({});
-  }
+          try {
+            for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+              _arr.push(_s.value);
 
-  removeFilter(index) {
-    var filter = this.filters[index];
-    this.filters.splice(index, 1);
+              if (i && _arr.length === i) break;
+            }
+          } catch (err) {
+            _d = true;
+            _e = err;
+          } finally {
+            try {
+              if (!_n && _i["return"]) _i["return"]();
+            } finally {
+              if (_d) throw _e;
+            }
+          }
 
-    // Don't refresh if the filter was never valid enough to be applied.
-    if (filter.key && filter.value) {
-      this.refreshAlarms();
+          return _arr;
+        }
+
+        return function (arr, i) {
+          if (Array.isArray(arr)) {
+            return arr;
+          } else if (Symbol.iterator in Object(arr)) {
+            return sliceIterator(arr, i);
+          } else {
+            throw new TypeError("Invalid attempt to destructure non-iterable instance");
+          }
+        };
+      }();
+
+      _createClass = function () {
+        function defineProperties(target, props) {
+          for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];
+            descriptor.enumerable = descriptor.enumerable || false;
+            descriptor.configurable = true;
+            if ("value" in descriptor) descriptor.writable = true;
+            Object.defineProperty(target, descriptor.key, descriptor);
+          }
+        }
+
+        return function (Constructor, protoProps, staticProps) {
+          if (protoProps) defineProperties(Constructor.prototype, protoProps);
+          if (staticProps) defineProperties(Constructor, staticProps);
+          return Constructor;
+        };
+      }();
+
+      _export('AlarmsPageCtrl', AlarmsPageCtrl = function () {
+
+        /** @ngInject */
+        function AlarmsPageCtrl($scope, $injector, $location, backendSrv, datasourceSrv, alertSrv) {
+          _classCallCheck(this, AlarmsPageCtrl);
+
+          this.alertSrv = alertSrv;
+          this.monasca = new MonascaClient(backendSrv, datasourceSrv);
+          this.filters = []; //Metric Dimensions filter *NAMING CONVENTIONS!!!
+          this.filters2 = []; //State filters
+          this.filters3 = []; //Severity filters
+          this.filters4 = []; //Alarm Def ID filter (if applicable)
+          this.totalFilters = [];
+          this.editFilterIndex = -1;
+
+          if ('dimensions' in $location.search()) {
+            this.filters = $location.search().dimensions.split(',').map(function (kv) {
+              return kv.split(':');
+            }).map(function (_ref) {
+              var _ref2 = _slicedToArray(_ref, 2),
+                  k = _ref2[0],
+                  v = _ref2[1];
+                  console.log(k + v);
+              return { metric_dimensions: k + ":" + v };
+            });
+          }
+
+          if ('id' in $location.search()) {
+            this.filters4[0] = $location.search().id;
+          }
+
+          this.pageLoaded = false;
+          this.loadFailed = false;
+          this.alarms = [];
+          this.loadAlarms();
+
+          this.suggestDimensionNames = this._suggestDimensionNames.bind(this);
+          this.suggestDimensionValues = this._suggestDimensionValues.bind(this);
+        }
+
+        _createClass(AlarmsPageCtrl, [{
+          key: '_suggestDimensionNames',
+          value: function _suggestDimensionNames(query, callback) {
+            this.monasca.listDimensionNames().then(callback);
+          }
+        }, {
+          key: '_suggestDimensionValues',
+          value: function _suggestDimensionValues(query, callback) {
+            var filter = this.filters[this.editFilterIndex];
+            if (filter && filter.key) {
+              this.monasca.listDimensionValues(filter.key).then(callback);
+            }
+          }
+        }, {
+          key: 'editFilter',
+          value: function editFilter(index) {
+            this.editFilterIndex = index;
+          }
+        }, {
+          key: 'addFilter',
+          value: function addFilter() {
+            this.filters.push({});
+          }
+        }, {
+          key: 'addFilter2',
+          value: function addFilter2() {
+            this.filters2.push({});
+          }
+        }, {
+          key: 'addFilter3',
+          value: function addFilter3() {
+            this.filters3.push({});
+          }
+        }, {
+          key: 'removeFilter',
+          value: function removeFilter(index) {
+            var filter = this.filters[index];
+            this.filters.splice(index, 1);
+          }
+        }, {
+          key: 'removeFilter2',
+          value: function removeFilter2(index) {
+            var filter = this.filters2[index];
+            this.filters2.splice(index, 1);
+          }
+        }, {
+          key: 'removeFilter3',
+          value: function removeFilter3(index) {
+            var filter = this.filters3[index];
+            this.filters3.splice(index, 1);
+          }
+        }, {
+          key: 'applyFilter',
+          value: function applyFilter() {
+            // Check filter is complete before applying.
+            if (this.filters.every(function (f) {
+              f.metric_dimensions = f.key + ":" + f.value;
+              return f.metric_dimensions;
+            })) {
+              this.refreshAlarms();
+              //Do twice so that the button is only clicked once.
+              this.refreshAlarms();
+            }
+          }
+        }, {
+          key: 'refreshAlarms',
+          value: function refreshAlarms() {
+            if (this.pageLoaded) {
+              this.pageLoaded = false;
+              this.loadAlarms();
+              this.pageLoaded = true;
+            }
+          }
+        }, {
+          key: 'loadAlarms',
+          value: function loadAlarms() {
+            var _this = this;
+            this.totalFilters = [];
+            console.log(this.filters);
+            console.log(this.filters2);
+            console.log(this.filters4);
+            if(this.filters){
+              for (var i = 0; i < this.filters.length; i++){
+                this.totalFilters.push(this.filters[i]);
+              }
+            }
+            if(this.filters2){
+              for (var i = 0; i < this.filters2.length; i++){
+                this.totalFilters.push(this.filters2[i]);
+              }
+            }
+            if(this.filters3){
+              for (var i = 0; i < this.filters3.length; i++){
+                this.totalFilters.push(this.filters3[i]);
+              }
+            if(this.filters4){
+              var temp = {}
+              temp.alarm_definition_id = this.filters4[0];
+              this.totalFilters.push(temp);
+              }
+            }
+            console.log(this.totalFilters);
+            this.monasca.listAlarms(this.totalFilters).then(function (alarms) {
+              _this.alarms = alarms;
+            }).catch(function (err) {
+              _this.alertSrv.set("Failed to get alarms.", err.message, 'error', 10000);
+              _this.loadFailed = true;
+            }).then(function () {
+              _this.pageLoaded = true;
+            });
+          }
+        }, {
+          key: 'setAlarmDeleting',
+          value: function setAlarmDeleting(id, deleting) {
+            var index = this.alarms.findIndex(function (n) {
+              return n.id === id;
+            });
+            if (index !== -1) {
+              this.alarms[index].deleting = true;
+            }
+          }
+        }, {
+          key: 'alarmDeleted',
+          value: function alarmDeleted(id) {
+            var index = this.alarms.find(function (n) {
+              return n.id === id;
+            });
+            if (index !== -1) {
+              this.alarms.splice(index, 1);
+            }
+          }
+        }, {
+          key: 'confirmDeleteAlarm',
+          value: function confirmDeleteAlarm(id) {
+            var _this2 = this;
+
+            this.setAlarmDeleting(id, true);
+
+            this.monasca.deleteAlarm(id).then(function () {
+              _this2.alarmDeleted(id);
+            }).catch(function (err) {
+              _this2.setAlarmDeleting(id, false);
+              _this2.alertSrv.set("Failed to delete alarm.", err.message, 'error', 10000);
+            });
+          }
+        }, {
+          key: 'deleteAlarm',
+          value: function deleteAlarm(alarm) {
+            var _this3 = this;
+
+            appEvents.emit('confirm-modal', {
+              title: 'Delete',
+              text: 'Are you sure you want to delete this alarm?',
+              text2: alarm.name,
+              yesText: "Delete",
+              icon: "fa-trash",
+              onConfirm: function onConfirm() {
+                _this3.confirmDeleteAlarm(alarm.id);
+              }
+            });
+          }
+        }]);
+
+        return AlarmsPageCtrl;
+      }());
+
+      _export('AlarmsPageCtrl', AlarmsPageCtrl);
+
+      AlarmsPageCtrl.templateUrl = 'components/alarms.html';
     }
-  }
-
-  applyFilter() {
-    // Check filter is complete before applying.
-    if (this.filters.every(f => f.key && f.value)) {
-      this.refreshAlarms();
-    }
-  }
-  
-  refreshAlarms() {
-    if (this.pageLoaded) {      
-      this.pageLoaded = false;
-      this.loadAlarms();
-    }
-  }
-  
-  loadAlarms() {
-    this.monasca.listAlarms(this.filters).then(alarms => {
-      this.alarms = alarms;    
-    }).catch(err => {
-      this.alertSrv.set("Failed to get alarms.", err.message, 'error', 10000);
-      this.loadFailed = true;
-    }).then(() => {
-      this.pageLoaded = true;
-    });
-  }
-
-  setAlarmDeleting(id, deleting) {
-    var index = this.alarms.findIndex(n => n.id === id);
-    if (index !== -1) {
-      this.alarms[index].deleting = true;
-    }
-  }    
-
-  alarmDeleted(id) {
-    var index = this.alarms.find(n => n.id === id);
-    if (index !== -1) {
-      this.alarms.splice(index, 1);
-    }
-  }    
-
-  confirmDeleteAlarm(id) {
-    this.setAlarmDeleting(id, true);
-    
-    this.monasca.deleteAlarm(id).then(() => {
-      this.alarmDeleted(id);
-    }).catch(err => {
-      this.setAlarmDeleting(id, false);
-      this.alertSrv.set("Failed to delete alarm.", err.message, 'error', 10000);
-    });
-  }
-
-  deleteAlarm(alarm) {
-    appEvents.emit('confirm-modal', {
-      title: 'Delete',
-      text: 'Are you sure you want to delete this alarm?',
-      text2: alarm.name,
-      yesText: "Delete",
-      icon: "fa-trash",
-      onConfirm: () => {
-        this.confirmDeleteAlarm(alarm.id);
-      }
-    });
-  }
-}
-
-AlarmsPageCtrl.templateUrl = 'components/alarms.html';
+  };
+});
+//# sourceMappingURL=alarms.js.map
