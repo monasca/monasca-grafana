@@ -153,7 +153,6 @@ export class AlarmsPageCtrl {
       temp.alarm_definition_id = this.defIdFilters[0];
       this.totalFilters.push(temp);
       }
-    }
 
     this.monasca.listAlarms(this.totalFilters).then(alarms => {
       this.alarms = alarms;

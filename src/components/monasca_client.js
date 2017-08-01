@@ -62,6 +62,7 @@ export default class MonascaClient {
     return this._get('/v2.0/alarms/', params)
       .then(resp => resp.data.elements)
       .catch(err => { throw err; });
+    }
   }
 
   deleteAlarm(id) {
