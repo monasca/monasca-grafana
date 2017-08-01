@@ -84,7 +84,7 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
 
           this.alertSrv = alertSrv;
           this.monasca = new MonascaClient(backendSrv, datasourceSrv);
-          this.filters = []; //Metric Dimensions filter *NAMING CONVENTIONS!!!
+          this.filters = []; //Metric Dimensions filter *USE BETTER NAMING CONVENTIONS!!!
           this.filters2 = []; //State filters
           this.filters3 = []; //Severity filters
           this.filters4 = []; //Alarm Def ID filter (if applicable)
@@ -98,7 +98,6 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
               var _ref2 = _slicedToArray(_ref, 2),
                   k = _ref2[0],
                   v = _ref2[1];
-                  console.log(k + v);
               return { metric_dimensions: k + ":" + v };
             });
           }
@@ -111,9 +110,9 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
           this.loadFailed = false;
           this.alarms = [];
           this.loadAlarms();
-
           this.suggestDimensionNames = this._suggestDimensionNames.bind(this);
           this.suggestDimensionValues = this._suggestDimensionValues.bind(this);
+
         }
 
         _createClass(AlarmsPageCtrl, [{
@@ -194,9 +193,7 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
           value: function loadAlarms() {
             var _this = this;
             this.totalFilters = [];
-            console.log(this.filters);
-            console.log(this.filters2);
-            console.log(this.filters4);
+
             if(this.filters){
               for (var i = 0; i < this.filters.length; i++){
                 this.totalFilters.push(this.filters[i]);
@@ -217,7 +214,7 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
               this.totalFilters.push(temp);
               }
             }
-            console.log(this.totalFilters);
+
             this.monasca.listAlarms(this.totalFilters).then(function (alarms) {
               _this.alarms = alarms;
             }).catch(function (err) {

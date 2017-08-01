@@ -93,124 +93,74 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
             this.id = this.$location.search().id;
           }
 
-          this.savedAlarmDefinition = {};
-          this.newAlarmDefinition = {
-            severity: 'LOW'
-          };
+          this.states = [];
+          this.savedAlarm = {};
           this.saving = false;
           this.deleting = false;
-          this.loadAlarmDefinition();
-
-          this.suggestMatchBy = this._suggestMatchBy.bind(this);
+          this.savedAlarm = this.loadAlarm();
+          this.states = this.loadStates();
+          console.log(this.states);
         }
 
         _createClass(AlarmHistoryPageCtrl, [{
-          key: '_suggestMatchBy',
-          value: function _suggestMatchBy(query, callback) {
-            this.monasca.listDimensionNames().then(callback);
+          key: 'pickKnownFields',
+          value: function pickKnownFields(alarm) {
+            this.savedAlarm.name = alarm.alarm_definition.name;
+            this.savedAlarm.severity = alarm.alarm_definition.severity;
+            this.savedAlarm.state = alarm.state;
+            return this.savedAlarm;
           }
         }, {
-          key: 'addMatchBy',
-          value: function addMatchBy() {
-            if (!this.newAlarmDefinition.match_by) {
-              this.newAlarmDefinition.match_by = [];
-            }
-            this.newAlarmDefinition.match_by.push('');
-          }
-        }, {
-          key: 'removeMatchBy',
-          value: function removeMatchBy(index) {
-            if (!this.newAlarmDefinition.match_by) {
-              return;
-            }
-            this.newAlarmDefinition.match_by.splice(index, 1);
-          }
-        }, {
-          key: 'loadAlarmDefinition',
-          value: function loadAlarmDefinition() {
+          key: 'loadAlarm',
+          value: function loadAlarm() {
             var _this = this;
-
             if (!this.id) {
               this.updating = false;
               return;
             }
 
-            this.monasca.getAlarmDefinition(this.id).then(function (alarm_definition) {
-              _this.savedAlarmDefinition = _this.pickKnownFields(alarm_definition);
-              _this.newAlarmDefinition = _.cloneDeep(_this.savedAlarmDefinition);
+            //this.savedAlarm.id = this.id;
+
+            this.monasca.getAlarm(this.id).then(function (alarm) {
+              _this.savedAlarm = _this.pickKnownFields(alarm);
+              console.log(_this.savedAlarm);
             }).catch(function (err) {
-              _this.alertSrv.set("Failed to get fetch alarm definition method.", err.message, 'error', 10000);
+              _this.alertSrv.set("Failed to fetch alarm definition method.", err.message, 'error', 10000);
               _this.updateFailed = true;
             }).then(function () {
               _this.updating = false;
             });
+            this.savedAlarm = _this.savedAlarm;
+            return this.savedAlarm;
           }
         }, {
-          key: 'pickKnownFields',
-          value: function pickKnownFields(alarm_definition) {
-            return _.pick(alarm_definition, ['name', 'description', 'expression', 'match_by', 'severity']);
-          }
-        }, {
-          key: 'saveAlarmDefinition',
-          value: function saveAlarmDefinition() {
-            var _this2 = this;
-
-            this.saving = true;
-
-            if (this.id) {
-              this.monasca.patchAlarmDefinition(this.id, this.newAlarmDefinition).then(function (alarm_definition) {
-                _this2.savedAlarmDefinition = _this2.pickKnownFields(alarm_definition);
-              }).catch(function (err) {
-                _this2.alertSrv.set("Failed to save alarm definition.", err.message, 'error', 10000);
-              }).then(function () {
-                _this2.saving = false;
-              });
-            } else {
-              this.monasca.createAlarmDefinition(this.newAlarmDefinition).then(function (alarm_definition) {
-                _this2.savedAlarmDefinition = _this2.pickKnownFields(alarm_definition);
-                _this2.id = alarm_definition.id;
-
-                // Want the address bar to update. Don't really have to reload though.
-                _this2.$location.url('plugins/monasca-app/page/alarm-history?id=' + _this2.id);
-              }).catch(function (err) {
-                _this2.alertSrv.set("Failed to create alarm definition.", err.message, 'error', 10000);
-              }).then(function () {
-                _this2.saving = false;
-              });
+          key: 'loadStates',
+          value: function loadStates() {
+            var _this = this;
+            if (!this.id) {
+              this.updating = false;
+              return;
             }
-          }
-        }, {
-          key: 'confirmDeleteAlarmDefinition',
-          value: function confirmDeleteAlarmDefinition() {
-            var _this3 = this;
 
-            this.deleting = true;
+            var temp = [];
+            this.monasca.getAlarmHistory(this.id).then(function (alarm_history) {
+                for(var i = 0; i < alarm_history.elements.length; i++){
+                  alarm_history.elements[i].timestamp = alarm_history.elements[i].timestamp.replace(/[A-Z.]/g, ' ');
+                  alarm_history.elements[i].timestamp = alarm_history.elements[i].timestamp.replace(/.{4}$/g, ' ');
+                  temp.push(alarm_history.elements[i]);
+                }
 
-            this.monasca.deleteAlarmDefinition(this.id).then(function () {
-              _this3.$location.url('plugins/monasca-app/page/alarm_definitions');
             }).catch(function (err) {
-              _this3.alertSrv.set("Failed to get delete alarm definition method.", err.message, 'error', 10000);
+              _this.alertSrv.set("Failed to fetch alarm definition method.", err.message, 'error', 10000);
+              _this.updateFailed = true;
             }).then(function () {
-              _this3.deleting = false;
+              _this.updating = false;
             });
-          }
-        }, {
-          key: 'deleteAlarmDefinition',
-          value: function deleteAlarmDefinition() {
-            var _this4 = this;
 
-            appEvents.emit('confirm-modal', {
-              title: 'Delete',
-              text: 'Are you sure you want to delete this alarm definition method?',
-              text2: this.savedAlarmDefinition.name,
-              yesText: "Delete",
-              icon: "fa-trash",
-              onConfirm: function onConfirm() {
-                _this4.confirmDeleteAlarmDefinition();
-              }
-            });
+            return temp;
           }
         }]);
+
 
         return AlarmHistoryPageCtrl;
       }());

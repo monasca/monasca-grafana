@@ -1,5 +1,6 @@
 <!--
    Copyright 2017 StackHPC
+	 (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -49,7 +50,7 @@
 	<tr ng-repeat="definition in ctrl.alarm_definitions">
 	  <td>
 		<!--<a href="plugins/monasca-app/page/alarm-definition-details?id={{definition.id}}">-->
-		<a href="plugins/monasca-app/page/alarms/">
+		<a href="plugins/monasca-app/page/alarms?id={{definition.id}}">
 		  {{definition.name}}
 		</a>
 	  </td>
