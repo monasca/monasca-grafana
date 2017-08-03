@@ -52,19 +52,20 @@ export class AlarmHistoryPageCtrl {
   }
 
   loadAlarm(){
+    var _this = this;
     if(!this.id){
       this.updating = false;
       return;
     }
 
     this.monasca.getAlarm(this.id).then(function (alarm) {
-      this.savedAlarm = this.pickKnownFields(alarm);
+      _this.savedAlarm = _this.pickKnownFields(alarm);
     }).catch(err => {
-      this.alertSrv.set("Failed to fetch alarm method.", err.message,
+      _this.alertSrv.set("Failed to fetch alarm method.", err.message,
       'error', 10000);
-      this.loadFailed = true;
+      _this.loadFailed = true;
     }).then(() => {
-      this.pageLoaded = true;
+      _this.pageLoaded = true;
     });
     return this.savedAlarm;
 

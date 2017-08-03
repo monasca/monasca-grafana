@@ -1,0 +1,159 @@
+<!--
+   Copyright 2017 StackHPC
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<div class="page-header">
+  <h1 class="rt-h1" ng-if="ctrl.id">Edit Alarm Definition</h1>
+  <h1 class="rt-h1" ng-if="!ctrl.id">Create Alarm Definition</h1>
+  <a
+     href="plugins/monasca-app/page/alarm-definitions"
+     class="btn btn-inverse"
+     ng-disabled="ctrl.saving || ctrl.deleting"
+     >
+    <i class="fa fa-list-alt"></i>
+    Back to Alarm Definitions
+  </a>
+  
+  <a
+     ng-if="!ctrl.updating && !ctrl.updateFailed && ctrl.id"
+     class="btn btn-danger"
+     ng-click="ctrl.deleteAlarmDefinition()"
+     ng-disabled="ctrl.saving || ctrl.deleting">
+    <i class="fa fa-trash" ng-if="!ctrl.deleting"></i>
+    <i class="fa fa-spinner fa-spin" ng-if="ctrl.deleting"></i>
+    Delete Alarm Definition
+  </a>
+
+</div>
+
+<div ng-if="ctrl.updating">
+	<div style="text-align: center; padding-top: 90px; min-height: 220px; min-width: 400px;  margin: 0 auto;">
+		<i ng-class="icon" class="fa fa-spinner fa-spin"></i>
+		<p>Loading...</p>
+	</div>
+</div>
+
+<div ng-if="!ctrl.updating && ctrl.updateFailed">
+	<div style="text-align: center; padding-top: 90px; min-height: 220px; min-width: 400px;  margin: 0 auto;">
+		<i ng-class="icon" class="fa fa-exclamation-triangle"></i>
+		<p>Failed to fetch alarm definition.</p>
+	</div>
+</div>
+
+<div ng-if="!ctrl.updating && !ctrl.updateFailed">
+
+  <form name="alarmDefinitionForm">
+    
+    <div class="gf-form-group">
+
+      <div class="gf-form-inline">
+	<div class="gf-form gf-form--right-margin">
+          <span class="gf-form-label width-7">ID</span>
+          <input class="gf-form-input max-width-21" type="text" ng-model="ctrl.id" ng-disabled="true">
+	</div>
+      </div>
+      
+      <div class="gf-form-inline">
+	<div class="gf-form gf-form--right-margin">
+          <span class="gf-form-label width-7">Name</span>
+          <input class="gf-form-input max-width-21" type="text" ng-model="ctrl.newAlarmDefinition.name" ng-disabled="ctrl.saving || ctrl.deleting" placeholder="Example Alert" required>
+	</div>
+      </div>
+
+      <div class="gf-form-inline">
+	<div class="gf-form gf-form--right-margin">
+          <span class="gf-form-label width-7">Description</span>
+          <input class="gf-form-input max-width-21" type="text" ng-model="ctrl.newAlarmDefinition.description" ng-disabled="ctrl.saving || ctrl.deleting" placeholder="This is a description." required>
+	</div>
+      </div>
+
+      <div class="gf-form-inline">
+	<div class="gf-form gf-form--right-margin">
+          <span class="gf-form-label width-7">Expression</span>
+          <input class="gf-form-input max-width-21" type="text" ng-model="ctrl.newAlarmDefinition.expression" ng-disabled="ctrl.saving || ctrl.deleting" placeholder="(avg(cpu.percent{}) > 90)" required>
+	</div>
+      </div>
+
+      <div class="gf-form-inline">
+        <div class="gf-form">
+          <label class="gf-form-label width-7">Match By</label>
+        </div>
+        <div class="gf-form" ng-repeat="dimension in ctrl.newAlarmDefinition.match_by track by $index">
+          <input
+             type="text"
+             class="gf-form-input max-width-7"
+             placeholder="dimension"
+             ng-model="ctrl.newAlarmDefinition.match_by[$index]"
+	     ng-disabled="ctrl.id"
+             bs-typeahead="ctrl.suggestMatchBy"
+             data-min-length=0
+	     required
+             style="margin-right:0;">
+          <label class="gf-form-label" ng-hide="ctrl.id">
+	    <a class="pointer" ng-click="ctrl.removeMatchBy($index)"><i class="fa fa-close"></i></a>
+	  </label>
+        </div>
+        <div class="gf-form" ng-hide="ctrl.id">
+          <label class="gf-form-label">
+            <a class="pointer" ng-click="ctrl.addMatchBy()"><i class="fa fa-plus"></i></a>
+          </label>
+        </div>
+      </div>
+      
+      <div class="gf-form-inline">      
+	<div class="gf-form gf-form--right-margin">
+          <span class="gf-form-label width-7">Severity</span>
+
+	  <div class="gf-form-select-wrapper">
+            <select
+	       class="gf-form-input"
+	       ng-model="ctrl.newAlarmDefinition.severity"
+               ng-options="f for f in ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']"
+	       ng-disabled="ctrl.saving || ctrl.deleting"
+	       required>
+            </select>
+          </div>
+
+	</div>
+      </div>
+            
+      <br>
+      <div class="gf-form-buttons-row">
+	<button
+	   ng-if="ctrl.id"
+	   class="btn btn-success"
+	   ng-click="ctrl.saveAlarmDefinition()"
+	   ng-disabled="ctrl.saving || ctrl.deleting">
+	  <i class="fa fa-save" ng-if="!ctrl.saving"></i>
+	  <i class="fa fa-spinner fa-spin" ng-if="ctrl.saving"></i>
+	  Save
+	</button>
+
+	<button
+	   ng-if="!ctrl.id"
+	   class="btn btn-success"
+	   ng-click="ctrl.saveAlarmDefinition()"
+	   ng-disabled="ctrl.saving || ctrl.deleting">
+	  <i class="fa fa-save" ng-if="!ctrl.saving"></i>
+	  <i class="fa fa-spinner fa-spin" ng-if="ctrl.saving"></i>
+	  Create
+	</button>
+      </div>
+
+    </div>
+
+  </form>
+  
+</div>

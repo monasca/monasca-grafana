@@ -78,11 +78,6 @@ export class AlarmsPageCtrl {
   removeMetricFilter(index) {
     var filter = this.metricFilters[index];
     this.metricFilters.splice(index, 1);
-
-    // Don't refresh if the filter was never valid enough to be applied.
-    if (filter.key && filter.value) {
-      this.refreshAlarms();
-    }
   }
 
   //State Filter add/remove
@@ -94,11 +89,6 @@ export class AlarmsPageCtrl {
   removeStateFilter(index) {
     var filter = this.stateFilters[index];
     this.stateFilters.splice(index, 1);
-
-    // Don't refresh if the filter was never valid enough to be applied.
-    if (filter.key && filter.value) {
-      this.refreshAlarms();
-    }
   }
 
   //Severity Filter add/remove
@@ -110,16 +100,15 @@ export class AlarmsPageCtrl {
   removeSeverityFilter(index) {
     var filter = this.severityFilters[index];
     this.severityFilters.splice(index, 1);
-
-    // Don't refresh if the filter was never valid enough to be applied.
-    if (filter.key && filter.value) {
-      this.refreshAlarms();
-    }
   }
 
   applyFilter() {
     // Check filter is complete before applying.
-    if (this.metricFilters.every(f => f.key && f.value)) {
+    if (this.metricFilters.every(function (f){
+        f.metric_dimensions = f.key + ":" + f.value;
+        return f.metric_dimensions;
+    })){
+      this.refreshAlarms();
       this.refreshAlarms();
     }
   }
@@ -133,6 +122,7 @@ export class AlarmsPageCtrl {
   }
 
   loadAlarms() {
+    this.totalFilters = [];
     if (this.metricFilters){
       for (var i = 0; i < this.metricFilters.length; i++){
         this.totalFilters.push(this.metricFilters[i]);
