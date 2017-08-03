@@ -84,14 +84,17 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
 
           this.alertSrv = alertSrv;
           this.monasca = new MonascaClient(backendSrv, datasourceSrv);
-          this.filters = [];
-          this.filters2 = [];
-          this.filters3 = [];
+
+          this.metricFilters = [];
+          this.stateFilters = [];
+          this.severityFilters = [];
+          this.defIdFilters = [];
           this.totalFilters = [];
+
           this.editFilterIndex = -1;
 
           if ('dimensions' in $location.search()) {
-            this.filters = $location.search().dimensions.split(',').map(function (kv) {
+            this.metricFilters = $location.search().dimensions.split(',').map(function (kv) {
               return kv.split(':');
             }).map(function (_ref) {
               var _ref2 = _slicedToArray(_ref, 2),
@@ -100,6 +103,10 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
 
               return { metric_dimensions: k + ":" + v };
             });
+          }
+
+          if ('id' in $location.search()) {
+            this.defIdFilters[0] = $location.search().id;
           }
 
           this.pageLoaded = false;
@@ -119,7 +126,7 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
         }, {
           key: '_suggestDimensionValues',
           value: function _suggestDimensionValues(query, callback) {
-            var filter = this.filters[this.editFilterIndex];
+            var filter = this.metricFilters[this.editFilterIndex];
             if (filter && filter.key) {
               this.monasca.listDimensionValues(filter.key).then(callback);
             }
@@ -130,46 +137,47 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
             this.editFilterIndex = index;
           }
         }, {
-          key: 'addFilter',
-          value: function addFilter() {
-            this.filters.push({});
+          key: 'addMetricFilter',
+          value: function addMetricFilter() {
+            this.metricFilters.push({});
           }
         }, {
-          key: 'addFilter2',
-          value: function addFilter2() {
-            this.filters2.push({});
+          key: 'removeMetricFilter',
+          value: function removeMetricFilter(index) {
+            var filter = this.metricFilters[index];
+            this.metricFilters.splice(index, 1);
           }
         }, {
-          key: 'addFilter3',
-          value: function addFilter3() {
-            this.filters3.push({});
+          key: 'addStateFilter',
+          value: function addStateFilter() {
+            this.stateFilters.push({});
           }
         }, {
-          key: 'removeFilter',
-          value: function removeFilter(index) {
-            var filter = this.filters[index];
-            this.filters.splice(index, 1);
+          key: 'removeStateFilter',
+          value: function removeStateFilter(index) {
+            var filter = this.stateFilters[index];
+            this.stateFilters.splice(index, 1);
           }
         }, {
-          key: 'removeFilter2',
-          value: function removeFilter2(index) {
-            var filter = this.filters2[index];
-            this.filters2.splice(index, 1);
+          key: 'addSeverityFilter',
+          value: function addSeverityFilter() {
+            this.severityFilters.push({});
           }
         }, {
-          key: 'removeFilter3',
-          value: function removeFilter3(index) {
-            var filter = this.filters3[index];
-            this.filters3.splice(index, 1);
+          key: 'removeSeverityFilter',
+          value: function removeSeverityFilter(index) {
+            var filter = this.severityFilters[index];
+            this.severityFilters.splice(index, 1);
           }
         }, {
           key: 'applyFilter',
           value: function applyFilter() {
             // Check filter is complete before applying.
-            if (this.filters.every(function (f) {
+            if (this.metricFilters.every(function (f) {
               f.metric_dimensions = f.key + ":" + f.value;
               return f.metric_dimensions;
             })) {
+              this.refreshAlarms();
               this.refreshAlarms();
             }
           }
@@ -186,26 +194,29 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
           key: 'loadAlarms',
           value: function loadAlarms() {
             var _this = this;
+
             this.totalFilters = [];
-            console.log(this.filters);
-            console.log(this.filters2);
-            console.log(this.filters3);
-            if(this.filters){
-              for (var i = 0; i < this.filters.length; i++){
-                this.totalFilters.push(this.filters[i]);
+            if (this.metricFilters) {
+              for (var i = 0; i < this.metricFilters.length; i++) {
+                this.totalFilters.push(this.metricFilters[i]);
               }
             }
-            if(this.filters2){
-              for (var i = 0; i < this.filters2.length; i++){
-                this.totalFilters.push(this.filters2[i]);
+            if (this.stateFilters) {
+              for (var i = 0; i < this.stateFilters.length; i++) {
+                this.totalFilters.push(this.stateFilters[i]);
               }
             }
-            if(this.filters3){
-              for (var i = 0; i < this.filters3.length; i++){
-                this.totalFilters.push(this.filters3[i]);
+            if (this.severityFilters) {
+              for (var i = 0; i < this.severityFilters.length; i++) {
+                this.totalFilters.push(this.severityFilters[i]);
               }
             }
-            console.log(this.totalFilters);
+            if (this.defIdFilters) {
+              var temp = {};
+              temp.alarm_definition_id = this.defIdFilters[0];
+              this.totalFilters.push(temp);
+            }
+
             this.monasca.listAlarms(this.totalFilters).then(function (alarms) {
               _this.alarms = alarms;
             }).catch(function (err) {

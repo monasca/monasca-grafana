@@ -77,27 +77,26 @@ System.register(['app/core/config', 'app/core/app_events'], function (_export, _
           value: function listAlarms(dimensions) {
             var params = {};
             if (dimensions) {
-                for(var i = 0; i < dimensions.length; i++){
-                  if(dimensions[i].metric_dimensions){
-                    params.metric_dimensions = dimensions[i].metric_dimensions;
-                  }
-                  if(dimensions[i].state){
-                    params.state = dimensions[i].state;
-                  }
-                  if(dimensions[i].severity){
-                    params.severity = dimensions[i].severity;
-                  }
-
+              for (var i = 0; i < dimensions.length; i++) {
+                if (dimensions[i].metric_dimensions) {
+                  params.metric_dimensions = dimensions[i].metric_dimensions;
                 }
-
-
+                if (dimensions[i].state) {
+                  params.state = dimensions[i].state;
+                }
+                if (dimensions[i].severity) {
+                  params.severity = dimensions[i].severity;
+                }
+                if (dimensions[i].alarm_definition_id) {
+                  params.alarm_definition_id = dimensions[i].alarm_definition_id;
+                }
+              }
+              return this._get('/v2.0/alarms/', params).then(function (resp) {
+                return resp.data.elements;
+              }).catch(function (err) {
+                throw err;
+              });
             }
-            console.log(params);
-            return this._get('/v2.0/alarms/', params).then(function (resp) {
-              return resp.data.elements;
-            }).catch(function (err) {
-              throw err;
-            });
           }
         }, {
           key: 'deleteAlarm',
@@ -112,6 +111,24 @@ System.register(['app/core/config', 'app/core/app_events'], function (_export, _
           key: 'countAlarms',
           value: function countAlarms(group_by) {
             return this._get('/v2.0/alarms/count/', { group_by: group_by }).then(function (resp) {
+              return resp.data;
+            }).catch(function (err) {
+              throw err;
+            });
+          }
+        }, {
+          key: 'getAlarm',
+          value: function getAlarm(id) {
+            return this._get('/v2.0/alarms/' + id).then(function (resp) {
+              return resp.data;
+            }).catch(function (err) {
+              throw err;
+            });
+          }
+        }, {
+          key: 'getAlarmHistory',
+          value: function getAlarmHistory(id) {
+            return this._get('/v2.0/alarms/' + id + '/state-history').then(function (resp) {
               return resp.data;
             }).catch(function (err) {
               throw err;

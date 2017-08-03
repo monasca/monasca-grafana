@@ -1,5 +1,6 @@
 /*
  *   Copyright 2017 StackHPC
+ *   (C) Copyright 2017 Hewlett Packard Enterprise Development LP
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -24,21 +25,31 @@ export class AlarmsPageCtrl {
   constructor($scope, $injector, $location, backendSrv, datasourceSrv, alertSrv) {
     this.alertSrv = alertSrv
     this.monasca = new MonascaClient(backendSrv, datasourceSrv);
-    this.filters = [];
+
+    this.metricFilters = [];
+    this.stateFilters = [];
+    this.severityFilters = [];
+    this.defIdFilters = [];
+    this.totalFilters = [];
+
     this.editFilterIndex = -1;
 
     if ('dimensions' in $location.search()) {
-      this.filters = $location.search().dimensions
+      this.metricFilters = $location.search().dimensions
 	.split(',')
 	.map(kv => kv.split(':'))
-	.map(([k, v]) => ({ key: k, value: v}));
+	.map(([k, v]) => ({ metric_dimensions: k + ":" + v }));
     }
-    
+
+    if ('id' in $location.search()){
+      this.defIdFilters[0] = $location.search().id;
+    }
+
     this.pageLoaded = false;
     this.loadFailed = false;
     this.alarms = [];
     this.loadAlarms();
-    
+
     this.suggestDimensionNames = this._suggestDimensionNames.bind(this);
     this.suggestDimensionValues = this._suggestDimensionValues.bind(this);
   }
@@ -48,7 +59,7 @@ export class AlarmsPageCtrl {
   }
 
   _suggestDimensionValues(query, callback) {
-    var filter = this.filters[this.editFilterIndex];
+    var filter = this.metricFilters[this.editFilterIndex];
     if (filter && filter.key) {
       this.monasca.listDimensionValues(filter.key).then(callback);
     }
@@ -58,37 +69,83 @@ export class AlarmsPageCtrl {
     this.editFilterIndex = index;
   }
 
-  addFilter() {
-    this.filters.push({});
+  //Metric Dimension Filter add/remove
+
+  addMetricFilter() {
+    this.metricFilters.push({});
   }
 
-  removeFilter(index) {
-    var filter = this.filters[index];
-    this.filters.splice(index, 1);
+  removeMetricFilter(index) {
+    var filter = this.metricFilters[index];
+    this.metricFilters.splice(index, 1);
+  }
 
-    // Don't refresh if the filter was never valid enough to be applied.
-    if (filter.key && filter.value) {
-      this.refreshAlarms();
-    }
+  //State Filter add/remove
+
+  addStateFilter() {
+    this.stateFilters.push({});
+  }
+
+  removeStateFilter(index) {
+    var filter = this.stateFilters[index];
+    this.stateFilters.splice(index, 1);
+  }
+
+  //Severity Filter add/remove
+
+  addSeverityFilter() {
+    this.severityFilters.push({});
+  }
+
+  removeSeverityFilter(index) {
+    var filter = this.severityFilters[index];
+    this.severityFilters.splice(index, 1);
   }
 
   applyFilter() {
     // Check filter is complete before applying.
-    if (this.filters.every(f => f.key && f.value)) {
+    if (this.metricFilters.every(function (f){
+        f.metric_dimensions = f.key + ":" + f.value;
+        return f.metric_dimensions;
+    })){
+      this.refreshAlarms();
       this.refreshAlarms();
     }
   }
-  
+
   refreshAlarms() {
-    if (this.pageLoaded) {      
+    if (this.pageLoaded) {
       this.pageLoaded = false;
       this.loadAlarms();
+      this.pageLoaded = true;
     }
   }
-  
+
   loadAlarms() {
-    this.monasca.listAlarms(this.filters).then(alarms => {
-      this.alarms = alarms;    
+    this.totalFilters = [];
+    if (this.metricFilters){
+      for (var i = 0; i < this.metricFilters.length; i++){
+        this.totalFilters.push(this.metricFilters[i]);
+      }
+    }
+    if (this.stateFilters){
+      for (var i = 0; i < this.stateFilters.length; i++){
+        this.totalFilters.push(this.stateFilters[i]);
+      }
+    }
+    if (this.severityFilters){
+      for (var i = 0; i < this.severityFilters.length; i++){
+        this.totalFilters.push(this.severityFilters[i]);
+      }
+    }
+    if (this.defIdFilters){
+      var temp = {};
+      temp.alarm_definition_id = this.defIdFilters[0];
+      this.totalFilters.push(temp);
+      }
+
+    this.monasca.listAlarms(this.totalFilters).then(alarms => {
+      this.alarms = alarms;
     }).catch(err => {
       this.alertSrv.set("Failed to get alarms.", err.message, 'error', 10000);
       this.loadFailed = true;
@@ -102,18 +159,18 @@ export class AlarmsPageCtrl {
     if (index !== -1) {
       this.alarms[index].deleting = true;
     }
-  }    
+  }
 
   alarmDeleted(id) {
     var index = this.alarms.find(n => n.id === id);
     if (index !== -1) {
       this.alarms.splice(index, 1);
     }
-  }    
+  }
 
   confirmDeleteAlarm(id) {
     this.setAlarmDeleting(id, true);
-    
+
     this.monasca.deleteAlarm(id).then(() => {
       this.alarmDeleted(id);
     }).catch(err => {

@@ -1,5 +1,6 @@
 <!--
    Copyright 2017 StackHPC
+	 (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,10 +18,6 @@
 <div class="page-header">
 	<h1 class="rt-h1">Overview</h1>
 </div>
-
-<section class="card-section" layout-mode>
-  <layout-selector></layout-selector>
-
   <div
      ng-if="ctrl.totals"
      style="font-weight: bold; font-size: 110%;">
@@ -42,7 +39,7 @@
     </span>
     ]
   </div>
-  
+
 </section>
 
 <div ng-repeat="set in ctrl.alarm_sets">
@@ -50,13 +47,13 @@
   <div class="page-header">
     <h3>{{set.title}}</h3>
   </div>
-  
+
   <section class="card-section" layout-mode>
 
     <div ng-if="set.entities.length === 0">
       <em>No alarms found</em>
     </div>
-    
+
     <ol class="card-list">
       <li class="card-item-wrapper" ng-repeat="entity in set.entities">
 	<a class="card-item" ng-href="plugins/monasca-app/page/alarms?dimensions={{set.dimension}}:{{entity.name}}">
@@ -79,7 +76,7 @@
 	    </span>
           </div>
 
-	  
+
           <div class="card-item-body">
             <div class="card-item-details">
               <div class="card-item-name">
@@ -87,15 +84,15 @@
 		  <i ng-if="entity.alarm_count>0"
 		     class="icon-gf icon-gf-critical alert-state-critical"
 		     bs-tooltip="'ALARM'"></i>
-		
+
 		  <i ng-if="entity.alarm_count==0 && entity.undetermined_count>0"
 		     class="icon-gf icon-gf-nodata alert-state-pending"
 		     bs-tooltip="'UNDETERMINED'"></i>
-		  
+
 		  <i ng-if="entity.alarm_count==0 && entity.undetermined_count==0"
 		     class="icon-gf icon-gf-online alert-state-ok"
 		     bs-tooltip="'OK'"></i>
-		
+
 		  {{entity.name}}
               </div>
 

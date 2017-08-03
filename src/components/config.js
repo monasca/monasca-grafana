@@ -22,7 +22,7 @@ export class MonascaAppConfigCtrl {
     }
 
     var show_types = ['monasca-grafana-datasource', 'monasca-datasource'];
-    
+
     backendSrv.get('/api/datasources')
       .then(response => {
 	console.log(response);

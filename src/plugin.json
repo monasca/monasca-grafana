@@ -2,7 +2,7 @@
   "type": "app",
   "name": "Monasca",
   "id": "monasca-app",
-  
+
   "info": {
     "description": "Monasca app for configuring alarms and notifications inside Grafana.",
     "author": {
@@ -36,14 +36,14 @@
       "role": "Viewer",
       "addToNav": true,
       "defaultNav": true
-    }, 
+    },
     {
       "type": "page",
       "name": "Alarm Definitions",
       "component": "AlarmDefinitionsPageCtrl",
       "role": "Viewer",
       "addToNav": true
-    }, 
+    },
     {
       "type": "page",
       "name": "Notifications",
@@ -69,6 +69,13 @@
       "type": "page",
       "name": "Edit Alarm Definition",
       "component": "EditAlarmDefinitionPageCtrl",
+      "role": "Viewer",
+      "addToNav": false
+    },
+    {
+      "type": "page",
+      "name": "Alarm History",
+      "component": "AlarmHistoryPageCtrl",
       "role": "Viewer",
       "addToNav": false
     }

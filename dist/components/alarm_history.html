@@ -1,0 +1,99 @@
+<!--
+	 (C) Copyright 2017 Hewlett Packard Enterprise Development LP
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<div class="page-header">
+	<h1 class="rt-h1">Alarm History</h1>
+</div>
+
+<form name="alarmDetailForm">
+
+	<div class="gf-form-group">
+
+		<div class="gf-form-inline">
+<div class="gf-form gf-form--right-margin">
+				<span class="gf-form-label width-8">ID</span>
+				<input class="gf-form-input width-22" type="text" ng-model="ctrl.id" ng-disabled="true">
+</div>
+		</div>
+
+		<div class="gf-form-inline">
+<div class="gf-form gf-form--right-margin">
+				<span class="gf-form-label width-8">Name</span>
+				<input class="gf-form-input width-22" type="text" ng-model="ctrl.savedAlarm.name" ng-disabled="true">
+</div>
+		</div>
+
+		<div class="gf-form-inline">
+<div class="gf-form gf-form--right-margin">
+				<span class="gf-form-label width-8">Severity</span>
+				<input class="gf-form-input width-22" type="text" ng-model="ctrl.savedAlarm.severity" ng-disabled="true">
+</div>
+		</div>
+
+		<div class="gf-form-inline">
+<div class="gf-form gf-form--right-margin">
+				<span class="gf-form-label width-8">Current State</span>
+				<i ng-if="ctrl.savedAlarm.state=='ALARM'"
+				style="font-size: 150%";
+				class="icon-gf icon-gf-critical alert-state-critical"
+				bs-tooltip="'ALARM'"></i>
+				<i ng-if="ctrl.savedAlarm.state=='OK'"
+				style="font-size: 150%";
+				class="icon-gf icon-gf-online alert-state-ok"
+				bs-tooltip="'OK'"></i>
+				<i ng-if="ctrl.savedAlarm.state=='UNDETERMINED'"
+				style="font-size: 150%";
+				class="icon-gf icon-gf-nodata alert-state-pending"
+				bs-tooltip="'UNDETERMINED'"></i>
+
+</div>
+		</div>
+
+	</div>
+
+</form>
+
+<div>
+	<h2>State Transitions</h2>
+	<br>
+		<table class="grafana-options-table">
+		    <tr class="muted">
+		      <th>Time</th>
+		      <th>State</th>
+		      <th style="text-align: center">Reason</th>
+		      <th></th>
+		    </tr>
+
+	    <tr ng-repeat="state in ctrl.states">
+	      <td>{{state.timestamp}}</td>
+				<td style="font-size: 100%;">
+		<i ng-if="state.new_state=='ALARM'"
+			 class="icon-gf icon-gf-critical alert-state-critical"
+			 bs-tooltip="'ALARM'"></i>
+		<i ng-if="state.new_state=='OK'"
+			 class="icon-gf icon-gf-online alert-state-ok"
+			 bs-tooltip="'OK'"></i>
+		<i ng-if="state.new_state=='UNDETERMINED'"
+			 class="icon-gf icon-gf-nodata alert-state-pending"
+			 bs-tooltip="'UNDETERMINED'"></i>
+				</td>
+	    <!--  <td>{{state.new_state}}</td> -->
+				<td>{{state.reason}}</td>
+	      <td style="text-align: center;">
+
+	    </tr>
+  </table>
+</div>

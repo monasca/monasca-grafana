@@ -1,5 +1,6 @@
 /*
  *   Copyright 2017 StackHPC
+ *   (C) Copyright 2017 Hewlett Packard Enterprise Development LP
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -42,20 +43,26 @@ export default class MonascaClient {
       .catch(err => { throw err; });
   }
 
-  
+
   // Alarms
-  
+
   listAlarms(dimensions) {
     var params = {};
     if (dimensions) {
-      params.metric_dimensions =
-	dimensions
-	.map(d => d.key + ':' + d.value)
-	.join(',');
-    }
+      for(var i = 0; i < dimensions.length; i++){
+        if(dimensions[i].metric_dimensions){
+          params.metric_dimensions = dimensions[i].metric_dimensions;
+        }
+        if(dimensions[i].state){ params.state = dimensions[i].state; }
+        if(dimensions[i].severity){ params.severity = dimensions[i].severity; }
+        if(dimensions[i].alarm_definition_id){
+          params.alarm_definition_id = dimensions[i].alarm_definition_id;
+        }
+      }
     return this._get('/v2.0/alarms/', params)
       .then(resp => resp.data.elements)
       .catch(err => { throw err; });
+    }
   }
 
   deleteAlarm(id) {
@@ -69,9 +76,20 @@ export default class MonascaClient {
       .then(resp => resp.data)
       .catch(err => { throw err; });
   }
-  
+
+  getAlarm(id) {
+    return this._get('/v2.0/alarms/' + id)
+      .then(resp => resp.data)
+      .catch(err => { throw err; });
+  }
+
+  getAlarmHistory(id){
+    return this._get('/v2.0/alarms/' + id + '/state-history')
+      .then(resp => resp.data)
+      .catch(err => { throw err; });
+  }
   // Alarm Definitions
-  
+
   listAlarmDefinitions() {
     return this._get('/v2.0/alarm-definitions/')
       .then(resp => resp.data.elements)
@@ -83,7 +101,7 @@ export default class MonascaClient {
       .then(resp => resp.data)
       .catch(err => { throw err; });
   }
-  
+
   createAlarmDefinition(alarm_definition) {
     return this._post('/v2.0/alarm-definitions/', alarm_definition)
       .then(resp => resp.data)
@@ -99,7 +117,7 @@ export default class MonascaClient {
       .then(resp => resp.data)
       .catch(err => { throw err; });
   }
-  
+
   deleteAlarmDefinition(id) {
     return this._delete('/v2.0/alarm-definitions/' + id)
       .then(resp => null)
@@ -107,7 +125,7 @@ export default class MonascaClient {
   }
 
   // Notification Method Types
-  
+
   listNotificationTypes() {
     return this._get('/v2.0/notification-methods/types/')
       .then(resp => resp.data.elements.map(element => element.type))
@@ -115,7 +133,7 @@ export default class MonascaClient {
   }
 
   // Notification Methods
-  
+
   listNotifications() {
     return this._get('/v2.0/notification-methods/')
       .then(resp => resp.data.elements)
@@ -125,7 +143,7 @@ export default class MonascaClient {
   getNotification(id) {
     return this._get('/v2.0/notification-methods/' + id)
       .then(resp => resp.data)
-      .catch(err => { throw err; });    
+      .catch(err => { throw err; });
   }
 
   patchNotification(id, notification) {
@@ -139,18 +157,18 @@ export default class MonascaClient {
       .then(resp => resp.data)
       .catch(err => { throw err; });
   }
-  
+
   deleteNotification(id) {
     return this._delete('/v2.0/notification-methods/' + id)
       .then(resp => null)
       .catch(err => { throw err; });
   }
 
-  
+
   _delete(path, params) {
     return this._request('DELETE', path, params, null);
   };
-  
+
   _get(path, params) {
     return this._request('GET', path, params, null);
   };
@@ -167,7 +185,7 @@ export default class MonascaClient {
     if (this.ds) {
       return Promise.resolve(this.ds);
     }
-    
+
     return this.backendSrv.get("api/plugins/monasca-app/settings")
       .then(response => {
 	if (!response.jsonData || !response.jsonData.datasourceName) {
@@ -182,10 +200,10 @@ export default class MonascaClient {
       })
       .catch(err => { throw err; });
   }
-  
+
   _request(method, path, params, data) {
     return this._getDataSource().then(data_source => {
-      
+
       var headers = {
 	'Content-Type': 'application/json',
 	'X-Auth-Token': data_source.token
@@ -224,6 +242,5 @@ export default class MonascaClient {
     }).catch(err => { throw err; });
   };
 
-  
-}
 
+}

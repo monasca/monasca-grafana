@@ -1,5 +1,6 @@
 /*
  *   Copyright 2017 StackHPC
+ *   (C) Copyright 2017 Hewlett Packard Enterprise Development LP
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -31,7 +32,7 @@ export class OverviewPageCtrl {
 
     this.totals = null;
     this.loadTotals();
-    
+
     this.loadAlarmSets();
   }
 
@@ -52,11 +53,11 @@ export class OverviewPageCtrl {
       });
 
       this.totals = totals;
-      
+
     }).catch(err => {
       this.alertSrv.set("Failed to get alarm total counts.", err.message, 'error', 10000);
     });
-  }  
+  }
 
   loadAlarmSets() {
     this.monasca.countAlarms(['state', 'dimension_name', 'dimension_value']).then(data => {
@@ -66,7 +67,7 @@ export class OverviewPageCtrl {
       var col_dim_value = data.columns.indexOf('dimension_value');
 
       var counts = {};
-      
+
       data.counts.forEach(row => {
 	var dim_name = row[col_dim_name];
 	var dim_value = row[col_dim_value];
@@ -95,7 +96,7 @@ export class OverviewPageCtrl {
 	  dimension: 'hostname',
 	  entities: entities.hostname },
       ];
-    
+
     }).catch(err => {
       this.alertSrv.set("Failed to get alarm counts.", err.message, 'error', 10000);
       this.loadFailed = true;

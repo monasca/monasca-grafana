@@ -1,5 +1,6 @@
 <!--
    Copyright 2017 StackHPC
+	 (C) Copyright 2017 Hewlett Packard Enterprise Development LP
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -47,7 +48,7 @@
       <div class="gf-form">
         <label class="gf-form-label max-width-11">Metric Dimensions</label>
       </div>
-      <div class="gf-form" ng-repeat="filter in ctrl.filters track by $index">
+      <div class="gf-form" ng-repeat="filter in ctrl.metricFilters track by $index">
         <input
            type="text"
            class="gf-form-input max-width-7"
@@ -77,13 +78,13 @@
       </div>
 		<div>
 			<label class="gf-form-label" ng-hide="ctrl.id">
-				<a class="pointer" ng-click="ctrl.removeFilter($index)"><i class="fa fa-close"></i></a>
+				<a class="pointer" ng-click="ctrl.removeMetricFilter($index)"><i class="fa fa-close"></i></a>
 			</label>
 		</div>
 
       <div class="gf-form" ng-hide="ctrl.id">
         <label class="gf-form-label">
-          <a class="pointer" ng-click="ctrl.addFilter()"><i class="fa fa-plus"></i></a>
+          <a class="pointer" ng-click="ctrl.addMetricFilter()"><i class="fa fa-plus"></i></a>
         </label>
       </div>
 
@@ -93,7 +94,7 @@
 			<div class="gf-form">
 				<label class="gf-form-label max-width-9">Alarm State</label>
 			</div>
-			<div class="gf-form-select-wrapper" ng-repeat="filter2 in ctrl.filters2 track by $index">
+			<div class="gf-form-select-wrapper" ng-repeat="filter2 in ctrl.stateFilters track by $index">
 				<select
 					 class="gf-form-input"
 					 placeholder="OK"
@@ -106,14 +107,14 @@
 
 			<div class="gf-form" ng-hide="ctrl.id">
 				<label class="gf-form-label" style="margin-right:0;">
-					<a class="pointer" ng-click="ctrl.removeFilter2($index)"><i class="fa fa-close"></i></a>
+					<a class="pointer" ng-click="ctrl.removeStateFilter($index)"><i class="fa fa-close"></i></a>
 				</label>
 
 			</div>
 
 			<div class="gf-form" ng-hide="ctrl.id">
 				<label class="gf-form-label">
-					<a class="pointer" ng-click="ctrl.addFilter2()"><i class="fa fa-plus"></i></a>
+					<a class="pointer" ng-click="ctrl.addStateFilter()"><i class="fa fa-plus"></i></a>
 				</label>
 
 			</div>
@@ -125,7 +126,7 @@
 			<div class="gf-form">
 				<label class="gf-form-label max-width-9">Alarm Severity</label>
 			</div>
-			<div class="gf-form-select-wrapper" ng-repeat="filter3 in ctrl.filters3 track by $index">
+			<div class="gf-form-select-wrapper" ng-repeat="filter3 in ctrl.severityFilters track by $index">
 				<select
 					 class="gf-form-input"
 					 placeholder="OK"
@@ -138,14 +139,14 @@
 
 			<div class="gf-form" ng-hide="ctrl.id">
 				<label class="gf-form-label" style="margin-right:0;">
-					<a class="pointer" ng-click="ctrl.removeFilter3($index)"><i class="fa fa-close"></i></a>
+					<a class="pointer" ng-click="ctrl.removeSeverityFilter($index)"><i class="fa fa-close"></i></a>
 				</label>
 
 			</div>
 
 			<div class="gf-form" ng-hide="ctrl.id">
 				<label class="gf-form-label">
-					<a class="pointer" ng-click="ctrl.addFilter3()"><i class="fa fa-plus"></i></a>
+					<a class="pointer" ng-click="ctrl.addSeverityFilter()"><i class="fa fa-plus"></i></a>
 				</label>
 
 			</div>
@@ -194,15 +195,15 @@
       </td>
 
       <td style="text-align: center;">
-	<!--
-	<a href="plugins/monasca-app/page/alarm-history?id={{alarm.id}}">
+
+	<a href="dashboard/script/graph_series.js?rows=3&name=myName">
 	  <i ng-class="icon" class="fa fa-line-chart" bs-tooltip="'Graph Series'"></i>
 	</a>
 
 	<a href="plugins/monasca-app/page/alarm-history?id={{alarm.id}}">
 	  <i ng-class="icon" class="fa fa-list-alt" bs-tooltip="'Show Alarm History'"></i>
 	</a>
-	-->
+
 	<a href="plugins/monasca-app/page/edit-alarm-definition?id={{alarm.alarm_definition.id}}">
 	  <i ng-class="icon" class="icon-gf icon-gf-settings" bs-tooltip="'Edit Alarm Definition'"></i>
 	</a>

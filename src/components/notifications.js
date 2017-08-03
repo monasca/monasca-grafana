@@ -29,7 +29,7 @@ export class NotificationsPageCtrl {
     this.notifications = [];
     this.loadNotifications();
   }
-  
+
   loadNotifications() {
     this.monasca.listNotifications().then(notifications => {
       this.notifications = notifications;
@@ -46,18 +46,18 @@ export class NotificationsPageCtrl {
     if (index !== -1) {
       this.notifications[index].deleting = true;
     }
-  }    
+  }
 
   notificationDeleted(id) {
     var index = this.notifications.find(n => n.id === id);
     if (index !== -1) {
       this.notifications.splice(index, 1);
     }
-  }    
+  }
 
   confirmDeleteNotification(id) {
     this.setNotificationDeleting(id, true);
-    
+
     this.monasca.deleteNotification(id).then(() => {
       this.notificationDeleted(id);
     }).catch(err => {
