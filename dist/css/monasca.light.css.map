@@ -1,0 +1,12 @@
+{
+	"version": 3,
+	"file": "monasca.light.css",
+	"sources": [
+		"../../src/sass/monasca.light.scss",
+		"../../../../../public/sass/_variables.light.scss",
+		"../../../../../public/sass/_variables.scss",
+		"../../src/sass/monasca.scss"
+	],
+	"mappings": "AGAA,AAAA,eAAe,CAAC;EACd,SAAS,EAAE,IAAK,GACjB",
+	"names": []
+}

@@ -1,5 +1,6 @@
 /*
  *   Copyright 2017 StackHPC
+ *   (C) Copyright 2017 Hewlett Packard Enterprise Development LP
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -22,6 +23,12 @@ import {EditNotificationPageCtrl} from './components/edit_notification';
 import {EditAlarmDefinitionPageCtrl} from './components/edit_alarm_definition';
 import {MonascaAppConfigCtrl} from './components/config';
 import {AlarmHistoryPageCtrl} from './components/alarm_history';
+import {loadPluginCss} from 'app/plugins/sdk';
+
+loadPluginCss({
+  dark: 'plugins/monasca-app/css/monasca.dark.css',
+  light: 'plugins/monasca-app/css/monasca.light.css'
+});
 
 export {
   MonascaAppConfigCtrl as ConfigCtrl,

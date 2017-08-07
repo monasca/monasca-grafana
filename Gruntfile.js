@@ -48,7 +48,19 @@ module.exports = function(grunt) {
       },
     },
 
+    sass: {
+      options: {
+        sourceMap: true
+      },
+      dist: {
+        files: {
+          "dist/css/monasca.dark.css": "src/sass/monasca.dark.scss",
+          "dist/css/monasca.light.css": "src/sass/monasca.light.scss",
+        }
+      }
+    }
+
   });
 
-  grunt.registerTask('default', ['clean', 'copy', 'babel']);
+  grunt.registerTask('default', ['clean', 'sass', 'copy', 'babel']);
 };
