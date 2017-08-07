@@ -7,6 +7,6 @@
 		"../../../../../public/sass/_variables.scss",
 		"../../src/sass/monasca.scss"
 	],
-	"mappings": "AGAA,AAAA,eAAe,CAAC;EACd,SAAS,EAAE,IAAK,GACjB",
+	"mappings": "AGAA,AAAA,eAAe,CAAC;EAAE,SAAS,EAAE,IAAK,GAAI",
 	"names": []
 }
