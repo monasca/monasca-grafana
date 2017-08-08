@@ -25,7 +25,7 @@
     <i class="fa fa-list-alt"></i>
     Back to Alarm Definitions
   </a>
-  
+
   <a
      ng-if="!ctrl.updating && !ctrl.updateFailed && ctrl.id"
      class="btn btn-danger"
@@ -54,8 +54,20 @@
 
 <div ng-if="!ctrl.updating && !ctrl.updateFailed">
 
+  <div ng-if="!ctrl.id">
+    <h3>Criteria</h3>
+      <p>
+        - The Name field is used to identify the alarm definition.<br>
+        - The Description field can be used to describe the alarm definition's purpose.<br>
+        - Each alarm definition is defined by an expression.
+        (e.g. max(pod.health_status) < 0)<br>
+        - The Severity field allows the importance of the alarm definition to be specified.<br>
+        <br>
+      </p>
+  </div>
+
   <form name="alarmDefinitionForm">
-    
+
     <div class="gf-form-group">
 
       <div class="gf-form-inline">
@@ -64,7 +76,7 @@
           <input class="gf-form-input max-width-21" type="text" ng-model="ctrl.id" ng-disabled="true">
 	</div>
       </div>
-      
+
       <div class="gf-form-inline">
 	<div class="gf-form gf-form--right-margin">
           <span class="gf-form-label width-7">Name</span>
@@ -111,8 +123,8 @@
           </label>
         </div>
       </div>
-      
-      <div class="gf-form-inline">      
+
+      <div class="gf-form-inline">
 	<div class="gf-form gf-form--right-margin">
           <span class="gf-form-label width-7">Severity</span>
 
@@ -128,7 +140,7 @@
 
 	</div>
       </div>
-            
+
       <br>
       <div class="gf-form-buttons-row">
 	<button
@@ -155,5 +167,5 @@
     </div>
 
   </form>
-  
+
 </div>
