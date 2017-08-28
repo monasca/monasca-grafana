@@ -41,7 +41,7 @@ export class AlarmsPageCtrl {
     console.log(temp);
 
     this.currentPage = 0;
-    this.pageSize = 2;
+    this.pageSize = 20;
     this.pageCount = Math.ceil(this.alarmCount / this.pageSize);
     console.log(this.pageCount);
     this.slicedAlarms = [];

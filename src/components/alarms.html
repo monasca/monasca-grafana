@@ -194,14 +194,18 @@
 	</div>
       </td>
 
-	 <button class="btn btn-inverse" ng-disabled="ctrl.currentPage == 0" ng-click="ctrl.sliceReverse();ctrl.currentPage=ctrl.currentPage-1">
-		 Previous
-	 </button>
-	 {{ctrl.currentPage+1}}/{{ctrl.numberOfPages()}}
-	 <button class="btn btn-inverse" ng-disabled="ctrl.currentPage >= (ctrl.alarms.length-1)/ctrl.pageSize - 1"
-		 ng-click="ctrl.sliceAlarms();ctrl.currentPage=ctrl.currentPage+1">
-		 Next
-	 </button>
+<!--Page Size-->
+<div class="gf-form" style="float:right;">
+	<label class="gf-form-label max-width-6">Page Size</label>
+	<div class="gf-form-select-wrapper">
+		<select
+			 class="gf-form-input"
+			 placeholder="20"
+			 ng-model="ctrl.pageSize"
+			 ng-options="f for f in ['5', '10', '20']">
+		 </select>
+	 </div>
+</div>
 
       <td style="text-align: center;">
 
@@ -228,6 +232,19 @@
       </td>
 
     </tr>
+
   </table>
+
+	<!--Paginator-->
+<div style="padding-top: 25px">
+	 <button class="btn btn-inverse" ng-disabled="ctrl.currentPage == 0" ng-click="ctrl.sliceReverse();ctrl.currentPage=ctrl.currentPage-1">
+		 Previous
+	 </button>
+	 {{ctrl.currentPage+1}}/{{ctrl.numberOfPages()}}
+	 <button class="btn btn-inverse" ng-disabled="ctrl.currentPage >= (ctrl.alarms.length-1)/ctrl.pageSize - 1"
+		 ng-click="ctrl.sliceAlarms();ctrl.currentPage=ctrl.currentPage+1">
+		 Next
+	 </button>
+</div>
 
 </div>
