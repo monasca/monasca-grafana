@@ -54,7 +54,7 @@
 
 <div ng-if="!ctrl.updating && !ctrl.updateFailed">
 
-  <div ng-if="!ctrl.id">
+  <div>
     <h3>Criteria</h3>
       <p>
         - The Name field is used to identify the alarm definition.<br>
@@ -62,6 +62,7 @@
         - Each alarm definition is defined by an expression.
         (e.g. max(pod.health_status) < 0)<br>
         - The Severity field allows the importance of the alarm definition to be specified.<br>
+        <br>
       </p>
   </div>
 

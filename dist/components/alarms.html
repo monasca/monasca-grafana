@@ -171,7 +171,7 @@
       <th></th>
     </tr>
 
-    <tr ng-repeat="alarm in ctrl.alarms">
+    <tr ng-repeat="alarm in ctrl.slicedAlarms | limitTo:ctrl.pageSize">
       <td style="font-size: 100%;">
 	<i ng-if="alarm.state=='ALARM'"
 	   class="icon-gf icon-gf-critical alert-state-critical"
@@ -193,6 +193,15 @@
 	  <br />
 	</div>
       </td>
+
+	 <button class="btn btn-inverse" ng-disabled="ctrl.currentPage == 0" ng-click="ctrl.sliceReverse();ctrl.currentPage=ctrl.currentPage-1">
+		 Previous
+	 </button>
+	 {{ctrl.currentPage+1}}/{{ctrl.numberOfPages()}}
+	 <button class="btn btn-inverse" ng-disabled="ctrl.currentPage >= (ctrl.alarms.length-1)/ctrl.pageSize - 1"
+		 ng-click="ctrl.sliceAlarms();ctrl.currentPage=ctrl.currentPage+1">
+		 Next
+	 </button>
 
       <td style="text-align: center;">
 

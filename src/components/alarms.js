@@ -19,6 +19,7 @@ import config from 'app/core/config';
 import appEvents from 'app/core/app_events';
 import MonascaClient from './monasca_client';
 
+
 export class AlarmsPageCtrl {
 
   /** @ngInject */
@@ -33,6 +34,21 @@ export class AlarmsPageCtrl {
     this.totalFilters = [];
 
     this.editFilterIndex = -1;
+    this.alarmCount = 0;
+
+    //Get alarm count
+    var temp = this.monasca.countAlarms();
+    console.log(temp);
+
+    this.currentPage = 0;
+    this.pageSize = 20;
+    this.pageCount = Math.ceil(this.alarmCount / this.pageSize);
+    console.log(this.pageCount);
+    this.slicedAlarms = [];
+
+    this.numberOfPages = function(){
+      return Math.ceil(this.alarms.length/this.pageSize);
+    }
 
     if ('dimensions' in $location.search()) {
       this.metricFilters = $location.search().dimensions
@@ -146,12 +162,37 @@ export class AlarmsPageCtrl {
 
     this.monasca.listAlarms(this.totalFilters).then(alarms => {
       this.alarms = alarms;
+      this.slicedAlarms = alarms;
     }).catch(err => {
       this.alertSrv.set("Failed to get alarms.", err.message, 'error', 10000);
       this.loadFailed = true;
     }).then(() => {
       this.pageLoaded = true;
     });
+  }
+
+  sliceAlarms(){
+    if(this.currentPage == 0){
+      this.slicedAlarms = this.alarms.slice(20,40);
+    }
+    if(this.currentPage == 1){
+      this.slicedAlarms = this.alarms.slice(40,60);
+    }
+    if(this.currentPage == 2){
+      this.slicedAlarms = this.alarms.slice(60,80);
+    }
+  }
+
+  sliceReverse(){
+    if(this.currentPage == 0){
+      this.slicedAlarms = this.alarms.slice(20,40);
+    }
+    if(this.currentPage == 1){
+      this.slicedAlarms = this.alarms.slice(0,20);
+    }
+    if(this.currentPage == 2){
+      this.slicedAlarms = this.alarms.slice(20,40);
+    }
   }
 
   setAlarmDeleting(id, deleting) {

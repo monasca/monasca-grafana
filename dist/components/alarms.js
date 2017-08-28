@@ -92,6 +92,21 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
           this.totalFilters = [];
 
           this.editFilterIndex = -1;
+          this.alarmCount = 0;
+
+          //Get alarm count
+          var temp = this.monasca.countAlarms();
+          console.log(temp);
+
+          this.currentPage = 0;
+          this.pageSize = 20;
+          this.pageCount = Math.ceil(this.alarmCount / this.pageSize);
+          console.log(this.pageCount);
+          this.slicedAlarms = [];
+
+          this.numberOfPages = function () {
+            return Math.ceil(this.alarms.length / this.pageSize);
+          };
 
           if ('dimensions' in $location.search()) {
             this.metricFilters = $location.search().dimensions.split(',').map(function (kv) {
@@ -219,12 +234,39 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
 
             this.monasca.listAlarms(this.totalFilters).then(function (alarms) {
               _this.alarms = alarms;
+              _this.slicedAlarms = alarms;
             }).catch(function (err) {
               _this.alertSrv.set("Failed to get alarms.", err.message, 'error', 10000);
               _this.loadFailed = true;
             }).then(function () {
               _this.pageLoaded = true;
             });
+          }
+        }, {
+          key: 'sliceAlarms',
+          value: function sliceAlarms() {
+            if (this.currentPage == 0) {
+              this.slicedAlarms = this.alarms.slice(20, 40);
+            }
+            if (this.currentPage == 1) {
+              this.slicedAlarms = this.alarms.slice(40, 60);
+            }
+            if (this.currentPage == 2) {
+              this.slicedAlarms = this.alarms.slice(60, 80);
+            }
+          }
+        }, {
+          key: 'sliceReverse',
+          value: function sliceReverse() {
+            if (this.currentPage == 0) {
+              this.slicedAlarms = this.alarms.slice(20, 40);
+            }
+            if (this.currentPage == 1) {
+              this.slicedAlarms = this.alarms.slice(0, 20);
+            }
+            if (this.currentPage == 2) {
+              this.slicedAlarms = this.alarms.slice(20, 40);
+            }
           }
         }, {
           key: 'setAlarmDeleting',
