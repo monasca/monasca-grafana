@@ -99,7 +99,7 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
           console.log(temp);
 
           this.currentPage = 0;
-          this.pageSize = 20;
+          this.pageSize = 2;
           this.pageCount = Math.ceil(this.alarmCount / this.pageSize);
           console.log(this.pageCount);
           this.slicedAlarms = [];
@@ -245,27 +245,23 @@ System.register(['app/core/config', 'app/core/app_events', './monasca_client'], 
         }, {
           key: 'sliceAlarms',
           value: function sliceAlarms() {
-            if (this.currentPage == 0) {
-              this.slicedAlarms = this.alarms.slice(20, 40);
-            }
-            if (this.currentPage == 1) {
-              this.slicedAlarms = this.alarms.slice(40, 60);
-            }
-            if (this.currentPage == 2) {
-              this.slicedAlarms = this.alarms.slice(60, 80);
+            for (var i = 0; i < this.alarms.length; i++) {
+              if (this.currentPage == i) {
+                var firstIndex = this.pageSize * (i + 1);
+                var secondIndex = this.pageSize * (i + 2);
+                this.slicedAlarms = this.alarms.slice(firstIndex, secondIndex);
+              }
             }
           }
         }, {
           key: 'sliceReverse',
           value: function sliceReverse() {
-            if (this.currentPage == 0) {
-              this.slicedAlarms = this.alarms.slice(20, 40);
-            }
-            if (this.currentPage == 1) {
-              this.slicedAlarms = this.alarms.slice(0, 20);
-            }
-            if (this.currentPage == 2) {
-              this.slicedAlarms = this.alarms.slice(20, 40);
+            for (var i = 0; i < this.alarms.length; i++) {
+              if (this.currentPage == i) {
+                var firstIndex = this.pageSize * (i - 1);
+                var secondIndex = this.pageSize * i;
+                this.slicedAlarms = this.alarms.slice(firstIndex, secondIndex);
+              }
             }
           }
         }, {
