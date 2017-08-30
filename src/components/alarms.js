@@ -28,13 +28,14 @@ export class AlarmsPageCtrl {
     this.monasca = new MonascaClient(backendSrv, datasourceSrv);
 
     this.metricFilters = [];
-    this.stateFilters = [];
+    this.stateFilters = [{state:""}];
     this.severityFilters = [];
     this.defIdFilters = [];
     this.totalFilters = [];
 
     this.editFilterIndex = -1;
     this.alarmCount = 0;
+    this.show = 1;
 
     //Get alarm count
     var temp = this.monasca.countAlarms();
@@ -153,7 +154,7 @@ export class AlarmsPageCtrl {
         this.totalFilters.push(this.severityFilters[i]);
       }
     }
-    if (this.defIdFilters){
+    if (this.defIdFilters.length > 0){
       var temp = {};
       temp.alarm_definition_id = this.defIdFilters[0];
       this.totalFilters.push(temp);
