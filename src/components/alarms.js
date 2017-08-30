@@ -38,12 +38,11 @@ export class AlarmsPageCtrl {
 
     //Get alarm count
     var temp = this.monasca.countAlarms();
-    console.log(temp);
+
 
     this.currentPage = 0;
     this.pageSize = 20;
     this.pageCount = Math.ceil(this.alarmCount / this.pageSize);
-    console.log(this.pageCount);
     this.slicedAlarms = [];
 
     this.numberOfPages = function(){

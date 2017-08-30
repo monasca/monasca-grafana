@@ -161,14 +161,28 @@
   </div>
 </form>
 
+<!--Page Size-->
+<div class="gf-form" style="float:right;">
+	<label class="gf-form-label max-width-9">Alarms per page: </label>
+	<div class="gf-form-select-wrapper">
+		<select
+			 class="gf-form-input"
+			 placeholder="20"
+			 ng-model="ctrl.pageSize"
+			 ng-options="f for f in ['20', '10', '5']">
+		 </select>
+	 </div>
+</div>
+
 <div ng-if="ctrl.pageLoaded && !ctrl.updateFailed && ctrl.alarms.length > 0">
 
   <table class="grafana-options-table">
     <tr class="muted">
-      <th></th>
+      <th>State</th>
       <th>Name</th>
       <th>Metric</th>
-      <th style="text-align: center">Actions</th>
+			<th>Severity</th>
+    	<th style="text-align: center">Actions</th>
       <th></th>
     </tr>
 
@@ -188,25 +202,16 @@
       <td>
 	<div ng-repeat="metric in alarm.metrics" bs-tooltip="'{{metric.name}}<br />{{metric.dimensions}}'">
 	  {{metric.name}}
-	  <span style="font-style: italic; font-size: 80%;" ng-repeat="dimension in metric.dimensions">
-	    {{dimension}}
+	  <span style="font-style: italic; font-size: 80%;">
+	    {{metric.dimensions}}
 	  </span>
 	  <br />
 	</div>
       </td>
 
-<!--Page Size-->
-<div class="gf-form" style="float:right;">
-	<label class="gf-form-label max-width-9">Alarms per page: </label>
-	<div class="gf-form-select-wrapper">
-		<select
-			 class="gf-form-input"
-			 placeholder="20"
-			 ng-model="ctrl.pageSize"
-			 ng-options="f for f in ['20', '10', '5']">
-		 </select>
-	 </div>
-</div>
+<td>
+{{alarm.alarm_definition.severity}}
+</td>
 
       <td style="text-align: center;">
 
