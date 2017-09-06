@@ -87,7 +87,6 @@ export default class MonascaClient {
           params.alarm_definition_id = dimensions[i].alarm_definition_id;
         }
       }
-      console.log(params);
     return this._get('/v2.0/alarms/', params)
       .then(resp => resp.data.elements)
       .catch(err => { throw err; });
