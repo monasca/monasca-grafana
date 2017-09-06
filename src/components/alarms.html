@@ -48,7 +48,7 @@
       <div class="gf-form">
         <label class="gf-form-label max-width-11">Metric Dimensions</label>
       </div>
-      <div class="gf-form" ng-repeat="filter in ctrl.metricFilters track by $index">
+      <div class="gf-form" style="padding-left:2px;" ng-repeat="filter in ctrl.metricFilters track by $index">
         <input
            type="text"
            class="gf-form-input max-width-7"
@@ -89,40 +89,9 @@
       </div>
 
     </div>
-		<!--State Form-->
-		<div class="gf-form-inline">
-			<div class="gf-form">
-				<label class="gf-form-label max-width-9">Alarm State</label>
-			</div>
-			<div class="gf-form-select-wrapper" ng-repeat="filter2 in ctrl.stateFilters track by $index">
-				<select
-					 class="gf-form-input"
-					 placeholder="OK"
-					 ng-model="filter2.state"
-		 		 	 ng-disabled="ctrl.id"
-					 ng-options="f for f in ['UNDETERMINED', 'OK', 'ALARM']">
-				</select>
-
-			</div>
-
-			<div class="gf-form" ng-hide="ctrl.id">
-				<label class="gf-form-label" style="margin-right:0;">
-					<a class="pointer" ng-click="ctrl.removeStateFilter($index)"><i class="fa fa-close"></i></a>
-				</label>
-
-			</div>
-
-			<div class="gf-form" ng-hide="ctrl.id">
-				<label class="gf-form-label">
-					<a class="pointer" ng-click="ctrl.addStateFilter()"><i class="fa fa-plus"></i></a>
-				</label>
-
-			</div>
-
-		</div>
 
 		<!--Severity Form-->
-		<div class="gf-form-inline">
+		<div class="gf-form-inline" style="padding-bottom:2px;padding-top:2px;">
 			<div class="gf-form">
 				<label class="gf-form-label max-width-9">Alarm Severity</label>
 			</div>
@@ -138,7 +107,7 @@
 			</div>
 
 			<div class="gf-form" ng-hide="ctrl.id">
-				<label class="gf-form-label" style="margin-right:0;">
+				<label class="gf-form-label">
 					<a class="pointer" ng-click="ctrl.removeSeverityFilter($index)"><i class="fa fa-close"></i></a>
 				</label>
 
@@ -152,6 +121,25 @@
 			</div>
 
 		</div>
+
+		<!--State Form-->
+		<div class="gf-form-inline">
+			<div class="gf-form">
+				<label class="gf-form-label max-width-9">Alarm State</label>
+			</div>
+			<div class="gf-form-select-wrapper" ng-repeat="filter2 in ctrl.stateFilters track by ctrl.show">
+				<select
+					 class="gf-form-input"
+					 placeholder="OK"
+					 ng-model="filter2.state"
+		 		 	 ng-disabled="ctrl.id"
+					 ng-options="f for f in ['', 'UNDETERMINED', 'OK', 'ALARM']">
+				</select>
+
+			</div>
+
+		</div>
+
 
 		<!--Apply Button-->
 		<div style="padding-top:20px">

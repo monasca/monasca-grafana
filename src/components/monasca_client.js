@@ -48,13 +48,41 @@ export default class MonascaClient {
 
   listAlarms(dimensions) {
     var params = {};
+    params.metric_dimensions = "";
+    params.state = "";
+    params.severity = "";
+
     if (dimensions) {
       for(var i = 0; i < dimensions.length; i++){
         if(dimensions[i].metric_dimensions){
-          params.metric_dimensions = dimensions[i].metric_dimensions;
+          if(params.metric_dimensions == ""){
+            params.metric_dimensions = dimensions[i].metric_dimensions;
+          }
+          else{
+            params.metric_dimensions += "," + dimensions[i].metric_dimensions;
+          }
+
         }
-        if(dimensions[i].state){ params.state = dimensions[i].state; }
-        if(dimensions[i].severity){ params.severity = dimensions[i].severity; }
+
+        if(dimensions[i].state){
+          if(params.state == ""){
+            params.state = dimensions[i].state;
+          }
+          else{
+            params.state += "|" + dimensions[i].state;
+          }
+
+        }
+
+        if(dimensions[i].severity){
+          if(params.severity == ""){
+            params.severity = dimensions[i].severity;
+          }
+          else{
+            params.severity += "|" + dimensions[i].severity;
+          }
+
+        }
         if(dimensions[i].alarm_definition_id){
           params.alarm_definition_id = dimensions[i].alarm_definition_id;
         }
