@@ -30,6 +30,8 @@ export class AlarmsPageCtrl {
     this.metricFilters = [];
     this.stateFilters = [{state:""}];
     this.severityFilters = [];
+    this.sortByKeys = [];
+    this.sortByValues = [];
     this.defIdFilters = [];
     this.totalFilters = [];
 
@@ -118,6 +120,25 @@ export class AlarmsPageCtrl {
     this.severityFilters.splice(index, 1);
   }
 
+  //Sort by Filter add/remove
+  addSortKeyFilter() {
+    this.sortByKeys.push({});
+  }
+
+  removeSortKeyFilter(index) {
+    var filter = this.sortByKeys[index];
+    this.sortByKeys.splice(index, 1);
+  }
+
+  addSortValueFilter() {
+    this.sortByValues.push({});
+  }
+
+  removeSortValueFilter(index) {
+    var filter = this.sortByValues[index];
+    this.sortByValues.splice(index, 1);
+  }
+
   applyFilter() {
     // Check filter is complete before applying.
     if (this.metricFilters.every(function (f){
@@ -158,7 +179,17 @@ export class AlarmsPageCtrl {
       var temp = {};
       temp.alarm_definition_id = this.defIdFilters[0];
       this.totalFilters.push(temp);
+    }
+    if(this.sortByKeys.length > 0){
+      if(this.sortByValues.length > 0){
+        var temp = {};
+        for(var i = 0; i < this.sortByKeys.length; i++){
+          temp.sort_by = "'" + this.sortByKeys[i].key + " " + this.sortByValues[i].value + "'";
+          this.totalFilters.push(temp);
+          console.log(this.totalFilters);
+        }
       }
+    }
 
     this.monasca.listAlarms(this.totalFilters).then(alarms => {
       this.alarms = alarms;
