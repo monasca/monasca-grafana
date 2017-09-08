@@ -184,7 +184,12 @@ export class AlarmsPageCtrl {
       if(this.sortByValues.length > 0){
         var temp = {};
         for(var i = 0; i < this.sortByKeys.length; i++){
-          temp.sort_by = "'" + this.sortByKeys[i].key + " " + this.sortByValues[i].value + "'";
+          if(this.sortByValues[i].value != undefined){
+            temp.sort_by = "'" + this.sortByKeys[i].key + " " + this.sortByValues[i].value + "'";
+          }
+          else{
+            temp.sort_by = this.sortByKeys[i].key;
+          }
           this.totalFilters.push(temp);
           console.log(this.totalFilters);
         }

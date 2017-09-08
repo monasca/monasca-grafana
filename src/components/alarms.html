@@ -143,27 +143,36 @@
 			<div class="gf-form">
 				<label class="gf-form-label max-width-9">Sort By</label>
 			</div>
-			<div class="gf-form-select-wrapper" ng-repeat="filter4 in ctrl.sortByKeys track by $index">
-				<select
-					 class="gf-form-input"
-					 placeholder="OK"
-					 ng-model="filter4.key"
-					 ng-disabled="ctrl.id"
-					 ng-options="f for f in ['state', 'severity', 'alarm_id', 'alarm_definition_id',
-					 'alarm_definition_name', 'lifecycle_state', 'link', 'state_updated_timestamp',
-					 'updated_timestamp', 'created_timestamp']">
-				</select>
-			</div>
+			<div class="gf-form" ng-repeat="filter4 in ctrl.sortByKeys track by $index">
 
-				<div class="gf-form-select-wrapper" ng-repeat="filter5 in ctrl.sortByValues track by $index">
-					<select
-						 class="gf-form-input"
-						 placeholder="OK"
-						 ng-model="filter5.value"
-						 ng-disabled="ctrl.id"
-						 ng-options="f for f in ['asc', 'desc']">
-					</select>
-				</div>
+				<input ng-hide="true">
+					<div class="gf-form-select-wrapper">
+						<select
+							 class="gf-form-input max-width-7"
+							 placeholder="OK"
+							 ng-model="filter4.key"
+							 ng-disabled="ctrl.id"
+							 ng-options="f for f in ['state', 'severity', 'alarm_id', 'alarm_definition_id',
+							 'alarm_definition_name', 'lifecycle_state', 'link', 'state_updated_timestamp',
+							 'updated_timestamp', 'created_timestamp']"
+							 required style="margin-left:0;"></select>
+				 </div>
+				</input>
+
+
+				<input ng-hide="true">
+					<div class="gf-form-select-wrapper">
+						<select
+							 class="gf-form-input max-width-7"
+							 placeholder="OK"
+							 ng-model="filter4.value"
+							 ng-disabled="ctrl.id"
+							 ng-options="f for f in ['asc', 'desc']"
+							 required style="margin-right:0;"></select>
+						 </div>
+				 </input>
+
+			 </div>
 
 				<div class="gf-form" ng-hide="ctrl.id">
 					<label class="gf-form-label">
@@ -175,7 +184,7 @@
 
 				<div class="gf-form" ng-hide="ctrl.id">
 					<label class="gf-form-label">
-						<a class="pointer" ng-click="ctrl.addSortKeyFilter();ctrl.addSortValueFilter();">
+						<a class="pointer" ng-click="ctrl.addSortKeyFilter()">
 							<i class="fa fa-plus"></i></a>
 					</label>
 
