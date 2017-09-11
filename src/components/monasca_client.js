@@ -51,6 +51,7 @@ export default class MonascaClient {
     params.metric_dimensions = "";
     params.state = "";
     params.severity = "";
+    params.sort_by = "";
 
     if (dimensions) {
       for(var i = 0; i < dimensions.length; i++){
@@ -83,8 +84,18 @@ export default class MonascaClient {
           }
 
         }
+
         if(dimensions[i].alarm_definition_id){
           params.alarm_definition_id = dimensions[i].alarm_definition_id;
+        }
+
+        if(dimensions[i].sort_by){
+          if(params.sort_by == ""){
+            params.sort_by = dimensions[i].sort_by;
+          }
+          else{
+            params.sort_by += "," + dimensions[i].sort_by;
+          }
         }
       }
     return this._get('/v2.0/alarms/', params)

@@ -143,7 +143,7 @@
 			<div class="gf-form">
 				<label class="gf-form-label max-width-9">Sort By</label>
 			</div>
-			<div class="gf-form" ng-repeat="filter4 in ctrl.sortByKeys track by $index">
+			<div class="gf-form" ng-repeat="filter4 in ctrl.sortByFilters track by $index">
 
 				<input ng-hide="true">
 					<div class="gf-form-select-wrapper">
@@ -176,15 +176,15 @@
 
 				<div class="gf-form" ng-hide="ctrl.id">
 					<label class="gf-form-label">
-						<a class="pointer" ng-click="ctrl.removeSortValueFilter($index);
-						ctrl.removeSortKeyFilter($index)"><i class="fa fa-close"></i></a>
+						<a class="pointer" ng-click="ctrl.removeSortByFilter($index);
+						ctrl.removeSortByFilter($index)"><i class="fa fa-close"></i></a>
 					</label>
 
 				</div>
 
 				<div class="gf-form" ng-hide="ctrl.id">
 					<label class="gf-form-label">
-						<a class="pointer" ng-click="ctrl.addSortKeyFilter()">
+						<a class="pointer" ng-click="ctrl.addSortByFilter()">
 							<i class="fa fa-plus"></i></a>
 					</label>
 

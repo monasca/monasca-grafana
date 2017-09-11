@@ -30,8 +30,7 @@ export class AlarmsPageCtrl {
     this.metricFilters = [];
     this.stateFilters = [{state:""}];
     this.severityFilters = [];
-    this.sortByKeys = [];
-    this.sortByValues = [];
+    this.sortByFilters = [];
     this.defIdFilters = [];
     this.totalFilters = [];
 
@@ -121,22 +120,13 @@ export class AlarmsPageCtrl {
   }
 
   //Sort by Filter add/remove
-  addSortKeyFilter() {
-    this.sortByKeys.push({});
+  addSortByFilter() {
+    this.sortByFilters.push({});
   }
 
-  removeSortKeyFilter(index) {
-    var filter = this.sortByKeys[index];
-    this.sortByKeys.splice(index, 1);
-  }
-
-  addSortValueFilter() {
-    this.sortByValues.push({});
-  }
-
-  removeSortValueFilter(index) {
-    var filter = this.sortByValues[index];
-    this.sortByValues.splice(index, 1);
+  removeSortByFilter(index) {
+    var filter = this.sortByFilters[index];
+    this.sortByFilters.splice(index, 1);
   }
 
   applyFilter() {
@@ -180,19 +170,18 @@ export class AlarmsPageCtrl {
       temp.alarm_definition_id = this.defIdFilters[0];
       this.totalFilters.push(temp);
     }
-    if(this.sortByKeys.length > 0){
-      if(this.sortByValues.length > 0){
+    if(this.sortByFilters.length > 0){
+      for(var i = 0; i < this.sortByFilters.length; i++){
         var temp = {};
-        for(var i = 0; i < this.sortByKeys.length; i++){
-          if(this.sortByValues[i].value != undefined){
-            temp.sort_by = "'" + this.sortByKeys[i].key + " " + this.sortByValues[i].value + "'";
-          }
-          else{
-            temp.sort_by = this.sortByKeys[i].key;
-          }
-          this.totalFilters.push(temp);
-          console.log(this.totalFilters);
+        //if asc or desc is specified
+        if(this.sortByFilters[i].value != undefined){
+          temp.sort_by = this.sortByFilters[i].key + " " + this.sortByFilters[i].value;
         }
+        else{
+          temp.sort_by = this.sortByFilters[i].key;
+        }
+
+        this.totalFilters.push(temp);
       }
     }
 
