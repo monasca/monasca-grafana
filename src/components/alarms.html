@@ -98,7 +98,6 @@
 			<div class="gf-form-select-wrapper" ng-repeat="filter3 in ctrl.severityFilters track by $index">
 				<select
 					 class="gf-form-input"
-					 placeholder="OK"
 					 ng-model="filter3.severity"
 					 ng-disabled="ctrl.id"
 					 ng-options="f for f in ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']">
@@ -130,7 +129,6 @@
 			<div class="gf-form-select-wrapper" ng-repeat="filter2 in ctrl.stateFilters track by ctrl.show">
 				<select
 					 class="gf-form-input"
-					 placeholder="OK"
 					 ng-model="filter2.state"
 		 		 	 ng-disabled="ctrl.id"
 					 ng-options="f for f in ['', 'UNDETERMINED', 'OK', 'ALARM']">
@@ -139,6 +137,59 @@
 			</div>
 
 		</div>
+
+		<!--Sort By Form-->
+		<div class="gf-form-inline" style="padding-bottom:2px;padding-top:2px;">
+			<div class="gf-form">
+				<label class="gf-form-label max-width-9">Sort By</label>
+			</div>
+			<div class="gf-form" ng-repeat="filter4 in ctrl.sortByFilters track by $index">
+
+				<input ng-hide="true">
+					<div class="gf-form-select-wrapper">
+						<select
+							 class="gf-form-input max-width-7"
+							 ng-model="filter4.key"
+							 ng-disabled="ctrl.id"
+							 ng-options="f for f in ['state', 'severity', 'alarm_id', 'alarm_definition_id',
+							 'alarm_definition_name', 'lifecycle_state', 'link', 'state_updated_timestamp',
+							 'updated_timestamp', 'created_timestamp']"
+							 required style="margin-left:0;"></select>
+				 </div>
+				</input>
+
+
+				<input ng-hide="true">
+					<div class="gf-form-select-wrapper">
+						<select
+							 class="gf-form-input max-width-7"
+							 ng-model="filter4.value"
+							 ng-disabled="ctrl.id"
+							 ng-options="f for f in ['asc', 'desc']"
+							 required style="margin-right:0;"></select>
+						 </div>
+				 </input>
+
+			 </div>
+
+				<div class="gf-form" ng-hide="ctrl.id">
+					<label class="gf-form-label">
+						<a class="pointer" ng-click="ctrl.removeSortByFilter($index);
+						ctrl.removeSortByFilter($index)"><i class="fa fa-close"></i></a>
+					</label>
+
+				</div>
+
+				<div class="gf-form" ng-hide="ctrl.id">
+					<label class="gf-form-label">
+						<a class="pointer" ng-click="ctrl.addSortByFilter()">
+							<i class="fa fa-plus"></i></a>
+					</label>
+
+				</div>
+
+
+			</div>
 
 
 		<!--Apply Button-->

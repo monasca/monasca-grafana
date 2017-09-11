@@ -30,6 +30,7 @@ export class AlarmsPageCtrl {
     this.metricFilters = [];
     this.stateFilters = [{state:""}];
     this.severityFilters = [];
+    this.sortByFilters = [];
     this.defIdFilters = [];
     this.totalFilters = [];
 
@@ -118,6 +119,16 @@ export class AlarmsPageCtrl {
     this.severityFilters.splice(index, 1);
   }
 
+  //Sort by Filter add/remove
+  addSortByFilter() {
+    this.sortByFilters.push({});
+  }
+
+  removeSortByFilter(index) {
+    var filter = this.sortByFilters[index];
+    this.sortByFilters.splice(index, 1);
+  }
+
   applyFilter() {
     // Check filter is complete before applying.
     if (this.metricFilters.every(function (f){
@@ -144,21 +155,39 @@ export class AlarmsPageCtrl {
         this.totalFilters.push(this.metricFilters[i]);
       }
     }
+
     if (this.stateFilters){
       for (var i = 0; i < this.stateFilters.length; i++){
         this.totalFilters.push(this.stateFilters[i]);
       }
     }
+
     if (this.severityFilters){
       for (var i = 0; i < this.severityFilters.length; i++){
         this.totalFilters.push(this.severityFilters[i]);
       }
     }
+
     if (this.defIdFilters.length > 0){
       var temp = {};
       temp.alarm_definition_id = this.defIdFilters[0];
       this.totalFilters.push(temp);
+    }
+    
+    if(this.sortByFilters.length > 0){
+      for(var i = 0; i < this.sortByFilters.length; i++){
+        var temp = {};
+        //if asc or desc is specified
+        if(this.sortByFilters[i].value != undefined){
+          temp.sort_by = this.sortByFilters[i].key + " " + this.sortByFilters[i].value;
+        }
+        else{
+          temp.sort_by = this.sortByFilters[i].key;
+        }
+
+        this.totalFilters.push(temp);
       }
+    }
 
     this.monasca.listAlarms(this.totalFilters).then(alarms => {
       this.alarms = alarms;
