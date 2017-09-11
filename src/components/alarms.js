@@ -155,21 +155,25 @@ export class AlarmsPageCtrl {
         this.totalFilters.push(this.metricFilters[i]);
       }
     }
+
     if (this.stateFilters){
       for (var i = 0; i < this.stateFilters.length; i++){
         this.totalFilters.push(this.stateFilters[i]);
       }
     }
+
     if (this.severityFilters){
       for (var i = 0; i < this.severityFilters.length; i++){
         this.totalFilters.push(this.severityFilters[i]);
       }
     }
+
     if (this.defIdFilters.length > 0){
       var temp = {};
       temp.alarm_definition_id = this.defIdFilters[0];
       this.totalFilters.push(temp);
     }
+    
     if(this.sortByFilters.length > 0){
       for(var i = 0; i < this.sortByFilters.length; i++){
         var temp = {};
