@@ -173,7 +173,7 @@ export class AlarmsPageCtrl {
       temp.alarm_definition_id = this.defIdFilters[0];
       this.totalFilters.push(temp);
     }
-    
+
     if(this.sortByFilters.length > 0){
       for(var i = 0; i < this.sortByFilters.length; i++){
         var temp = {};
@@ -192,6 +192,15 @@ export class AlarmsPageCtrl {
     this.monasca.listAlarms(this.totalFilters).then(alarms => {
       this.alarms = alarms;
       this.slicedAlarms = alarms;
+
+      for(var i = 0; i < this.slicedAlarms.length; i++){
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+      }
+      
+      console.log(this.slicedAlarms);
     }).catch(err => {
       this.alertSrv.set("Failed to get alarms.", err.message, 'error', 10000);
       this.loadFailed = true;
