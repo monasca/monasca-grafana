@@ -218,13 +218,14 @@
   <table class="grafana-options-table">
     <tr class="muted">
       <th>State</th>
+			<th>Severity</th>
       <th>Name</th>
       <th>Metric</th>
-			<th>Severity</th>
     	<th style="text-align: center">Actions</th>
       <th></th>
     </tr>
 
+<!--Alarm Table-->
     <tr ng-repeat="alarm in ctrl.slicedAlarms | limitTo:ctrl.pageSize">
       <td style="font-size: 100%;">
 	<i ng-if="alarm.state=='ALARM'"
@@ -237,8 +238,14 @@
 	   class="icon-gf icon-gf-nodata alert-state-pending"
 	   bs-tooltip="'UNDETERMINED'"></i>
       </td>
+
+			<td>
+			{{alarm.alarm_definition.severity}}
+			</td>
+
       <td>{{alarm.alarm_definition.name}}</td>
-      <td>
+
+			<td>
 	<div ng-repeat="metric in alarm.metrics" bs-tooltip="'{{metric.name}}<br />{{metric.dimensions}}'">
 	  {{metric.name}}
 	  <span style="font-style: italic; font-size: 80%;">
@@ -247,10 +254,6 @@
 	  <br />
 	</div>
       </td>
-
-<td>
-{{alarm.alarm_definition.severity}}
-</td>
 
       <td style="text-align: center;">
 
