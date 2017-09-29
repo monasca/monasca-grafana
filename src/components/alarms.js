@@ -193,14 +193,14 @@ export class AlarmsPageCtrl {
       this.alarms = alarms;
       this.slicedAlarms = alarms;
 
+      //Remove Z and T from timestamp
       for(var i = 0; i < this.slicedAlarms.length; i++){
         this.slicedAlarms[i].state_updated_timestamp =
           this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
         this.slicedAlarms[i].state_updated_timestamp =
           this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
       }
-      
-      console.log(this.slicedAlarms);
+
     }).catch(err => {
       this.alertSrv.set("Failed to get alarms.", err.message, 'error', 10000);
       this.loadFailed = true;
