@@ -266,6 +266,117 @@ export class AlarmsPageCtrl {
       }
     });
   }
+
+  sortByTimeAsc(){
+    this.alarms.sort(function(a,b){
+      let aYear = parseInt(a.state_updated_timestamp.substring(0,4));
+      let aMonth = parseInt(a.state_updated_timestamp.substring(5,7)) - 1;
+      let aDay = parseInt(a.state_updated_timestamp.substring(8,10));
+      let aHour = parseInt(a.state_updated_timestamp.substring(11,13));
+      let aMin = parseInt(a.state_updated_timestamp.substring(14,16));
+
+      let bYear = parseInt(b.state_updated_timestamp.substring(0,4));
+      let bMonth = parseInt(b.state_updated_timestamp.substring(5,7)) - 1;
+      let bDay = parseInt(b.state_updated_timestamp.substring(8,10));
+      let bHour = parseInt(b.state_updated_timestamp.substring(11,13));
+      let bMin = parseInt(b.state_updated_timestamp.substring(14,16));
+
+      let ad = new Date(aYear, aMonth, aDay, aHour, aMin);
+      let bd = new Date(bYear, bMonth, bDay, bHour, bMin);
+
+      console.log(a);
+
+       if(ad.getTime() > bd.getTime()){
+         return 1;
+       }
+       if(ad.getTime() < bd.getTime()) {
+         return -1;
+       }
+       if(ad.getTime() == bd.getTime()){
+         return 0;
+       }
+
+    });
+
+  }
+
+  sortByTimeDesc(){
+    this.alarms.sort(function(a,b){
+      let aYear = parseInt(a.state_updated_timestamp.substring(0,4));
+      let aMonth = parseInt(a.state_updated_timestamp.substring(5,7)) - 1;
+      let aDay = parseInt(a.state_updated_timestamp.substring(8,10));
+      let aHour = parseInt(a.state_updated_timestamp.substring(11,13));
+      let aMin = parseInt(a.state_updated_timestamp.substring(14,16));
+
+      let bYear = parseInt(b.state_updated_timestamp.substring(0,4));
+      let bMonth = parseInt(b.state_updated_timestamp.substring(5,7)) - 1;
+      let bDay = parseInt(b.state_updated_timestamp.substring(8,10));
+      let bHour = parseInt(b.state_updated_timestamp.substring(11,13));
+      let bMin = parseInt(b.state_updated_timestamp.substring(14,16));
+
+      let ad = new Date(aYear, aMonth, aDay, aHour, aMin);
+      let bd = new Date(bYear, bMonth, bDay, bHour, bMin);
+
+      console.log(a);
+
+       if(ad.getTime() > bd.getTime()){
+         return -1;
+       }
+       if(ad.getTime() < bd.getTime()) {
+         return 1;
+       }
+       if(ad.getTime() == bd.getTime()){
+         return 0;
+       }
+
+    });
+
+  }
+
+  sortByNameAsc(){
+    this.alarms.sort(function(a,b){
+      let aFirst = a.alarm_definition.name[0];
+      let bFirst = b.alarm_definition.name[0];
+
+      console.log(aFirst);
+      console.log(bFirst);
+
+       if(aFirst > bFirst){
+         return -1;
+       }
+       if(aFirst < bFirst) {
+         return 1;
+       }
+       if(aFirst == bFirst){
+         return 0;
+       }
+
+    });
+
+  }
+
+  sortByNameDesc(){
+    this.alarms.sort(function(a,b){
+      let aFirst = a.alarm_definition.name[0];
+      let bFirst = b.alarm_definition.name[0];
+
+      console.log(aFirst);
+      console.log(bFirst);
+
+       if(aFirst > bFirst){
+         return 1;
+       }
+       if(aFirst < bFirst) {
+         return -1;
+       }
+       if(aFirst == bFirst){
+         return 0;
+       }
+
+    });
+
+  }
+
 }
 
 AlarmsPageCtrl.templateUrl = 'components/alarms.html';

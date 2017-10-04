@@ -217,11 +217,45 @@
 
   <table class="grafana-options-table">
     <tr class="muted">
-      <th>State</th>
-			<th>Severity</th>
-      <th>Name</th>
-      <th>Metric</th>
-			<th>State Last Updated</th>
+      <th>
+				State
+				<a ng-click="ctrl.sortByNameDesc();">
+					<i ng-class="icon" class="fa fa-arrow-down" style="color:OrangeRed;font-size:80%;" bs-tooltip="'Descending Order'"></i>
+				</a>
+				<a ng-click="ctrl.sortByNameAsc();">
+					<i ng-class="icon" class="fa fa-arrow-up" style="color:ForestGreen;font-size:80%;" bs-tooltip="'Ascending Order'"></i>
+				</a>
+			</th>
+			<th>
+				Severity
+				<a ng-click="ctrl.sortByNameDesc();">
+					<i ng-class="icon" class="fa fa-arrow-down" style="color:OrangeRed;font-size:80%;" bs-tooltip="'Descending Order'"></i>
+				</a>
+				<a ng-click="ctrl.sortByNameAsc();">
+					<i ng-class="icon" class="fa fa-arrow-up" style="color:ForestGreen;font-size:80%;" bs-tooltip="'Ascending Order'"></i>
+				</a>
+			</th>
+      <th>
+				Name
+				<a ng-click="ctrl.sortByNameDesc();">
+					<i ng-class="icon" class="fa fa-arrow-down" style="color:OrangeRed;font-size:80%;" bs-tooltip="'Descending Order'"></i>
+				</a>
+				<a ng-click="ctrl.sortByNameAsc();">
+					<i ng-class="icon" class="fa fa-arrow-up" style="color:ForestGreen;font-size:80%;" bs-tooltip="'Ascending Order'"></i>
+				</a>
+			</th>
+      <th>
+				Metric
+			</th>
+			<th>
+				State Last Updated
+				<a ng-click="ctrl.sortByTimeDesc();">
+					<i ng-class="icon" class="fa fa-arrow-down" style="color:OrangeRed;font-size:80%;" bs-tooltip="'Descending Order'"></i>
+				</a>
+				<a ng-click="ctrl.sortByTimeAsc();">
+					<i ng-class="icon" class="fa fa-arrow-up" style="color:ForestGreen;font-size:80%;" bs-tooltip="'Ascending Order'"></i>
+				</a>
+			</th>
     	<th style="text-align: center">Actions</th>
       <th></th>
     </tr>
@@ -229,15 +263,15 @@
 <!--Alarm Table-->
     <tr ng-repeat="alarm in ctrl.slicedAlarms | limitTo:ctrl.pageSize">
       <td style="font-size: 100%;">
-	<i ng-if="alarm.state=='ALARM'"
-	   class="icon-gf icon-gf-critical alert-state-critical"
-	   bs-tooltip="'ALARM'"></i>
-	<i ng-if="alarm.state=='OK'"
-	   class="icon-gf icon-gf-online alert-state-ok"
-	   bs-tooltip="'OK'"></i>
-	<i ng-if="alarm.state=='UNDETERMINED'"
-	   class="icon-gf icon-gf-nodata alert-state-pending"
-	   bs-tooltip="'UNDETERMINED'"></i>
+				<i ng-if="alarm.state=='ALARM'"
+				   class="icon-gf icon-gf-critical alert-state-critical"
+				   bs-tooltip="'ALARM'"></i>
+				<i ng-if="alarm.state=='OK'"
+				   class="icon-gf icon-gf-online alert-state-ok"
+				   bs-tooltip="'OK'"></i>
+				<i ng-if="alarm.state=='UNDETERMINED'"
+				   class="icon-gf icon-gf-nodata alert-state-pending"
+				   bs-tooltip="'UNDETERMINED'"></i>
       </td>
 
 			<td>
@@ -287,6 +321,7 @@
     </tr>
 
   </table>
+
 
 	<!--Paginator-->
 <div style="padding-top: 25px">
