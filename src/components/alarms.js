@@ -377,6 +377,50 @@ export class AlarmsPageCtrl {
 
   }
 
+  sortBySeverityAsc(){
+    this.alarms.sort(function(a,b){
+      let aFirst = a.alarm_definition.name[0];
+      let bFirst = b.alarm_definition.name[0];
+
+      console.log(aFirst);
+      console.log(bFirst);
+
+       if(aFirst > bFirst){
+         return -1;
+       }
+       if(aFirst < bFirst) {
+         return 1;
+       }
+       if(aFirst == bFirst){
+         return 0;
+       }
+
+    });
+
+  }
+
+  sortBySeverityDesc(){
+    this.alarms.sort(function(a,b){
+      let aFirst = a.alarm_definition.name[0];
+      let bFirst = b.alarm_definition.name[0];
+
+      console.log(aFirst);
+      console.log(bFirst);
+
+       if(aFirst > bFirst){
+         return 1;
+       }
+       if(aFirst < bFirst) {
+         return -1;
+       }
+       if(aFirst == bFirst){
+         return 0;
+       }
+
+    });
+
+  }
+
 }
 
 AlarmsPageCtrl.templateUrl = 'components/alarms.html';
