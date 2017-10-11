@@ -338,9 +338,6 @@ export class AlarmsPageCtrl {
       let aFirst = a.alarm_definition.name[0];
       let bFirst = b.alarm_definition.name[0];
 
-      console.log(aFirst);
-      console.log(bFirst);
-
        if(aFirst > bFirst){
          return -1;
        }
@@ -360,9 +357,6 @@ export class AlarmsPageCtrl {
       let aFirst = a.alarm_definition.name[0];
       let bFirst = b.alarm_definition.name[0];
 
-      console.log(aFirst);
-      console.log(bFirst);
-
        if(aFirst > bFirst){
          return 1;
        }
@@ -379,19 +373,29 @@ export class AlarmsPageCtrl {
 
   sortBySeverityAsc(){
     this.alarms.sort(function(a,b){
-      let aFirst = a.alarm_definition.name[0];
-      let bFirst = b.alarm_definition.name[0];
+      let aSeverity = a.alarm_definition.severity;
+      let bSeverity = b.alarm_definition.severity;
+      let severities = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
 
-      console.log(aFirst);
-      console.log(bFirst);
+      let aVal = 0;
+      let bVal = 0;
 
-       if(aFirst > bFirst){
+      for(let i = 0; i < severities.length; i++){
+        if(aSeverity == severities[i]){
+          aVal = i;
+        }
+        if(bSeverity == severities[i]){
+          bVal = i;
+        }
+      }
+
+       if(aVal > bVal){
          return -1;
        }
-       if(aFirst < bFirst) {
+       if(aVal < bVal) {
          return 1;
        }
-       if(aFirst == bFirst){
+       if(aVal == bVal){
          return 0;
        }
 
@@ -401,25 +405,101 @@ export class AlarmsPageCtrl {
 
   sortBySeverityDesc(){
     this.alarms.sort(function(a,b){
-      let aFirst = a.alarm_definition.name[0];
-      let bFirst = b.alarm_definition.name[0];
+      let aSeverity = a.alarm_definition.severity;
+      let bSeverity = b.alarm_definition.severity;
+      let severities = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
 
-      console.log(aFirst);
-      console.log(bFirst);
+      let aVal = 0;
+      let bVal = 0;
 
-       if(aFirst > bFirst){
+      for(let i = 0; i < severities.length; i++){
+        if(aSeverity == severities[i]){
+          aVal = i;
+        }
+        if(bSeverity == severities[i]){
+          bVal = i;
+        }
+      }
+
+       if(aVal > bVal){
          return 1;
        }
-       if(aFirst < bFirst) {
+       if(aVal < bVal) {
          return -1;
        }
-       if(aFirst == bFirst){
+       if(aVal == bVal){
          return 0;
        }
 
     });
 
   }
+
+  sortByStateAsc(){
+    this.alarms.sort(function(a,b){
+      let aState = a.state;
+      let bState= b.state;
+      let states = ["OK", "UNDETERMINED", "ALARM"];
+
+      let aVal = 0;
+      let bVal = 0;
+
+      for(let i = 0; i < states.length; i++){
+        if(aState == states[i]){
+          aVal = i;
+        }
+        if(bState == states[i]){
+          bVal = i;
+        }
+      }
+
+       if(aVal > bVal){
+         return -1;
+       }
+       if(aVal < bVal) {
+         return 1;
+       }
+       if(aVal == bVal){
+         return 0;
+       }
+
+    });
+
+  }
+
+  sortByStateDesc(){
+    this.alarms.sort(function(a,b){
+      let aState = a.state;
+      let bState= b.state;
+      let states = ["OK", "UNDETERMINED", "ALARM"];
+
+      let aVal = 0;
+      let bVal = 0;
+
+      for(let i = 0; i < states.length; i++){
+        if(aState == states[i]){
+          aVal = i;
+        }
+        if(bState == states[i]){
+          bVal = i;
+        }
+      }
+
+       if(aVal > bVal){
+         return 1;
+       }
+       if(aVal < bVal) {
+         return -1;
+       }
+       if(aVal == bVal){
+         return 0;
+       }
+
+    });
+
+  }
+
+
 
 }
 
