@@ -44,8 +44,8 @@ export class AlarmsPageCtrl {
     this.stateDescClicked = false;
     this.sevAscClicked = false;
     this.sevDescClicked = false;
-    this.nameAscClicked = true;
-    this.nameDescClicked = false;
+    this.nameAscClicked = false;
+    this.nameDescClicked = true;
     this.timeAscClicked = true;
     this.timeDescClicked = false;
 
