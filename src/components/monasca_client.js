@@ -127,6 +127,32 @@ export default class MonascaClient {
       .then(resp => resp.data)
       .catch(err => { throw err; });
   }
+
+  // API alarm sorting
+
+  sortAlarmsBySeverityAsc(){
+    return this._get('/v2.0/alarms', { sort_by: "severity asc" })
+      .then(resp => resp.data.elements)
+      .catch(err => {throw err; });
+  }
+
+  sortAlarmsBySeverityDesc(){
+    return this._get('/v2.0/alarms', { sort_by: "severity desc" })
+      .then(resp => resp.data.elements)
+      .catch(err => {throw err; });
+  }
+
+  sortAlarmsByNameAsc(){
+    return this._get('/v2.0/alarms', { sort_by: "alarm_definition_name asc" })
+      .then(resp => resp.data.elements)
+      .catch(err => {throw err; });
+  }
+
+  sortAlarmsByNameDesc(){
+    return this._get('/v2.0/alarms', { sort_by: "alarm_definition_name desc" })
+      .then(resp => resp.data.elements)
+      .catch(err => {throw err; });
+  }
   // Alarm Definitions
 
   listAlarmDefinitions() {

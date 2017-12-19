@@ -30,7 +30,6 @@ export class AlarmsPageCtrl {
     this.metricFilters = [];
     this.stateFilters = [{state:""}];
     this.severityFilters = [];
-    this.sortByFilters = [];
     this.defIdFilters = [];
     this.totalFilters = [];
 
@@ -119,16 +118,6 @@ export class AlarmsPageCtrl {
     this.severityFilters.splice(index, 1);
   }
 
-  //Sort by Filter add/remove
-  addSortByFilter() {
-    this.sortByFilters.push({});
-  }
-
-  removeSortByFilter(index) {
-    var filter = this.sortByFilters[index];
-    this.sortByFilters.splice(index, 1);
-  }
-
   applyFilter() {
     // Check filter is complete before applying.
     if (this.metricFilters.every(function (f){
@@ -172,21 +161,6 @@ export class AlarmsPageCtrl {
       var temp = {};
       temp.alarm_definition_id = this.defIdFilters[0];
       this.totalFilters.push(temp);
-    }
-
-    if(this.sortByFilters.length > 0){
-      for(var i = 0; i < this.sortByFilters.length; i++){
-        var temp = {};
-        //if asc or desc is specified
-        if(this.sortByFilters[i].value != undefined){
-          temp.sort_by = this.sortByFilters[i].key + " " + this.sortByFilters[i].value;
-        }
-        else{
-          temp.sort_by = this.sortByFilters[i].key;
-        }
-
-        this.totalFilters.push(temp);
-      }
     }
 
     this.monasca.listAlarms(this.totalFilters).then(alarms => {
@@ -267,235 +241,85 @@ export class AlarmsPageCtrl {
     });
   }
 
-  sortByTimeAsc(){
-    this.alarms.sort(function(a,b){
-      let aYear = parseInt(a.state_updated_timestamp.substring(0,4));
-      let aMonth = parseInt(a.state_updated_timestamp.substring(5,7)) - 1;
-      let aDay = parseInt(a.state_updated_timestamp.substring(8,10));
-      let aHour = parseInt(a.state_updated_timestamp.substring(11,13));
-      let aMin = parseInt(a.state_updated_timestamp.substring(14,16));
+  sortBySeverityAsc(){
+    this.monasca.sortAlarmsBySeverityAsc().then(alarms => {
+      this.alarms = alarms;
+      this.slicedAlarms = alarms;
 
-      let bYear = parseInt(b.state_updated_timestamp.substring(0,4));
-      let bMonth = parseInt(b.state_updated_timestamp.substring(5,7)) - 1;
-      let bDay = parseInt(b.state_updated_timestamp.substring(8,10));
-      let bHour = parseInt(b.state_updated_timestamp.substring(11,13));
-      let bMin = parseInt(b.state_updated_timestamp.substring(14,16));
-
-      let ad = new Date(aYear, aMonth, aDay, aHour, aMin);
-      let bd = new Date(bYear, bMonth, bDay, bHour, bMin);
-
-      console.log(a);
-
-       if(ad.getTime() > bd.getTime()){
-         return 1;
-       }
-       if(ad.getTime() < bd.getTime()) {
-         return -1;
-       }
-       if(ad.getTime() == bd.getTime()){
-         return 0;
-       }
-
+      //Remove Z and T from timestamp
+      for(var i = 0; i < this.slicedAlarms.length; i++){
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+      }
     });
-
   }
 
-  sortByTimeDesc(){
-    this.alarms.sort(function(a,b){
-      let aYear = parseInt(a.state_updated_timestamp.substring(0,4));
-      let aMonth = parseInt(a.state_updated_timestamp.substring(5,7)) - 1;
-      let aDay = parseInt(a.state_updated_timestamp.substring(8,10));
-      let aHour = parseInt(a.state_updated_timestamp.substring(11,13));
-      let aMin = parseInt(a.state_updated_timestamp.substring(14,16));
+  sortBySeverityDesc(){
+    this.monasca.sortAlarmsBySeverityDesc().then(alarms => {
+      this.alarms = alarms;
+      this.slicedAlarms = alarms;
 
-      let bYear = parseInt(b.state_updated_timestamp.substring(0,4));
-      let bMonth = parseInt(b.state_updated_timestamp.substring(5,7)) - 1;
-      let bDay = parseInt(b.state_updated_timestamp.substring(8,10));
-      let bHour = parseInt(b.state_updated_timestamp.substring(11,13));
-      let bMin = parseInt(b.state_updated_timestamp.substring(14,16));
-
-      let ad = new Date(aYear, aMonth, aDay, aHour, aMin);
-      let bd = new Date(bYear, bMonth, bDay, bHour, bMin);
-
-      console.log(a);
-
-       if(ad.getTime() > bd.getTime()){
-         return -1;
-       }
-       if(ad.getTime() < bd.getTime()) {
-         return 1;
-       }
-       if(ad.getTime() == bd.getTime()){
-         return 0;
-       }
-
+      //Remove Z and T from timestamp
+      for(var i = 0; i < this.slicedAlarms.length; i++){
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+      }
     });
 
   }
 
   sortByNameAsc(){
-    this.alarms.sort(function(a,b){
-      let aFirst = a.alarm_definition.name[0];
-      let bFirst = b.alarm_definition.name[0];
+    this.monasca.sortAlarmsByNameAsc().then(alarms => {
+      this.alarms = alarms;
+      this.slicedAlarms = alarms;
 
-       if(aFirst > bFirst){
-         return -1;
-       }
-       if(aFirst < bFirst) {
-         return 1;
-       }
-       if(aFirst == bFirst){
-         return 0;
-       }
-
+      //Remove Z and T from timestamp
+      for(var i = 0; i < this.slicedAlarms.length; i++){
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+      }
     });
 
   }
 
   sortByNameDesc(){
-    this.alarms.sort(function(a,b){
-      let aFirst = a.alarm_definition.name[0];
-      let bFirst = b.alarm_definition.name[0];
+    this.monasca.sortAlarmsByNameDesc().then(alarms => {
+      this.alarms = alarms;
+      this.slicedAlarms = alarms;
 
-       if(aFirst > bFirst){
-         return 1;
-       }
-       if(aFirst < bFirst) {
-         return -1;
-       }
-       if(aFirst == bFirst){
-         return 0;
-       }
-
+      //Remove Z and T from timestamp
+      for(var i = 0; i < this.slicedAlarms.length; i++){
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+      }
     });
 
   }
 
-  sortBySeverityAsc(){
-    this.alarms.sort(function(a,b){
-      let aSeverity = a.alarm_definition.severity;
-      let bSeverity = b.alarm_definition.severity;
-      let severities = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
+  sortByTimeAsc(){
 
-      let aVal = 0;
-      let bVal = 0;
-
-      for(let i = 0; i < severities.length; i++){
-        if(aSeverity == severities[i]){
-          aVal = i;
-        }
-        if(bSeverity == severities[i]){
-          bVal = i;
-        }
-      }
-
-       if(aVal > bVal){
-         return -1;
-       }
-       if(aVal < bVal) {
-         return 1;
-       }
-       if(aVal == bVal){
-         return 0;
-       }
-
-    });
 
   }
 
-  sortBySeverityDesc(){
-    this.alarms.sort(function(a,b){
-      let aSeverity = a.alarm_definition.severity;
-      let bSeverity = b.alarm_definition.severity;
-      let severities = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
+  sortByTimeDesc(){
 
-      let aVal = 0;
-      let bVal = 0;
-
-      for(let i = 0; i < severities.length; i++){
-        if(aSeverity == severities[i]){
-          aVal = i;
-        }
-        if(bSeverity == severities[i]){
-          bVal = i;
-        }
-      }
-
-       if(aVal > bVal){
-         return 1;
-       }
-       if(aVal < bVal) {
-         return -1;
-       }
-       if(aVal == bVal){
-         return 0;
-       }
-
-    });
 
   }
 
   sortByStateAsc(){
-    this.alarms.sort(function(a,b){
-      let aState = a.state;
-      let bState= b.state;
-      let states = ["OK", "UNDETERMINED", "ALARM"];
 
-      let aVal = 0;
-      let bVal = 0;
-
-      for(let i = 0; i < states.length; i++){
-        if(aState == states[i]){
-          aVal = i;
-        }
-        if(bState == states[i]){
-          bVal = i;
-        }
-      }
-
-       if(aVal > bVal){
-         return -1;
-       }
-       if(aVal < bVal) {
-         return 1;
-       }
-       if(aVal == bVal){
-         return 0;
-       }
-
-    });
 
   }
 
   sortByStateDesc(){
-    this.alarms.sort(function(a,b){
-      let aState = a.state;
-      let bState= b.state;
-      let states = ["OK", "UNDETERMINED", "ALARM"];
-
-      let aVal = 0;
-      let bVal = 0;
-
-      for(let i = 0; i < states.length; i++){
-        if(aState == states[i]){
-          aVal = i;
-        }
-        if(bState == states[i]){
-          bVal = i;
-        }
-      }
-
-       if(aVal > bVal){
-         return 1;
-       }
-       if(aVal < bVal) {
-         return -1;
-       }
-       if(aVal == bVal){
-         return 0;
-       }
-
-    });
 
   }
 
