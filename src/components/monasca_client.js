@@ -165,6 +165,18 @@ export default class MonascaClient {
       .then(resp => resp.data.elements)
       .catch(err => {throw err; });
   }
+
+  sortAlarmsByStateAsc(){
+    return this._get('/v2.0/alarms', { sort_by: "state asc" })
+      .then(resp => resp.data.elements)
+      .catch(err => {throw err; });
+  }
+
+  sortAlarmsByStateDesc(){
+    return this._get('/v2.0/alarms', { sort_by: "state desc" })
+      .then(resp => resp.data.elements)
+      .catch(err => {throw err; });
+  }
   // Alarm Definitions
 
   listAlarmDefinitions() {
