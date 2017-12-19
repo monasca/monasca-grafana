@@ -127,6 +127,56 @@ export default class MonascaClient {
       .then(resp => resp.data)
       .catch(err => { throw err; });
   }
+
+  // API alarm sorting
+
+  sortAlarmsBySeverityAsc(){
+    return this._get('/v2.0/alarms', { sort_by: "severity asc" })
+      .then(resp => resp.data.elements)
+      .catch(err => {throw err; });
+  }
+
+  sortAlarmsBySeverityDesc(){
+    return this._get('/v2.0/alarms', { sort_by: "severity desc" })
+      .then(resp => resp.data.elements)
+      .catch(err => {throw err; });
+  }
+
+  sortAlarmsByNameAsc(){
+    return this._get('/v2.0/alarms', { sort_by: "alarm_definition_name asc" })
+      .then(resp => resp.data.elements)
+      .catch(err => {throw err; });
+  }
+
+  sortAlarmsByNameDesc(){
+    return this._get('/v2.0/alarms', { sort_by: "alarm_definition_name desc" })
+      .then(resp => resp.data.elements)
+      .catch(err => {throw err; });
+  }
+
+  sortAlarmsByTimeAsc(){
+    return this._get('/v2.0/alarms', { sort_by: "state_updated_timestamp asc" })
+      .then(resp => resp.data.elements)
+      .catch(err => {throw err; });
+  }
+
+  sortAlarmsByTimeDesc(){
+    return this._get('/v2.0/alarms', { sort_by: "state_updated_timestamp desc" })
+      .then(resp => resp.data.elements)
+      .catch(err => {throw err; });
+  }
+
+  sortAlarmsByStateAsc(){
+    return this._get('/v2.0/alarms', { sort_by: "state asc" })
+      .then(resp => resp.data.elements)
+      .catch(err => {throw err; });
+  }
+
+  sortAlarmsByStateDesc(){
+    return this._get('/v2.0/alarms', { sort_by: "state desc" })
+      .then(resp => resp.data.elements)
+      .catch(err => {throw err; });
+  }
   // Alarm Definitions
 
   listAlarmDefinitions() {

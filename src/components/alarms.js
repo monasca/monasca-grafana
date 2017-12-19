@@ -30,7 +30,6 @@ export class AlarmsPageCtrl {
     this.metricFilters = [];
     this.stateFilters = [{state:""}];
     this.severityFilters = [];
-    this.sortByFilters = [];
     this.defIdFilters = [];
     this.totalFilters = [];
 
@@ -119,16 +118,6 @@ export class AlarmsPageCtrl {
     this.severityFilters.splice(index, 1);
   }
 
-  //Sort by Filter add/remove
-  addSortByFilter() {
-    this.sortByFilters.push({});
-  }
-
-  removeSortByFilter(index) {
-    var filter = this.sortByFilters[index];
-    this.sortByFilters.splice(index, 1);
-  }
-
   applyFilter() {
     // Check filter is complete before applying.
     if (this.metricFilters.every(function (f){
@@ -172,21 +161,6 @@ export class AlarmsPageCtrl {
       var temp = {};
       temp.alarm_definition_id = this.defIdFilters[0];
       this.totalFilters.push(temp);
-    }
-
-    if(this.sortByFilters.length > 0){
-      for(var i = 0; i < this.sortByFilters.length; i++){
-        var temp = {};
-        //if asc or desc is specified
-        if(this.sortByFilters[i].value != undefined){
-          temp.sort_by = this.sortByFilters[i].key + " " + this.sortByFilters[i].value;
-        }
-        else{
-          temp.sort_by = this.sortByFilters[i].key;
-        }
-
-        this.totalFilters.push(temp);
-      }
     }
 
     this.monasca.listAlarms(this.totalFilters).then(alarms => {
@@ -266,6 +240,135 @@ export class AlarmsPageCtrl {
       }
     });
   }
+
+  sortBySeverityAsc(){
+    this.monasca.sortAlarmsBySeverityAsc().then(alarms => {
+      this.alarms = alarms;
+      this.slicedAlarms = alarms;
+
+      //Remove Z and T from timestamp
+      for(var i = 0; i < this.slicedAlarms.length; i++){
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+      }
+    });
+  }
+
+  sortBySeverityDesc(){
+    this.monasca.sortAlarmsBySeverityDesc().then(alarms => {
+      this.alarms = alarms;
+      this.slicedAlarms = alarms;
+
+      //Remove Z and T from timestamp
+      for(var i = 0; i < this.slicedAlarms.length; i++){
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+      }
+    });
+
+  }
+
+  sortByNameAsc(){
+    this.monasca.sortAlarmsByNameAsc().then(alarms => {
+      this.alarms = alarms;
+      this.slicedAlarms = alarms;
+
+      //Remove Z and T from timestamp
+      for(var i = 0; i < this.slicedAlarms.length; i++){
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+      }
+    });
+
+  }
+
+  sortByNameDesc(){
+    this.monasca.sortAlarmsByNameDesc().then(alarms => {
+      this.alarms = alarms;
+      this.slicedAlarms = alarms;
+
+      //Remove Z and T from timestamp
+      for(var i = 0; i < this.slicedAlarms.length; i++){
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+      }
+    });
+
+  }
+
+  sortByTimeAsc(){
+    this.monasca.sortAlarmsByTimeAsc().then(alarms => {
+      this.alarms = alarms;
+      this.slicedAlarms = alarms;
+
+      //Remove Z and T from timestamp
+      for(var i = 0; i < this.slicedAlarms.length; i++){
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+      }
+    });
+
+  }
+
+  sortByTimeDesc(){
+    this.monasca.sortAlarmsByTimeDesc().then(alarms => {
+      this.alarms = alarms;
+      this.slicedAlarms = alarms;
+
+      //Remove Z and T from timestamp
+      for(var i = 0; i < this.slicedAlarms.length; i++){
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+      }
+    });
+
+  }
+
+  sortByStateAsc(){
+    this.monasca.sortAlarmsByStateAsc().then(alarms => {
+      this.alarms = alarms;
+      this.slicedAlarms = alarms;
+
+      //Remove Z and T from timestamp
+      for(var i = 0; i < this.slicedAlarms.length; i++){
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+      }
+    });
+
+  }
+
+  sortByStateDesc(){
+    this.monasca.sortAlarmsByStateDesc().then(alarms => {
+      this.alarms = alarms;
+      this.slicedAlarms = alarms;
+
+      //Remove Z and T from timestamp
+      for(var i = 0; i < this.slicedAlarms.length; i++){
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+      }
+    });
+  }
+
+
+
 }
 
 AlarmsPageCtrl.templateUrl = 'components/alarms.html';
