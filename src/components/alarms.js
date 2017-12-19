@@ -305,12 +305,34 @@ export class AlarmsPageCtrl {
   }
 
   sortByTimeAsc(){
+    this.monasca.sortAlarmsByTimeAsc().then(alarms => {
+      this.alarms = alarms;
+      this.slicedAlarms = alarms;
 
+      //Remove Z and T from timestamp
+      for(var i = 0; i < this.slicedAlarms.length; i++){
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+      }
+    });
 
   }
 
   sortByTimeDesc(){
+    this.monasca.sortAlarmsByTimeDesc().then(alarms => {
+      this.alarms = alarms;
+      this.slicedAlarms = alarms;
 
+      //Remove Z and T from timestamp
+      for(var i = 0; i < this.slicedAlarms.length; i++){
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+      }
+    });
 
   }
 

@@ -153,6 +153,18 @@ export default class MonascaClient {
       .then(resp => resp.data.elements)
       .catch(err => {throw err; });
   }
+
+  sortAlarmsByTimeAsc(){
+    return this._get('/v2.0/alarms', { sort_by: "state_updated_timestamp asc" })
+      .then(resp => resp.data.elements)
+      .catch(err => {throw err; });
+  }
+
+  sortAlarmsByTimeDesc(){
+    return this._get('/v2.0/alarms', { sort_by: "state_updated_timestamp desc" })
+      .then(resp => resp.data.elements)
+      .catch(err => {throw err; });
+  }
   // Alarm Definitions
 
   listAlarmDefinitions() {
