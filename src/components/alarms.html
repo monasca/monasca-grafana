@@ -174,19 +174,19 @@
 			</th>
 			<th>
 				Severity
-				<a ng-click="ctrl.sortBySeverityDesc();">
+				<a ng-click="ctrl.sortBySeverityAsc();">
 					<i ng-class="icon" class="fa fa-arrow-down" style="color:ForestGreen;font-size:80%;" bs-tooltip="'Descending Order'"></i>
 				</a>
-				<a ng-click="ctrl.sortBySeverityAsc();">
+				<a ng-click="ctrl.sortBySeverityDesc();">
 					<i ng-class="icon" class="fa fa-arrow-up" style="color:OrangeRed;font-size:80%;" bs-tooltip="'Ascending Order'"></i>
 				</a>
 			</th>
       <th>
 				Name
-				<a ng-click="ctrl.sortByNameDesc();">
+				<a ng-model="ctrl.nameClicked" ng-if="ctrl.nameClicked==true" ng-click="ctrl.sortByNameAsc();">
 					<i ng-class="icon" class="fa fa-arrow-down" style="color:ForestGreen;font-size:80%;" bs-tooltip="'Descending Order'"></i>
 				</a>
-				<a ng-click="ctrl.sortByNameAsc();">
+				<a ng-model="ctrl.nameClicked" ng-if="ctrl.nameClicked==false" ng-click="ctrl.sortByNameDesc();">
 					<i ng-class="icon" class="fa fa-arrow-up" style="color:OrangeRed;font-size:80%;" bs-tooltip="'Ascending Order'"></i>
 				</a>
 			</th>

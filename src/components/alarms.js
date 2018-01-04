@@ -23,7 +23,8 @@ import MonascaClient from './monasca_client';
 export class AlarmsPageCtrl {
 
   /** @ngInject */
-  constructor($scope, $injector, $location, backendSrv, datasourceSrv, alertSrv) {
+  constructor($scope, $injector, $location, backendSrv, datasourceSrv,
+              alertSrv) {
     this.alertSrv = alertSrv
     this.monasca = new MonascaClient(backendSrv, datasourceSrv);
 
@@ -32,6 +33,10 @@ export class AlarmsPageCtrl {
     this.severityFilters = [];
     this.defIdFilters = [];
     this.totalFilters = [];
+
+    this.nameClicked = true;
+    this.severityClicked = false;
+    this.scope = $scope;
 
     this.editFilterIndex = -1;
     this.alarmCount = 0;
@@ -284,8 +289,9 @@ export class AlarmsPageCtrl {
         this.slicedAlarms[i].state_updated_timestamp =
           this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
       }
+      this.nameClicked = false;
+      this.scope.$apply();
     });
-
   }
 
   sortByNameDesc(){
@@ -300,8 +306,9 @@ export class AlarmsPageCtrl {
         this.slicedAlarms[i].state_updated_timestamp =
           this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
       }
+      this.nameClicked = true;
+      this.scope.$apply();
     });
-
   }
 
   sortByTimeAsc(){
