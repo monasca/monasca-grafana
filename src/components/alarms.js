@@ -34,6 +34,7 @@ export class AlarmsPageCtrl {
     this.defIdFilters = [];
     this.totalFilters = [];
 
+    this.queryTracker = [];
     this.nameClicked = false;
     this.severityClicked = false;
     this.stateClicked = false;
