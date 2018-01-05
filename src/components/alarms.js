@@ -258,6 +258,8 @@ export class AlarmsPageCtrl {
         this.slicedAlarms[i].state_updated_timestamp =
           this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
       }
+      this.severityClicked = false;
+      this.scope.$apply();
     });
   }
 
@@ -273,6 +275,8 @@ export class AlarmsPageCtrl {
         this.slicedAlarms[i].state_updated_timestamp =
           this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
       }
+      this.severityClicked = true;
+      this.scope.$apply();
     });
 
   }
