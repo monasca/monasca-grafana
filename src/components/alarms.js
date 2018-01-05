@@ -36,6 +36,8 @@ export class AlarmsPageCtrl {
 
     this.nameClicked = false;
     this.severityClicked = false;
+    this.stateClicked = false;
+    this.timeClicked = false;
     this.scope = $scope;
 
     this.editFilterIndex = -1;
@@ -359,8 +361,9 @@ export class AlarmsPageCtrl {
         this.slicedAlarms[i].state_updated_timestamp =
           this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
       }
+      this.stateClicked = true;
+      this.scope.$apply();
     });
-
   }
 
   sortByStateDesc(){
@@ -375,6 +378,8 @@ export class AlarmsPageCtrl {
         this.slicedAlarms[i].state_updated_timestamp =
           this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
       }
+      this.stateClicked = false;
+      this.scope.$apply();
     });
   }
 

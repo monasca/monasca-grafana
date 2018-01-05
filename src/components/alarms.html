@@ -165,10 +165,10 @@
     <tr class="muted">
       <th>
 				State
-				<a ng-click="ctrl.sortByStateDesc();">
+				<a ng-if="ctrl.stateClicked==true" ng-click="ctrl.sortByStateDesc();">
 					<i ng-class="icon" class="fa fa-arrow-down" style="color:ForestGreen;font-size:80%;" bs-tooltip="'Descending Order'"></i>
 				</a>
-				<a ng-click="ctrl.sortByStateAsc();">
+				<a ng-if="ctrl.stateClicked==false" ng-click="ctrl.sortByStateAsc();">
 					<i ng-class="icon" class="fa fa-arrow-up" style="color:OrangeRed;font-size:80%;" bs-tooltip="'Ascending Order'"></i>
 				</a>
 			</th>
