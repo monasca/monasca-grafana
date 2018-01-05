@@ -34,7 +34,7 @@ export class AlarmsPageCtrl {
     this.defIdFilters = [];
     this.totalFilters = [];
 
-    this.nameClicked = true;
+    this.nameClicked = false;
     this.severityClicked = false;
     this.scope = $scope;
 
@@ -258,7 +258,7 @@ export class AlarmsPageCtrl {
         this.slicedAlarms[i].state_updated_timestamp =
           this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
       }
-      this.severityClicked = false;
+      this.severityClicked = true;
       this.scope.$apply();
     });
   }
@@ -275,7 +275,7 @@ export class AlarmsPageCtrl {
         this.slicedAlarms[i].state_updated_timestamp =
           this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
       }
-      this.severityClicked = true;
+      this.severityClicked = false;
       this.scope.$apply();
     });
 
@@ -293,7 +293,7 @@ export class AlarmsPageCtrl {
         this.slicedAlarms[i].state_updated_timestamp =
           this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
       }
-      this.nameClicked = false;
+      this.nameClicked = true;
       this.scope.$apply();
     });
   }
@@ -310,7 +310,7 @@ export class AlarmsPageCtrl {
         this.slicedAlarms[i].state_updated_timestamp =
           this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
       }
-      this.nameClicked = true;
+      this.nameClicked = false;
       this.scope.$apply();
     });
   }
