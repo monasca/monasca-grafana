@@ -23,7 +23,8 @@ import MonascaClient from './monasca_client';
 export class AlarmsPageCtrl {
 
   /** @ngInject */
-  constructor($scope, $injector, $location, backendSrv, datasourceSrv, alertSrv) {
+  constructor($scope, $injector, $location, backendSrv, datasourceSrv,
+              alertSrv) {
     this.alertSrv = alertSrv
     this.monasca = new MonascaClient(backendSrv, datasourceSrv);
 
@@ -32,6 +33,13 @@ export class AlarmsPageCtrl {
     this.severityFilters = [];
     this.defIdFilters = [];
     this.totalFilters = [];
+
+    this.queryTracker = [];
+    this.nameClicked = false;
+    this.severityClicked = false;
+    this.stateClicked = false;
+    this.timeClicked = false;
+    this.scope = $scope;
 
     this.editFilterIndex = -1;
     this.alarmCount = 0;
@@ -242,118 +250,104 @@ export class AlarmsPageCtrl {
   }
 
   sortBySeverityAsc(){
-    this.monasca.sortAlarmsBySeverityAsc().then(alarms => {
-      this.alarms = alarms;
-      this.slicedAlarms = alarms;
-
-      //Remove Z and T from timestamp
-      for(var i = 0; i < this.slicedAlarms.length; i++){
-        this.slicedAlarms[i].state_updated_timestamp =
-          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
-        this.slicedAlarms[i].state_updated_timestamp =
-          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+    for(var i = 0; i < this.queryTracker.length; i++){
+      if("severity desc" == this.queryTracker[i]){
+        this.queryTracker.splice(i,1);
       }
-    });
+    }
+    this.queryTracker.push("severity asc");
+    this.queryBuilder();
+    this.severityClicked = true;
   }
 
   sortBySeverityDesc(){
-    this.monasca.sortAlarmsBySeverityDesc().then(alarms => {
-      this.alarms = alarms;
-      this.slicedAlarms = alarms;
-
-      //Remove Z and T from timestamp
-      for(var i = 0; i < this.slicedAlarms.length; i++){
-        this.slicedAlarms[i].state_updated_timestamp =
-          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
-        this.slicedAlarms[i].state_updated_timestamp =
-          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+    for(var i = 0; i < this.queryTracker.length; i++){
+      if("severity asc" == this.queryTracker[i]){
+        this.queryTracker.splice(i,1);
       }
-    });
-
+    }
+    this.queryTracker.push("severity desc");
+    this.queryBuilder();
+    this.severityClicked = false;
   }
 
   sortByNameAsc(){
-    this.monasca.sortAlarmsByNameAsc().then(alarms => {
-      this.alarms = alarms;
-      this.slicedAlarms = alarms;
-
-      //Remove Z and T from timestamp
-      for(var i = 0; i < this.slicedAlarms.length; i++){
-        this.slicedAlarms[i].state_updated_timestamp =
-          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
-        this.slicedAlarms[i].state_updated_timestamp =
-          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+    for(var i = 0; i < this.queryTracker.length; i++){
+      if("alarm_definition_name desc" == this.queryTracker[i]){
+        this.queryTracker.splice(i,1);
       }
-    });
-
+    }
+    this.queryTracker.push("alarm_definition_name asc");
+    this.queryBuilder();
+    this.nameClicked = true;
   }
 
   sortByNameDesc(){
-    this.monasca.sortAlarmsByNameDesc().then(alarms => {
-      this.alarms = alarms;
-      this.slicedAlarms = alarms;
-
-      //Remove Z and T from timestamp
-      for(var i = 0; i < this.slicedAlarms.length; i++){
-        this.slicedAlarms[i].state_updated_timestamp =
-          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
-        this.slicedAlarms[i].state_updated_timestamp =
-          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+    for(var i = 0; i < this.queryTracker.length; i++){
+      if("alarm_definition_name asc" == this.queryTracker[i]){
+        this.queryTracker.splice(i,1);
       }
-    });
-
+    }
+    this.queryTracker.push("alarm_definition_name desc");
+    this.queryBuilder();
+    this.nameClicked = false;
   }
 
   sortByTimeAsc(){
-    this.monasca.sortAlarmsByTimeAsc().then(alarms => {
-      this.alarms = alarms;
-      this.slicedAlarms = alarms;
-
-      //Remove Z and T from timestamp
-      for(var i = 0; i < this.slicedAlarms.length; i++){
-        this.slicedAlarms[i].state_updated_timestamp =
-          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
-        this.slicedAlarms[i].state_updated_timestamp =
-          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+    for(var i = 0; i < this.queryTracker.length; i++){
+      if("state_updated_timestamp desc" == this.queryTracker[i]){
+        this.queryTracker.splice(i,1);
       }
-    });
-
+    }
+    this.queryTracker.push("state_updated_timestamp asc");
+    this.queryBuilder();
+    this.timeClicked = true;
   }
 
   sortByTimeDesc(){
-    this.monasca.sortAlarmsByTimeDesc().then(alarms => {
-      this.alarms = alarms;
-      this.slicedAlarms = alarms;
-
-      //Remove Z and T from timestamp
-      for(var i = 0; i < this.slicedAlarms.length; i++){
-        this.slicedAlarms[i].state_updated_timestamp =
-          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
-        this.slicedAlarms[i].state_updated_timestamp =
-          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+    for(var i = 0; i < this.queryTracker.length; i++){
+      if("state_updated_timestamp asc" == this.queryTracker[i]){
+        this.queryTracker.splice(i,1);
       }
-    });
-
+    }
+    this.queryTracker.push("state_updated_timestamp desc");
+    this.queryBuilder();
+    this.timeClicked = false;
   }
 
   sortByStateAsc(){
-    this.monasca.sortAlarmsByStateAsc().then(alarms => {
-      this.alarms = alarms;
-      this.slicedAlarms = alarms;
-
-      //Remove Z and T from timestamp
-      for(var i = 0; i < this.slicedAlarms.length; i++){
-        this.slicedAlarms[i].state_updated_timestamp =
-          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
-        this.slicedAlarms[i].state_updated_timestamp =
-          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+    for(var i = 0; i < this.queryTracker.length; i++){
+      if("state desc" == this.queryTracker[i]){
+        this.queryTracker.splice(i,1);
       }
-    });
-
+    }
+    this.queryTracker.push("state asc");
+    this.queryBuilder();
+    this.stateClicked = true;
   }
 
   sortByStateDesc(){
-    this.monasca.sortAlarmsByStateDesc().then(alarms => {
+    for(var i = 0; i < this.queryTracker.length; i++){
+      if("state asc" == this.queryTracker[i]){
+        this.queryTracker.splice(i,1);
+      }
+    }
+    this.queryTracker.push("state desc");
+    this.queryBuilder();
+    this.stateClicked = false;
+  }
+
+  queryBuilder(){
+    var toSend = "";
+    for(var i = 0; i < this.queryTracker.length; i++){
+      if(i != this.queryTracker.length - 1){
+        toSend += this.queryTracker[i] + ",";
+      }
+      else{
+        toSend += this.queryTracker[i];
+      }
+    }
+    this.monasca.sortAlarms(toSend).then(alarms => {
       this.alarms = alarms;
       this.slicedAlarms = alarms;
 
@@ -364,10 +358,9 @@ export class AlarmsPageCtrl {
         this.slicedAlarms[i].state_updated_timestamp =
           this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
       }
+      this.scope.$apply();
     });
   }
-
-
 
 }
 
