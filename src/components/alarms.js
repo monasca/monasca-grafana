@@ -338,7 +338,6 @@ export class AlarmsPageCtrl {
   }
 
   queryBuilder(){
-    console.log(this.queryTracker);
     var toSend = "";
     for(var i = 0; i < this.queryTracker.length; i++){
       if(i != this.queryTracker.length - 1){
