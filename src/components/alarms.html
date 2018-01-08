@@ -199,7 +199,7 @@
       <th>
 				Metric
 			</th>
-			<th ng-model="timeActive" ng-click="timeActive=true">
+			<th ng-model="timeActive" ng-init="timeActive=true;ctrl.sortTimeDesc();">
 				State Last Updated
 				<span ng-if="timeActive==true">
 					<a ng-if="ctrl.timeClicked==true" ng-click="ctrl.sortByTimeDesc();">
