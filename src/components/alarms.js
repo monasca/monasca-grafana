@@ -338,7 +338,7 @@ export class AlarmsPageCtrl {
   }
 
   queryBuilder(){
-    var toSend = "";
+    let toSend = "";
     for(var i = 0; i < this.queryTracker.length; i++){
       if(i != this.queryTracker.length - 1){
         toSend += this.queryTracker[i] + ",";
@@ -348,6 +348,27 @@ export class AlarmsPageCtrl {
       }
     }
     this.monasca.sortAlarms(toSend).then(alarms => {
+      this.alarms = alarms;
+      this.slicedAlarms = alarms;
+
+      //Remove Z and T from timestamp
+      for(var i = 0; i < this.slicedAlarms.length; i++){
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/[A-Z.]/g, ' ');
+        this.slicedAlarms[i].state_updated_timestamp =
+          this.slicedAlarms[i].state_updated_timestamp.replace(/.{4}$/g, ' ');
+      }
+      this.scope.$apply();
+    });
+  }
+
+  clearSorts(){
+    this.nameClicked = false;
+    this.severityClicked = false;
+    this.stateClicked = false;
+    this.timeClicked = false;
+
+    this.monasca.sortAlarms("state_updated_timestamp asc").then(alarms => {
       this.alarms = alarms;
       this.slicedAlarms = alarms;
 
