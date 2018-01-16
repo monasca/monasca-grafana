@@ -159,6 +159,12 @@
 	 </div>
 </div>
 
+<span class="gf-form-inline">
+		<span class="gf-form-label width-5">Sort By</span>
+		<input style="width:40%;" type="text" ng-model="ctrl.queryString" ng-disabled="true">
+		<button class="btn btn-inverse" ng-click="ctrl.clearQuery()">Clear</button>
+</span>
+
 <div ng-if="ctrl.pageLoaded && !ctrl.updateFailed && ctrl.alarms.length > 0">
 
   <table class="grafana-options-table">
