@@ -399,6 +399,8 @@ export class AlarmsPageCtrl {
         tempStr += " " + "state_updated_timestamp asc" + ",";
       }
     }
+
+    tempStr = tempStr.substring(0,tempStr.length-1);
     this.queryString = tempStr;
   }
 
