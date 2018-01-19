@@ -35,6 +35,7 @@ export class AlarmsPageCtrl {
     this.totalFilters = [];
 
     this.queryTracker = [];
+    this.queryString = "";
     this.nameClicked = false;
     this.severityClicked = false;
     this.stateClicked = false;
@@ -258,6 +259,7 @@ export class AlarmsPageCtrl {
     this.queryTracker.push("severity asc");
     this.queryBuilder();
     this.severityClicked = true;
+    this.queryToString();
   }
 
   sortBySeverityDesc(){
@@ -269,6 +271,7 @@ export class AlarmsPageCtrl {
     this.queryTracker.push("severity desc");
     this.queryBuilder();
     this.severityClicked = false;
+    this.queryToString();
   }
 
   sortByNameAsc(){
@@ -280,6 +283,7 @@ export class AlarmsPageCtrl {
     this.queryTracker.push("alarm_definition_name asc");
     this.queryBuilder();
     this.nameClicked = true;
+    this.queryToString();
   }
 
   sortByNameDesc(){
@@ -291,6 +295,7 @@ export class AlarmsPageCtrl {
     this.queryTracker.push("alarm_definition_name desc");
     this.queryBuilder();
     this.nameClicked = false;
+    this.queryToString();
   }
 
   sortByTimeAsc(){
@@ -302,6 +307,7 @@ export class AlarmsPageCtrl {
     this.queryTracker.push("state_updated_timestamp asc");
     this.queryBuilder();
     this.timeClicked = true;
+    this.queryToString();
   }
 
   sortByTimeDesc(){
@@ -313,6 +319,7 @@ export class AlarmsPageCtrl {
     this.queryTracker.push("state_updated_timestamp desc");
     this.queryBuilder();
     this.timeClicked = false;
+    this.queryToString();
   }
 
   sortByStateAsc(){
@@ -324,6 +331,7 @@ export class AlarmsPageCtrl {
     this.queryTracker.push("state asc");
     this.queryBuilder();
     this.stateClicked = true;
+    this.queryToString();
   }
 
   sortByStateDesc(){
@@ -335,6 +343,7 @@ export class AlarmsPageCtrl {
     this.queryTracker.push("state desc");
     this.queryBuilder();
     this.stateClicked = false;
+    this.queryToString();
   }
 
   queryBuilder(){
@@ -360,6 +369,47 @@ export class AlarmsPageCtrl {
       }
       this.scope.$apply();
     });
+  }
+
+  queryToString(){
+    let tempStr = "";
+    for(var i = 0; i < this.queryTracker.length; i++){
+      if(this.queryTracker[i] == "severity asc"){
+        tempStr += " " + "severity desc" + ",";
+      }
+      if(this.queryTracker[i] == "severity desc"){
+        tempStr += " " + "severity asc" + ",";
+      }
+      if(this.queryTracker[i] == "alarm_definition_name asc"){
+        tempStr += " " + "alarm_definition_name desc" + ",";
+      }
+      if(this.queryTracker[i] == "alarm_definition_name desc"){
+        tempStr += " " + "alarm_definition_name asc" + ",";
+      }
+      if(this.queryTracker[i] == "state asc"){
+        tempStr += " " + "state desc" + ",";
+      }
+      if(this.queryTracker[i] == "state desc"){
+        tempStr += " " + "state asc" + ",";
+      }
+      if(this.queryTracker[i] == "state_updated_timestamp asc"){
+        tempStr += " " + "state_updated_timestamp desc" + ",";
+      }
+      if(this.queryTracker[i] == "state_updated_timestamp desc"){
+        tempStr += " " + "state_updated_timestamp asc" + ",";
+      }
+    }
+    this.queryString = tempStr;
+  }
+
+  clearQuery(){
+    this.queryTracker = [];
+    this.queryBuilder();
+    this.queryToString();
+    this.nameClicked = false;
+    this.stateClicked = false;
+    this.severityClicked = false;
+    this.timeClicked = false;
   }
 
 }
