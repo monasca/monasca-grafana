@@ -159,12 +159,13 @@
 	 </div>
 </div>
 
+<!--Sort By-->
 <span class="gf-form-inline">
 		<span class="gf-form-label width-5">Sort By</span>
-		<input style="width:40%;" type="text" ng-model="ctrl.queryString" ng-disabled="true">
-		<span class="gf-form-label" style="padding-left:2px">
+		<input class="gf-form-input" style="width:40%;" type="text" ng-model="ctrl.queryString" ng-disabled="true">
+		<label class="gf-form-label">
 			<a ng-click="ctrl.clearQuery()"><i class="fa fa-close"></i></a>
-		</span>
+		</label>
 </span>
 
 <div ng-if="ctrl.pageLoaded && !ctrl.updateFailed && ctrl.alarms.length > 0">

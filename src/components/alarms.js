@@ -283,6 +283,7 @@ export class AlarmsPageCtrl {
     this.queryTracker.push("alarm_definition_name asc");
     this.queryBuilder();
     this.nameClicked = true;
+    this.queryToString();
   }
 
   sortByNameDesc(){
