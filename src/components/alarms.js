@@ -373,7 +373,30 @@ export class AlarmsPageCtrl {
   queryToString(){
     let tempStr = "";
     for(var i = 0; i < this.queryTracker.length; i++){
-      tempStr += " " + this.queryTracker[i] + ",";
+      if(this.queryTracker[i] == "severity asc"){
+        tempStr += " " + "severity desc" + ",";
+      }
+      if(this.queryTracker[i] == "severity desc"){
+        tempStr += " " + "severity asc" + ",";
+      }
+      if(this.queryTracker[i] == "alarm_definition_name asc"){
+        tempStr += " " + "alarm_definition_name desc" + ",";
+      }
+      if(this.queryTracker[i] == "alarm_definition_name desc"){
+        tempStr += " " + "alarm_definition_name asc" + ",";
+      }
+      if(this.queryTracker[i] == "state asc"){
+        tempStr += " " + "state desc" + ",";
+      }
+      if(this.queryTracker[i] == "state desc"){
+        tempStr += " " + "state asc" + ",";
+      }
+      if(this.queryTracker[i] == "state_updated_timestamp asc"){
+        tempStr += " " + "state_updated_timestamp desc" + ",";
+      }
+      if(this.queryTracker[i] == "state_updated_timestamp desc"){
+        tempStr += " " + "state_updated_timestamp asc" + ",";
+      }
     }
     this.queryString = tempStr;
   }
