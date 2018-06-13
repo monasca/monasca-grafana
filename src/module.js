@@ -15,6 +15,9 @@
  *   limitations under the License.
  */
 
+import coreModule from 'app/core/core_module';
+import MonascaClient from './components/monasca_client'
+
 import {AlarmDefinitionsPageCtrl} from './components/alarm_definitions';
 import {OverviewPageCtrl} from './components/overview';
 import {AlarmsPageCtrl} from './components/alarms';
@@ -29,6 +32,8 @@ loadPluginCss({
   dark: 'plugins/monasca-app/css/monasca.dark.css',
   light: 'plugins/monasca-app/css/monasca.light.css'
 });
+
+coreModule.service('monascaClientSrv', MonascaClient)
 
 export {
   MonascaAppConfigCtrl as ConfigCtrl,

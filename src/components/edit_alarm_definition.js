@@ -14,18 +14,16 @@
  *   limitations under the License.
  */
 
-import config from 'app/core/config';
 import appEvents from 'app/core/app_events';
-import MonascaClient from './monasca_client';
 import _ from 'lodash';
 
 export class EditAlarmDefinitionPageCtrl {
 
   /** @ngInject */
-  constructor($scope, $injector, $location, backendSrv, datasourceSrv, alertSrv) {
+  constructor($scope, $injector, $location, alertSrv, monascaClientSrv) {
     this.$location = $location;
     this.alertSrv = alertSrv;
-    this.monasca = new MonascaClient(backendSrv, datasourceSrv);
+    this.monasca = monascaClientSrv;
     this.updating = true;
     this.updateFailed = false;
 

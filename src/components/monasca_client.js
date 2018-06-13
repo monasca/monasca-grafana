@@ -15,11 +15,9 @@
  *   limitations under the License.
  */
 
-import config from 'app/core/config';
-import appEvents from 'app/core/app_events';
-
 export default class MonascaClient {
 
+  /** @ngInject */
   constructor(backendSrv, datasourceSrv) {
     this.ds = null;
     this.backendSrv = backendSrv;
@@ -31,7 +29,6 @@ export default class MonascaClient {
   listDimensionNames() {
     return this._get('/v2.0/metrics/dimensions/names')
       .then(resp => resp.data.elements.map(e => e.dimension_name))
-      .catch(err => { throw err; });
   }
 
   listDimensionValues(dimension_name) {
@@ -40,7 +37,6 @@ export default class MonascaClient {
     };
     return this._get('/v2.0/metrics/dimensions/names/values', params)
       .then(resp => resp.data.elements.map(e => e.dimension_value))
-      .catch(err => { throw err; });
   }
 
 
@@ -100,32 +96,28 @@ export default class MonascaClient {
       }
     return this._get('/v2.0/alarms/', params)
       .then(resp => resp.data.elements)
-      .catch(err => { throw err; });
     }
   }
 
   deleteAlarm(id) {
     return this._delete('/v2.0/alarms/' + id)
       .then(resp => null)
-      .catch(err => { throw err; });
+      
   }
 
   countAlarms(group_by) {
     return this._get('/v2.0/alarms/count/', { group_by: group_by })
       .then(resp => resp.data)
-      .catch(err => { throw err; });
   }
 
   getAlarm(id) {
     return this._get('/v2.0/alarms/' + id)
       .then(resp => resp.data)
-      .catch(err => { throw err; });
   }
 
   getAlarmHistory(id){
     return this._get('/v2.0/alarms/' + id + '/state-history')
       .then(resp => resp.data)
-      .catch(err => { throw err; });
   }
 
   // API alarm sorting
@@ -133,7 +125,6 @@ export default class MonascaClient {
   sortAlarms(queries){
     return this._get('/v2.0/alarms', { sort_by: queries })
       .then(resp => resp.data.elements)
-      .catch(err => {throw err; });
   }
 
   // Alarm Definitions
@@ -141,19 +132,16 @@ export default class MonascaClient {
   listAlarmDefinitions() {
     return this._get('/v2.0/alarm-definitions/')
       .then(resp => resp.data.elements)
-      .catch(err => { throw err; });
   }
 
   getAlarmDefinition(id) {
     return this._get('/v2.0/alarm-definitions/' + id)
       .then(resp => resp.data)
-      .catch(err => { throw err; });
   }
 
   createAlarmDefinition(alarm_definition) {
     return this._post('/v2.0/alarm-definitions/', alarm_definition)
       .then(resp => resp.data)
-      .catch(err => { throw err; });
   }
 
   enableAlarmDefinition(id, actions_enabled) {
@@ -163,13 +151,11 @@ export default class MonascaClient {
   patchAlarmDefinition(id, alarm_definition) {
     return this._patch('/v2.0/alarm-definitions/' + id, alarm_definition)
       .then(resp => resp.data)
-      .catch(err => { throw err; });
   }
 
   deleteAlarmDefinition(id) {
     return this._delete('/v2.0/alarm-definitions/' + id)
       .then(resp => null)
-      .catch(err => { throw err; });
   }
 
   // Notification Method Types
@@ -177,7 +163,6 @@ export default class MonascaClient {
   listNotificationTypes() {
     return this._get('/v2.0/notification-methods/types/')
       .then(resp => resp.data.elements.map(element => element.type))
-      .catch(err => { throw err; });
   }
 
   // Notification Methods
@@ -185,31 +170,26 @@ export default class MonascaClient {
   listNotifications() {
     return this._get('/v2.0/notification-methods/')
       .then(resp => resp.data.elements)
-      .catch(err => { throw err; });
   }
 
   getNotification(id) {
     return this._get('/v2.0/notification-methods/' + id)
       .then(resp => resp.data)
-      .catch(err => { throw err; });
   }
 
   patchNotification(id, notification) {
     return this._patch('/v2.0/notification-methods/'+ id, notification)
       .then(resp => resp.data)
-      .catch(err => { throw err; });
   }
 
   createNotification(notification) {
     return this._post('/v2.0/notification-methods/', notification)
       .then(resp => resp.data)
-      .catch(err => { throw err; });
   }
 
   deleteNotification(id) {
     return this._delete('/v2.0/notification-methods/' + id)
       .then(resp => null)
-      .catch(err => { throw err; });
   }
 
 
@@ -244,9 +224,7 @@ export default class MonascaClient {
 	    this.ds = ds;
 	    return this.ds;
 	  })
-	  .catch(err => { throw err; });
       })
-      .catch(err => { throw err; });
   }
 
   _request(method, path, params, data) {
@@ -287,7 +265,7 @@ export default class MonascaClient {
           }
 	}
       });
-    }).catch(err => { throw err; });
+    })
   };
 
 

@@ -14,16 +14,14 @@
  *   limitations under the License.
  */
 
-import config from 'app/core/config';
 import appEvents from 'app/core/app_events';
-import MonascaClient from './monasca_client';
 
 export class NotificationsPageCtrl {
 
   /** @ngInject */
-  constructor($scope, $injector, backendSrv, datasourceSrv, alertSrv) {
+  constructor(alertSrv, monascaClientSrv) {
     this.alertSrv = alertSrv
-    this.monasca = new MonascaClient(backendSrv, datasourceSrv);
+    this.monasca = monascaClientSrv;
     this.pageLoaded = false;
     this.loadFailed = false;
     this.notifications = [];
