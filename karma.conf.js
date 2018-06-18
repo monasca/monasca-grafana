@@ -12,18 +12,25 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine'],
 
+    plugins: [
+      'karma-chrome-launcher',
+      'karma-jasmine'
+    ],
 
     // list of files / patterns to load in the browser
+
     files: [
-      'node_modules/systemjs/dist/system.src.js',
-      'dist/components/*.js',
-      'dist/spec/*.js'
+      { pattern: 'node_modules/systemjs/dist/system.src.js', watched: false, included: true},
+      
+      { pattern: 'systemjs.config.js', watched: true, included: false},
+      { pattern: 'karma-test-shim.js', watched: true, included: true},
+      { pattern: 'dist/components/monasca_client.js', watched: true, included: false},
+      { pattern: 'dist/spec/monasca_client_spec.js', watched: true, included: false},
     ],
 
     // list of files / patterns to exclude
     exclude: [
     ],
-
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
