@@ -5,7 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/karma start --single-run"
+    "prettier": "prettier --debug-check 'src/**/*.js' && prettier --write 'src/**/*.js'",
+    "test": "prettier --list-different 'src/**/*.js' && ./node_modules/.bin/eslint 'src/**/*.js' && ./node_modules/.bin/karma start --single-run"
   },
   "repository": {
     "type": "git",
