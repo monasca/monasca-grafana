@@ -18,10 +18,19 @@
 import _ from "lodash";
 
 export class OverviewPageCtrl {
+  public static templateUrl = "components/overview.html";
+  private pageLoaded: boolean;
+  private loadFailed: boolean;
+  private alarm_sets: Array<any>;
+  private totals: any;
+
   /* * @ngInject */
-  constructor(backendSrv, alertSrv, monascaClientSrv) {
-    this.alertSrv = alertSrv;
-    this.monasca = monascaClientSrv;
+  public constructor(
+    private backendSrv,
+    private alertSrv,
+    private monascaClientSrv
+  ) {
+    this.backendSrv = backendSrv;
     this.pageLoaded = false;
     this.loadFailed = false;
 
@@ -31,8 +40,8 @@ export class OverviewPageCtrl {
     this.loadAlarmSets();
   }
 
-  loadTotals() {
-    this.monasca
+  private loadTotals() {
+    this.monascaClientSrv
       .countAlarms(["state"])
       .then(data => {
         var colCount = data.columns.indexOf("count");
@@ -61,8 +70,8 @@ export class OverviewPageCtrl {
       });
   }
 
-  loadAlarmSets() {
-    this.monasca
+  private loadAlarmSets() {
+    this.monascaClientSrv
       .countAlarms(["state", "dimension_name", "dimension_value"])
       .then(data => {
         var colCount = data.columns.indexOf("count");
@@ -84,14 +93,16 @@ export class OverviewPageCtrl {
           Object.entries(counts).map(([dimName, entry]) => {
             return [
               dimName,
-              Object.entries(counts[dimName]).map(([dimValue, dimCounts]) => {
-                return {
-                  name: dimValue,
-                  ok_count: dimCounts.OK || 0,
-                  alarm_count: dimCounts.ALARM || 0,
-                  undetermined_count: dimCounts.UNDETERMINED || 0
-                };
-              })
+              Object.entries(counts[dimName]).map(
+                ([dimValue, dimCounts]: any) => {
+                  return {
+                    name: dimValue,
+                    ok_count: dimCounts.OK || 0,
+                    alarm_count: dimCounts.ALARM || 0,
+                    undetermined_count: dimCounts.UNDETERMINED || 0
+                  };
+                }
+              )
             ];
           })
         );
@@ -118,5 +129,3 @@ export class OverviewPageCtrl {
       });
   }
 }
-
-OverviewPageCtrl.templateUrl = "components/overview.html";

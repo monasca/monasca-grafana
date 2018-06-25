@@ -20,6 +20,7 @@
     ],
 
     "rules": {
-        "require-jsdoc": "off"
+        "require-jsdoc": "off",
+        "typescript/no-parameter-properties": "off"
     }
 }

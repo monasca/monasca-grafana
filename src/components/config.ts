@@ -15,7 +15,11 @@
  */
 
 export class MonascaAppConfigCtrl {
-  constructor(backendSrv) {
+  public static templateUrl = "components/config.html";
+  private datasources: Array<String>;
+  public appModel: any;
+
+  public constructor(private backendSrv: any) {
     this.datasources = [];
     if (!this.appModel.jsonData) {
       this.appModel.jsonData = {};
@@ -25,11 +29,10 @@ export class MonascaAppConfigCtrl {
 
     backendSrv
       .get("/api/datasources")
-      .then(response => {
-        console.log(response);
+      .then((response: any) => {
         this.datasources = response
-          .filter(ds => showTypes.indexOf(ds.type) >= 0)
-          .map(ds => ds.name);
+          .filter((ds: any) => showTypes.indexOf(ds.type) >= 0)
+          .map((ds: any) => ds.name);
 
         // If a datasource has not been selected yet, choose the first one.
         if (
@@ -39,10 +42,8 @@ export class MonascaAppConfigCtrl {
           this.appModel.jsonData.datasourceName = this.datasources[0];
         }
       })
-      .catch(err => {
+      .catch((err: any) => {
         throw err;
       });
   }
 }
-
-MonascaAppConfigCtrl.templateUrl = "components/config.html";

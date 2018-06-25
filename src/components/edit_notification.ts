@@ -15,13 +15,27 @@
  */
 
 import appEvents from "app/core/app_events";
+import _ from "lodash";
 
 export class EditNotificationPageCtrl {
+  public static templateUrl = "components/edit_notification.html";
+  private updating: boolean;
+  private updateFailed: boolean;
+  private id: number;
+  private savedNotification: any;
+  private newNotification: any;
+  private saving: boolean;
+  private deleting: boolean;
+  private notificationTypes: Array<any>;
+
   /** @ngInject */
-  constructor($location, alertSrv, monascaClientSrv) {
+  public constructor(
+    private $location,
+    private alertSrv,
+    private monascaClientSrv
+  ) {
     this.$location = $location;
     this.alertSrv = alertSrv;
-    this.monasca = monascaClientSrv;
     this.updating = true;
     this.updateFailed = false;
 
@@ -40,8 +54,8 @@ export class EditNotificationPageCtrl {
     this.loadNotification();
   }
 
-  loadNotificationTypes() {
-    this.monasca
+  private loadNotificationTypes() {
+    this.monascaClientSrv
       .listNotificationTypes()
       .then(types => {
         this.notificationTypes = types;
@@ -57,13 +71,13 @@ export class EditNotificationPageCtrl {
       });
   }
 
-  loadNotification() {
+  private loadNotification() {
     if (!this.id) {
       this.updating = false;
       return;
     }
 
-    this.monasca
+    this.monascaClientSrv
       .getNotification(this.id)
       .then(notification => {
         this.savedNotification = {
@@ -87,11 +101,11 @@ export class EditNotificationPageCtrl {
       });
   }
 
-  saveNotification() {
+  private saveNotification() {
     this.saving = true;
 
     if (this.id) {
-      this.monasca
+      this.monascaClientSrv
         .patchNotification(this.id, this.newNotification)
         .then(notification => {
           this.savedNotification = {
@@ -112,7 +126,7 @@ export class EditNotificationPageCtrl {
           this.saving = false;
         });
     } else {
-      this.monasca
+      this.monascaClientSrv
         .createNotification(this.newNotification)
         .then(notification => {
           this.savedNotification = {
@@ -141,10 +155,10 @@ export class EditNotificationPageCtrl {
     }
   }
 
-  confirmDeleteNotification() {
+  private confirmDeleteNotification() {
     this.deleting = true;
 
-    this.monasca
+    this.monascaClientSrv
       .deleteNotification(this.id)
       .then(() => {
         this.$location.url("plugins/monasca-app/page/notifications");
@@ -162,7 +176,7 @@ export class EditNotificationPageCtrl {
       });
   }
 
-  deleteNotification() {
+  private deleteNotification() {
     appEvents.emit("confirm-modal", {
       title: "Delete",
       text: "Are you sure you want to delete this notification method?",
@@ -175,5 +189,3 @@ export class EditNotificationPageCtrl {
     });
   }
 }
-
-EditNotificationPageCtrl.templateUrl = "components/edit_notification.html";

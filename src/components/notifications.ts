@@ -17,18 +17,21 @@
 import appEvents from "app/core/app_events";
 
 export class NotificationsPageCtrl {
+  public static templateUrl = "components/notifications.html";
+  private pageLoaded: boolean;
+  private loadFailed: boolean;
+  private notifications: Array<any>;
+
   /** @ngInject */
-  constructor(alertSrv, monascaClientSrv) {
-    this.alertSrv = alertSrv;
-    this.monasca = monascaClientSrv;
+  public constructor(private alertSrv, private monascaClientSrv) {
     this.pageLoaded = false;
     this.loadFailed = false;
     this.notifications = [];
     this.loadNotifications();
   }
 
-  loadNotifications() {
-    this.monasca
+  private loadNotifications() {
+    this.monascaClientSrv
       .listNotifications()
       .then(notifications => {
         this.notifications = notifications;
@@ -47,24 +50,24 @@ export class NotificationsPageCtrl {
       });
   }
 
-  setNotificationDeleting(id, deleting) {
+  private setNotificationDeleting(id, deleting) {
     var index = this.notifications.findIndex(n => n.id === id);
     if (index !== -1) {
       this.notifications[index].deleting = true;
     }
   }
 
-  notificationDeleted(id) {
+  private notificationDeleted(id) {
     var index = this.notifications.find(n => n.id === id);
     if (index !== -1) {
       this.notifications.splice(index, 1);
     }
   }
 
-  confirmDeleteNotification(id) {
+  private confirmDeleteNotification(id) {
     this.setNotificationDeleting(id, true);
 
-    this.monasca
+    this.monascaClientSrv
       .deleteNotification(id)
       .then(() => {
         this.notificationDeleted(id);
@@ -80,7 +83,7 @@ export class NotificationsPageCtrl {
       });
   }
 
-  deleteNotification(notification) {
+  private deleteNotification(notification) {
     appEvents.emit("confirm-modal", {
       title: "Delete",
       text: "Are you sure you want to delete this notification method?",
@@ -93,5 +96,3 @@ export class NotificationsPageCtrl {
     });
   }
 }
-
-NotificationsPageCtrl.templateUrl = "components/notifications.html";

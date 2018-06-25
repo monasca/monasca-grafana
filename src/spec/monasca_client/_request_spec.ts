@@ -40,9 +40,7 @@ export function _requestTests() {
         .then(() => done.fail("Invalid operations should throw error"))
         .catch(err => {
           expect(err).toEqual(
-            new Error({
-              message: "Monasca Error Response: " + "Resource not found"
-            })
+            new Error("Monasca Error Response: " + "Resource not found")
           );
           done();
         });

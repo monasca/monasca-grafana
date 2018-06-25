@@ -18,10 +18,37 @@
 import appEvents from "app/core/app_events";
 
 export class AlarmsPageCtrl {
+  public static templateUrl = "components/alarms.html";
+  private metricFilters: Array<any>;
+  private stateFilters: Array<any>;
+  private severityFilters: Array<any>;
+  private defIdFilters: Array<any>;
+  private totalFilters: Array<any>;
+  private queryTracker: Array<any>;
+  private queryString: String;
+  private nameClicked: boolean;
+  private severityClicked: boolean;
+  private stateClicked: boolean;
+  private timeClicked: boolean;
+  private editFilterIndex: number;
+  private alarmCount: number;
+  private show: number;
+  private currentPage: number;
+  private pageSize: number;
+  private pageCount: number;
+  private slicedAlarms: Array<any>;
+  private pageLoaded: boolean;
+  private loadFailed: boolean;
+  private alarms: Array<any>;
+
   /** @ngInject */
-  constructor($scope, $location, alertSrv, monascaClientSrv) {
+  public constructor(
+    private $scope,
+    private $location,
+    private alertSrv,
+    private monascaClientSrv
+  ) {
     this.alertSrv = alertSrv;
-    this.monasca = monascaClientSrv;
 
     this.metricFilters = [];
     this.stateFilters = [{ state: "" }];
@@ -35,7 +62,6 @@ export class AlarmsPageCtrl {
     this.severityClicked = false;
     this.stateClicked = false;
     this.timeClicked = false;
-    this.scope = $scope;
 
     this.editFilterIndex = -1;
     this.alarmCount = 0;
@@ -55,10 +81,6 @@ export class AlarmsPageCtrl {
     this.pageCount = Math.ceil(this.alarmCount / this.pageSize);
     this.slicedAlarms = [];
 
-    this.numberOfPages = function() {
-      return Math.ceil(this.alarms.length / this.pageSize);
-    };
-
     if ("dimensions" in $location.search()) {
       this.metricFilters = $location
         .search()
@@ -75,57 +97,58 @@ export class AlarmsPageCtrl {
     this.loadFailed = false;
     this.alarms = [];
     this.loadAlarms();
-
-    this.suggestDimensionNames = this._suggestDimensionNames.bind(this);
-    this.suggestDimensionValues = this._suggestDimensionValues.bind(this);
   }
 
-  _suggestDimensionNames(query, callback) {
-    this.monasca.listDimensionNames().then(callback);
+  private numberOfPages() {
+    return Math.ceil(this.alarms.length / this.pageSize);
   }
 
-  _suggestDimensionValues(query, callback) {
+  private _suggestDimensionNames(query, callback) {
+    this.monascaClientSrv.listDimensionNames().then(callback);
+  }
+
+  private _suggestDimensionValues(query, callback) {
     var filter = this.metricFilters[this.editFilterIndex];
     if (filter && filter.key) {
-      this.monasca.listDimensionValues(filter.key).then(callback);
+      this.monascaClientSrv.listDimensionValues(filter.key).then(callback);
     }
   }
 
-  editFilter(index) {
+  private editFilter(index) {
     this.editFilterIndex = index;
   }
 
   // Metric Dimension Filter add/remove
 
-  addMetricFilter() {
+  private addMetricFilter() {
     this.metricFilters.push({});
   }
 
-  removeMetricFilter(index) {
+  private removeMetricFilter(index) {
     this.metricFilters.splice(index, 1);
   }
 
   // State Filter add/remove
 
-  addStateFilter() {
+  private addStateFilter() {
     this.stateFilters.push({});
   }
 
-  removeStateFilter(index) {
+  private removeStateFilter(index) {
     this.stateFilters.splice(index, 1);
   }
 
   // Severity Filter add/remove
 
-  addSeverityFilter() {
+  private addSeverityFilter() {
     this.severityFilters.push({});
   }
 
-  removeSeverityFilter(index) {
+  private removeSeverityFilter(index) {
     this.severityFilters.splice(index, 1);
   }
 
-  applyFilter() {
+  private applyFilter() {
     // Check filter is complete before applying.
     if (
       this.metricFilters.every(function(f) {
@@ -138,7 +161,7 @@ export class AlarmsPageCtrl {
     }
   }
 
-  refreshAlarms() {
+  private refreshAlarms() {
     if (this.pageLoaded) {
       this.pageLoaded = false;
       this.loadAlarms();
@@ -146,7 +169,7 @@ export class AlarmsPageCtrl {
     }
   }
 
-  loadAlarms() {
+  private loadAlarms() {
     this.totalFilters = [];
     if (this.metricFilters) {
       for (let i = 0; i < this.metricFilters.length; i++) {
@@ -167,12 +190,12 @@ export class AlarmsPageCtrl {
     }
 
     if (this.defIdFilters.length > 0) {
-      var temp = {};
+      var temp: { alarm_definition_id: number };
       temp.alarm_definition_id = this.defIdFilters[0];
       this.totalFilters.push(temp);
     }
 
-    this.monasca
+    this.monascaClientSrv
       .listAlarms(this.totalFilters)
       .then(alarms => {
         this.alarms = alarms;
@@ -197,7 +220,7 @@ export class AlarmsPageCtrl {
       });
   }
 
-  sliceAlarms() {
+  private sliceAlarms() {
     for (var i = 0; i < this.alarms.length; i++) {
       if (this.currentPage === i) {
         var firstIndex = this.pageSize * (i + 1);
@@ -207,7 +230,7 @@ export class AlarmsPageCtrl {
     }
   }
 
-  sliceReverse() {
+  private sliceReverse() {
     for (var i = 0; i < this.alarms.length; i++) {
       if (this.currentPage === i) {
         var firstIndex = this.pageSize * (i - 1);
@@ -217,24 +240,24 @@ export class AlarmsPageCtrl {
     }
   }
 
-  setAlarmDeleting(id, deleting) {
+  private setAlarmDeleting(id, deleting) {
     var index = this.alarms.findIndex(n => n.id === id);
     if (index !== -1) {
       this.alarms[index].deleting = true;
     }
   }
 
-  alarmDeleted(id) {
+  private alarmDeleted(id) {
     var index = this.alarms.find(n => n.id === id);
     if (index !== -1) {
       this.alarms.splice(index, 1);
     }
   }
 
-  confirmDeleteAlarm(id) {
+  private confirmDeleteAlarm(id) {
     this.setAlarmDeleting(id, true);
 
-    this.monasca
+    this.monascaClientSrv
       .deleteAlarm(id)
       .then(() => {
         this.alarmDeleted(id);
@@ -250,7 +273,7 @@ export class AlarmsPageCtrl {
       });
   }
 
-  deleteAlarm(alarm) {
+  private deleteAlarm(alarm) {
     appEvents.emit("confirm-modal", {
       title: "Delete",
       text: "Are you sure you want to delete this alarm?",
@@ -263,7 +286,7 @@ export class AlarmsPageCtrl {
     });
   }
 
-  sortBySeverityAsc() {
+  private sortBySeverityAsc() {
     for (var i = 0; i < this.queryTracker.length; i++) {
       if (this.queryTracker[i] === "severity desc") {
         this.queryTracker.splice(i, 1);
@@ -275,7 +298,7 @@ export class AlarmsPageCtrl {
     this.queryToString();
   }
 
-  sortBySeverityDesc() {
+  private sortBySeverityDesc() {
     for (var i = 0; i < this.queryTracker.length; i++) {
       if (this.queryTracker[i] === "severity asc") {
         this.queryTracker.splice(i, 1);
@@ -287,7 +310,7 @@ export class AlarmsPageCtrl {
     this.queryToString();
   }
 
-  sortByNameAsc() {
+  private sortByNameAsc() {
     for (var i = 0; i < this.queryTracker.length; i++) {
       if (this.queryTracker[i] === "alarm_definition_name desc") {
         this.queryTracker.splice(i, 1);
@@ -299,7 +322,7 @@ export class AlarmsPageCtrl {
     this.queryToString();
   }
 
-  sortByNameDesc() {
+  private sortByNameDesc() {
     for (var i = 0; i < this.queryTracker.length; i++) {
       if (this.queryTracker[i] === "alarm_definition_name asc") {
         this.queryTracker.splice(i, 1);
@@ -311,7 +334,7 @@ export class AlarmsPageCtrl {
     this.queryToString();
   }
 
-  sortByTimeAsc() {
+  private sortByTimeAsc() {
     for (var i = 0; i < this.queryTracker.length; i++) {
       if (this.queryTracker[i] === "state_updated_timestamp desc") {
         this.queryTracker.splice(i, 1);
@@ -323,7 +346,7 @@ export class AlarmsPageCtrl {
     this.queryToString();
   }
 
-  sortByTimeDesc() {
+  private sortByTimeDesc() {
     for (var i = 0; i < this.queryTracker.length; i++) {
       if (this.queryTracker[i] === "state_updated_timestamp asc") {
         this.queryTracker.splice(i, 1);
@@ -335,7 +358,7 @@ export class AlarmsPageCtrl {
     this.queryToString();
   }
 
-  sortByStateAsc() {
+  private sortByStateAsc() {
     for (var i = 0; i < this.queryTracker.length; i++) {
       if (this.queryTracker[i] === "state desc") {
         this.queryTracker.splice(i, 1);
@@ -347,7 +370,7 @@ export class AlarmsPageCtrl {
     this.queryToString();
   }
 
-  sortByStateDesc() {
+  private sortByStateDesc() {
     for (var i = 0; i < this.queryTracker.length; i++) {
       if (this.queryTracker[i] === "state asc") {
         this.queryTracker.splice(i, 1);
@@ -359,7 +382,7 @@ export class AlarmsPageCtrl {
     this.queryToString();
   }
 
-  queryBuilder() {
+  private queryBuilder() {
     var toSend = "";
     for (var i = 0; i < this.queryTracker.length; i++) {
       if (i !== this.queryTracker.length - 1) {
@@ -368,7 +391,7 @@ export class AlarmsPageCtrl {
         toSend += this.queryTracker[i];
       }
     }
-    this.monasca.sortAlarms(toSend).then(alarms => {
+    this.monascaClientSrv.sortAlarms(toSend).then(alarms => {
       this.alarms = alarms;
       this.slicedAlarms = alarms;
 
@@ -381,11 +404,11 @@ export class AlarmsPageCtrl {
           i
         ].state_updated_timestamp.replace(/.{4}$/g, " ");
       }
-      this.scope.$apply();
+      this.$scope.$apply();
     });
   }
 
-  queryToString() {
+  private queryToString() {
     let tempStr = "";
     for (var i = 0; i < this.queryTracker.length; i++) {
       if (this.queryTracker[i] === "severity asc") {
@@ -418,7 +441,7 @@ export class AlarmsPageCtrl {
     this.queryString = tempStr;
   }
 
-  clearQuery() {
+  private clearQuery() {
     this.queryTracker = [];
     this.queryBuilder();
     this.queryToString();
@@ -428,5 +451,3 @@ export class AlarmsPageCtrl {
     this.timeClicked = false;
   }
 }
-
-AlarmsPageCtrl.templateUrl = "components/alarms.html";

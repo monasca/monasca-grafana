@@ -80,9 +80,7 @@ export function _getDataSourceTests() {
         .then(data => done.fail("No datasource should be returned"))
         .catch(err => {
           expect(err).toEqual(
-            new Error({
-              message: "No datasource selected in app configuration"
-            })
+            new Error("No datasource selected in app configuration")
           );
           done();
         });

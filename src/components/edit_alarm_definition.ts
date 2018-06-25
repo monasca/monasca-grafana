@@ -18,19 +18,23 @@ import appEvents from "app/core/app_events";
 import _ from "lodash";
 
 export class EditAlarmDefinitionPageCtrl {
+  public static templateUrl = "components/edit_alarm_definition.html";
+  private updating: boolean;
+  private updateFailed: boolean;
+  private id: number;
+  private savedAlarmDefinition: any;
+  private newAlarmDefinition: any;
+  private saving: boolean;
+  private deleting: boolean;
+
   /** @ngInject */
-  constructor(
-    $scope,
-    $injector,
-    $location,
-    backendSrv,
-    datasourceSrv,
-    alertSrv,
-    monascaClientSrv
+  public constructor(
+    private $scope,
+    private $injector,
+    private $location,
+    private alertSrv,
+    private monascaClientSrv
   ) {
-    this.$location = $location;
-    this.alertSrv = alertSrv;
-    this.monasca = monascaClientSrv;
     this.updating = true;
     this.updateFailed = false;
 
@@ -46,37 +50,35 @@ export class EditAlarmDefinitionPageCtrl {
     this.saving = false;
     this.deleting = false;
     this.loadAlarmDefinition();
-
-    this.suggestMatchBy = this._suggestMatchBy.bind(this);
   }
 
   // UI Elements
 
-  _suggestMatchBy(query, callback) {
-    this.monasca.listDimensionNames().then(callback);
+  private _suggestMatchBy(query, callback) {
+    this.monascaClientSrv.listDimensionNames().then(callback);
   }
 
-  addMatchBy() {
+  private addMatchBy() {
     if (!this.newAlarmDefinition.match_by) {
       this.newAlarmDefinition.match_by = [];
     }
     this.newAlarmDefinition.match_by.push("");
   }
 
-  removeMatchBy(index) {
+  private removeMatchBy(index) {
     if (!this.newAlarmDefinition.match_by) {
       return;
     }
     this.newAlarmDefinition.match_by.splice(index, 1);
   }
 
-  loadAlarmDefinition() {
+  private loadAlarmDefinition() {
     if (!this.id) {
       this.updating = false;
       return;
     }
 
-    this.monasca
+    this.monascaClientSrv
       .getAlarmDefinition(this.id)
       .then(alarmDefinition => {
         this.savedAlarmDefinition = this.pickKnownFields(alarmDefinition);
@@ -96,7 +98,7 @@ export class EditAlarmDefinitionPageCtrl {
       });
   }
 
-  pickKnownFields(alarmDefinition) {
+  private pickKnownFields(alarmDefinition) {
     return _.pick(alarmDefinition, [
       "name",
       "description",
@@ -106,11 +108,11 @@ export class EditAlarmDefinitionPageCtrl {
     ]);
   }
 
-  saveAlarmDefinition() {
+  private saveAlarmDefinition() {
     this.saving = true;
 
     if (this.id) {
-      this.monasca
+      this.monascaClientSrv
         .patchAlarmDefinition(this.id, this.newAlarmDefinition)
         .then(alarmDefinition => {
           this.savedAlarmDefinition = this.pickKnownFields(alarmDefinition);
@@ -127,7 +129,7 @@ export class EditAlarmDefinitionPageCtrl {
           this.saving = false;
         });
     } else {
-      this.monasca
+      this.monascaClientSrv
         .createAlarmDefinition(this.newAlarmDefinition)
         .then(alarmDefinition => {
           this.savedAlarmDefinition = this.pickKnownFields(alarmDefinition);
@@ -152,10 +154,10 @@ export class EditAlarmDefinitionPageCtrl {
     }
   }
 
-  confirmDeleteAlarmDefinition() {
+  private confirmDeleteAlarmDefinition() {
     this.deleting = true;
 
-    this.monasca
+    this.monascaClientSrv
       .deleteAlarmDefinition(this.id)
       .then(() => {
         this.$location.url("plugins/monasca-app/page/alarm_definitions");
@@ -173,7 +175,7 @@ export class EditAlarmDefinitionPageCtrl {
       });
   }
 
-  deleteAlarmDefinition() {
+  private deleteAlarmDefinition() {
     appEvents.emit("confirm-modal", {
       title: "Delete",
       text: "Are you sure you want to delete this alarm definition method?",
@@ -186,6 +188,3 @@ export class EditAlarmDefinitionPageCtrl {
     });
   }
 }
-
-EditAlarmDefinitionPageCtrl.templateUrl =
-  "components/edit_alarm_definition.html";

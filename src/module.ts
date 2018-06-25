@@ -16,16 +16,16 @@
  */
 
 import coreModule from "app/core/core_module";
-import MonascaClient from "./components/monasca_client";
+import MonascaClient from "src/components/monasca_client";
 
-import { AlarmDefinitionsPageCtrl } from "./components/alarm_definitions";
-import { OverviewPageCtrl } from "./components/overview";
-import { AlarmsPageCtrl } from "./components/alarms";
-import { NotificationsPageCtrl } from "./components/notifications";
-import { EditNotificationPageCtrl } from "./components/edit_notification";
-import { EditAlarmDefinitionPageCtrl } from "./components/edit_alarm_definition";
-import { MonascaAppConfigCtrl } from "./components/config";
-import { AlarmHistoryPageCtrl } from "./components/alarm_history";
+import { AlarmDefinitionsPageCtrl } from "src/components/alarm_definitions";
+import { OverviewPageCtrl } from "src/components/overview";
+import { AlarmsPageCtrl } from "src/components/alarms";
+import { NotificationsPageCtrl } from "src/components/notifications";
+import { EditNotificationPageCtrl } from "src/components/edit_notification";
+import { EditAlarmDefinitionPageCtrl } from "src/components/edit_alarm_definition";
+import { MonascaAppConfigCtrl } from "src/components/config";
+import { AlarmHistoryPageCtrl } from "src/components/alarm_history";
 import { loadPluginCss } from "app/plugins/sdk";
 
 loadPluginCss({
