@@ -5,8 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prettier": "prettier --debug-check 'src/**/*.js' && prettier --write 'src/**/*.js'",
-    "test": "prettier --list-different 'src/**/*.js' && ./node_modules/.bin/eslint 'src/**/*.js' && ./node_modules/.bin/karma start --single-run"
+    "prettier": "prettier --debug-check 'src/**/*.ts' && prettier --write 'src/**/*.ts'",
+    "test": "prettier --list-different 'src/**/*.ts' && ./node_modules/.bin/eslint 'src/**/*.ts' && ./node_modules/.bin/karma start --single-run"
   },
   "repository": {
     "type": "git",
@@ -25,10 +25,13 @@
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",
     "eslint-config-standard": "^11.0.0",
+    "eslint-config-typescript": "^1.0.2",
     "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-prettier": "^2.6.1",
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
+    "eslint-plugin-typescript": "^0.12.0",
     "grafana-sdk-mocks": "github:grafana/grafana-sdk-mocks",
     "grunt": "^0.4.5",
     "grunt-babel": "^6.0.0",
@@ -43,7 +46,8 @@
     "prettier": "^1.13.5",
     "systemjs": "^0.21.4",
     "tslint": "^5.10.0",
-    "typescript": "^2.9.2"
+    "typescript": "^2.9.2",
+    "typescript-eslint-parser": "^16.0.0"
   },
   "dependencies": {
     "lodash": "~4.0.0"
