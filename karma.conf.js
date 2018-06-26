@@ -9,11 +9,13 @@ module.exports = function (config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: ['mocha', 'expect', 'sinon'],
 
     plugins: [
       'karma-chrome-launcher',
-      'karma-jasmine'
+      'karma-mocha',
+      'karma-expect',
+      'karma-sinon'
     ],
 
     // list of files / patterns to load in the browser
@@ -27,6 +29,7 @@ module.exports = function (config) {
       // ======= Source Files ========//
       { pattern: 'dist/components/**/*.js', watched: true, included: false},
       // ======= Spec Files ========//
+      { pattern: 'dist/spec/globals.js', watched: true, included: false},
       { pattern: 'dist/spec/**/*_spec.js', watched: true, included: false},
     ],
 

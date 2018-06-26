@@ -71,5 +71,5 @@ module.exports = function (grunt) {
 
   })
 
-  grunt.registerTask('default', ['clean', 'sass', 'copy', 'ts'])
+  grunt.registerTask('default', ['clean', 'sass', 'copy', 'babel', 'ts'])
 }

@@ -1,5 +1,4 @@
 Error.stackTraceLimit = 0
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000
 
 __karma__.loaded = function () { }
 
