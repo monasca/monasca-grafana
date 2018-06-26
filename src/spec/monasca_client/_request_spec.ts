@@ -1,19 +1,29 @@
 import MonascaClient from "../../components/monasca_client.js";
+import {
+  console,
+  beforeEach,
+  describe,
+  it,
+  sinon,
+  expect
+} from "../globals.js";
 
-export function _requestTests() {
+export function _requestTests(): void {
   var backendSrvMock, datasourceSrvMock, monascaClient;
   beforeEach(() => {
-    backendSrvMock = jasmine.createSpyObj("backendSrvMock", [
-      "get",
-      "datasourceRequest"
-    ]);
-    datasourceSrvMock = jasmine.createSpyObj("datasourceSrvMock", ["get"]);
+    backendSrvMock = {
+      get: sinon.stub(),
+      datasourceRequest: sinon.stub()
+    };
+    datasourceSrvMock = {
+      get: sinon.stub()
+    };
     monascaClient = new MonascaClient(backendSrvMock, datasourceSrvMock);
   });
 
   describe("_request Tests", () => {
-    it("Tests: returns error message", done => {
-      backendSrvMock.get.and.returnValue(
+    it("Tests: returns error message", function(done) {
+      backendSrvMock.get.returns(
         Promise.resolve({
           jsonData: {
             datasourceName: "monasca_datasource"
@@ -21,7 +31,7 @@ export function _requestTests() {
         })
       );
       /* eslint-disable prefer-promise-reject-errors */
-      backendSrvMock.datasourceRequest.and.returnValue(
+      backendSrvMock.datasourceRequest.returns(
         Promise.reject({
           status: 404,
           data: {
@@ -30,20 +40,23 @@ export function _requestTests() {
         })
       );
       /* eslint-enable prefer-promise-reject-errors */
-      datasourceSrvMock.get.and.returnValue(
+      datasourceSrvMock.get.returns(
         Promise.resolve({
           backendSrv: backendSrvMock
         })
       );
+
+      this.timeout(5000);
       monascaClient
         ._request()
-        .then(() => done.fail("Invalid operations should throw error"))
+        .then(() => done("Invalid operations should throw error"))
         .catch(err => {
-          expect(err).toEqual(
+          expect(err).to.eql(
             new Error("Monasca Error Response: " + "Resource not found")
           );
           done();
-        });
+        })
+        .catch(err => done(err));
     });
   });
 }

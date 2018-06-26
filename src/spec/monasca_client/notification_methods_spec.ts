@@ -1,27 +1,37 @@
 import MonascaClient from "../../components/monasca_client.js";
+import {
+  console,
+  beforeEach,
+  describe,
+  it,
+  sinon,
+  expect
+} from "../globals.js";
 
-export function notificationMethodsTests() {
+export function notificationMethodsTests(): void {
   var backendSrvMock, datasourceSrvMock, monascaClient;
   beforeEach(() => {
-    backendSrvMock = jasmine.createSpyObj("backendSrvMock", [
-      "get",
-      "datasourceRequest"
-    ]);
-    datasourceSrvMock = jasmine.createSpyObj("datasourceSrvMock", ["get"]);
+    backendSrvMock = {
+      get: sinon.stub(),
+      datasourceRequest: sinon.stub()
+    };
+    datasourceSrvMock = {
+      get: sinon.stub()
+    };
     monascaClient = new MonascaClient(backendSrvMock, datasourceSrvMock);
   });
 
   describe("Alarm Definitions", () => {
     describe("listNotificationTypes", () => {
       it("Tests: mocks calls, mock parameters, output", done => {
-        backendSrvMock.get.and.returnValue(
+        backendSrvMock.get.returns(
           Promise.resolve({
             jsonData: {
               datasourceName: "monasca_datasource"
             }
           })
         );
-        backendSrvMock.datasourceRequest.and.returnValue(
+        backendSrvMock.datasourceRequest.returns(
           Promise.resolve({
             data: {
               elements: [
@@ -32,7 +42,7 @@ export function notificationMethodsTests() {
             }
           })
         );
-        datasourceSrvMock.get.and.returnValue(
+        datasourceSrvMock.get.returns(
           Promise.resolve({
             datasourceName: "monasca_datasource",
             token: "authentication token",
@@ -42,18 +52,20 @@ export function notificationMethodsTests() {
         );
 
         monascaClient.listNotificationTypes().then(data => {
-          expect(backendSrvMock.datasourceRequest).toHaveBeenCalledWith({
-            method: "GET",
-            url: "proxied/v2.0/notification-methods/types/",
-            params: undefined,
-            data: undefined,
-            headers: {
-              "Content-Type": "application/json",
-              "X-Auth-Token": "authentication token"
-            },
-            withCredentials: true
-          });
-          expect(data).toEqual(["EMAIL", "PAGERDUTY", "WEBHOOK"]);
+          expect(
+            backendSrvMock.datasourceRequest.calledWith({
+              method: "GET",
+              url: "proxied/v2.0/notification-methods/types/",
+              params: undefined,
+              data: undefined,
+              headers: {
+                "Content-Type": "application/json",
+                "X-Auth-Token": "authentication token"
+              },
+              withCredentials: true
+            })
+          ).to.be.ok();
+          expect(data).to.eql(["EMAIL", "PAGERDUTY", "WEBHOOK"]);
           done();
         });
       });
@@ -61,14 +73,14 @@ export function notificationMethodsTests() {
 
     describe("listNotifications", () => {
       it("Tests: mock calls, mock parameters, output", done => {
-        backendSrvMock.get.and.returnValue(
+        backendSrvMock.get.returns(
           Promise.resolve({
             jsonData: {
               datasourceName: "monasca_datasource"
             }
           })
         );
-        backendSrvMock.datasourceRequest.and.returnValue(
+        backendSrvMock.datasourceRequest.returns(
           Promise.resolve({
             data: {
               elements: [
@@ -86,7 +98,7 @@ export function notificationMethodsTests() {
             }
           })
         );
-        datasourceSrvMock.get.and.returnValue(
+        datasourceSrvMock.get.returns(
           Promise.resolve({
             datasourceName: "monasca_datasource",
             token: "authentication token",
@@ -96,18 +108,20 @@ export function notificationMethodsTests() {
         );
 
         monascaClient.listNotifications().then(data => {
-          expect(backendSrvMock.datasourceRequest).toHaveBeenCalledWith({
-            method: "GET",
-            url: "proxied/v2.0/notification-methods/",
-            params: undefined,
-            data: undefined,
-            headers: {
-              "Content-Type": "application/json",
-              "X-Auth-Token": "authentication token"
-            },
-            withCredentials: true
-          });
-          expect(data).toEqual([
+          expect(
+            backendSrvMock.datasourceRequest.calledWith({
+              method: "GET",
+              url: "proxied/v2.0/notification-methods/",
+              params: undefined,
+              data: undefined,
+              headers: {
+                "Content-Type": "application/json",
+                "X-Auth-Token": "authentication token"
+              },
+              withCredentials: true
+            })
+          ).to.be.ok();
+          expect(data).to.eql([
             {
               id: "35cc6f1c-3a29-49fb-a6fc-d9d97d190509",
               type: "EMAIL",
@@ -129,10 +143,10 @@ export function notificationMethodsTests() {
         monascaClient
           .getNotification()
           .then(() =>
-            done.fail("patchAlarmDefinition, no id input, should throw error")
+            done("patchAlarmDefinition, no id input, should throw error")
           )
           .catch(err => {
-            expect(err).toEqual(
+            expect(err).to.eql(
               new Error("no id given to notification methods get request")
             );
             done();
@@ -140,14 +154,14 @@ export function notificationMethodsTests() {
       });
 
       it("Input: notification method id, Tests: mock calls, mock parameters, output", done => {
-        backendSrvMock.get.and.returnValue(
+        backendSrvMock.get.returns(
           Promise.resolve({
             jsonData: {
               datasourceName: "monasca_datasource"
             }
           })
         );
-        backendSrvMock.datasourceRequest.and.returnValue(
+        backendSrvMock.datasourceRequest.returns(
           Promise.resolve({
             data: {
               id: "35cc6f1c-3a29-49fb-a6fc-d9d97d190509",
@@ -156,7 +170,7 @@ export function notificationMethodsTests() {
             }
           })
         );
-        datasourceSrvMock.get.and.returnValue(
+        datasourceSrvMock.get.returns(
           Promise.resolve({
             datasourceName: "monasca_datasource",
             token: "authentication token",
@@ -168,19 +182,21 @@ export function notificationMethodsTests() {
         monascaClient
           .getNotification("35cc6f1c-3a29-49fb-a6fc-d9d97d190509")
           .then(data => {
-            expect(backendSrvMock.datasourceRequest).toHaveBeenCalledWith({
-              method: "GET",
-              url:
-                "proxied/v2.0/notification-methods/35cc6f1c-3a29-49fb-a6fc-d9d97d190509",
-              params: undefined,
-              data: undefined,
-              headers: {
-                "Content-Type": "application/json",
-                "X-Auth-Token": "authentication token"
-              },
-              withCredentials: true
-            });
-            expect(data).toEqual({
+            expect(
+              backendSrvMock.datasourceRequest.calledWith({
+                method: "GET",
+                url:
+                  "proxied/v2.0/notification-methods/35cc6f1c-3a29-49fb-a6fc-d9d97d190509",
+                params: undefined,
+                data: undefined,
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-Auth-Token": "authentication token"
+                },
+                withCredentials: true
+              })
+            ).to.be.ok();
+            expect(data).to.eql({
               id: "35cc6f1c-3a29-49fb-a6fc-d9d97d190509",
               type: "EMAIL",
               address: "stig@stackhpc.com"
@@ -195,10 +211,10 @@ export function notificationMethodsTests() {
         monascaClient
           .patchNotification()
           .then(() =>
-            done.fail("patchNotification, no id input, should throw error")
+            done("patchNotification, no id input, should throw error")
           )
           .catch(err => {
-            expect(err).toEqual(
+            expect(err).to.eql(
               new Error("no id given to notification methods patch request")
             );
             done();
@@ -206,14 +222,14 @@ export function notificationMethodsTests() {
       });
 
       it("Input: notification method id, Tests: mock calls, mock parameters, output", done => {
-        backendSrvMock.get.and.returnValue(
+        backendSrvMock.get.returns(
           Promise.resolve({
             jsonData: {
               datasourceName: "monasca_datasource"
             }
           })
         );
-        backendSrvMock.datasourceRequest.and.returnValue(
+        backendSrvMock.datasourceRequest.returns(
           Promise.resolve({
             data: {
               id: "35cc6f1c-3a29-49fb-a6fc-d9d97d190509",
@@ -222,7 +238,7 @@ export function notificationMethodsTests() {
             }
           })
         );
-        datasourceSrvMock.get.and.returnValue(
+        datasourceSrvMock.get.returns(
           Promise.resolve({
             datasourceName: "monasca_datasource",
             token: "authentication token",
@@ -236,21 +252,23 @@ export function notificationMethodsTests() {
             address: "charana@stackhpc.com"
           })
           .then(data => {
-            expect(backendSrvMock.datasourceRequest).toHaveBeenCalledWith({
-              method: "PATCH",
-              url:
-                "proxied/v2.0/notification-methods/35cc6f1c-3a29-49fb-a6fc-d9d97d190509",
-              params: undefined,
-              data: {
-                address: "charana@stackhpc.com"
-              },
-              headers: {
-                "Content-Type": "application/json",
-                "X-Auth-Token": "authentication token"
-              },
-              withCredentials: true
-            });
-            expect(data).toEqual({
+            expect(
+              backendSrvMock.datasourceRequest.calledWith({
+                method: "PATCH",
+                url:
+                  "proxied/v2.0/notification-methods/35cc6f1c-3a29-49fb-a6fc-d9d97d190509",
+                params: undefined,
+                data: {
+                  address: "charana@stackhpc.com"
+                },
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-Auth-Token": "authentication token"
+                },
+                withCredentials: true
+              })
+            ).to.be.ok();
+            expect(data).to.eql({
               id: "35cc6f1c-3a29-49fb-a6fc-d9d97d190509",
               type: "EMAIL",
               address: "charana@stackhpc.com"
@@ -262,14 +280,14 @@ export function notificationMethodsTests() {
 
     describe("createNotification", () => {
       it("Input: notification method id, Tests: mock calls, mock parameters, output", done => {
-        backendSrvMock.get.and.returnValue(
+        backendSrvMock.get.returns(
           Promise.resolve({
             jsonData: {
               datasourceName: "monasca_datasource"
             }
           })
         );
-        backendSrvMock.datasourceRequest.and.returnValue(
+        backendSrvMock.datasourceRequest.returns(
           Promise.resolve({
             data: {
               id: "35cc6f1c-3a29-49fb-a6fc-d9d97d190509",
@@ -278,7 +296,7 @@ export function notificationMethodsTests() {
             }
           })
         );
-        datasourceSrvMock.get.and.returnValue(
+        datasourceSrvMock.get.returns(
           Promise.resolve({
             datasourceName: "monasca_datasource",
             token: "authentication token",
@@ -293,21 +311,23 @@ export function notificationMethodsTests() {
             address: "stig@stackhpc.com"
           })
           .then(data => {
-            expect(backendSrvMock.datasourceRequest).toHaveBeenCalledWith({
-              method: "POST",
-              url: "proxied/v2.0/notification-methods/",
-              params: undefined,
-              data: {
-                type: "EMAIL",
-                address: "stig@stackhpc.com"
-              },
-              headers: {
-                "Content-Type": "application/json",
-                "X-Auth-Token": "authentication token"
-              },
-              withCredentials: true
-            });
-            expect(data).toEqual({
+            expect(
+              backendSrvMock.datasourceRequest.calledWith({
+                method: "POST",
+                url: "proxied/v2.0/notification-methods/",
+                params: undefined,
+                data: {
+                  type: "EMAIL",
+                  address: "stig@stackhpc.com"
+                },
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-Auth-Token": "authentication token"
+                },
+                withCredentials: true
+              })
+            ).to.be.ok();
+            expect(data).to.eql({
               id: "35cc6f1c-3a29-49fb-a6fc-d9d97d190509",
               type: "EMAIL",
               address: "stig@stackhpc.com"
@@ -322,10 +342,10 @@ export function notificationMethodsTests() {
         monascaClient
           .deleteNotification()
           .then(() =>
-            done.fail("deleteNotification, no id input, should throw error")
+            done("deleteNotification, no id input, should throw error")
           )
           .catch(err => {
-            expect(err).toEqual(
+            expect(err).to.eql(
               new Error("no id given to notification methods delete request")
             );
             done();
@@ -333,19 +353,19 @@ export function notificationMethodsTests() {
       });
 
       it("Input: notification method id, Tests: mock calls, mock parameters, output", done => {
-        backendSrvMock.get.and.returnValue(
+        backendSrvMock.get.returns(
           Promise.resolve({
             jsonData: {
               datasourceName: "monasca_datasource"
             }
           })
         );
-        backendSrvMock.datasourceRequest.and.returnValue(
+        backendSrvMock.datasourceRequest.returns(
           Promise.resolve({
             data: undefined
           })
         );
-        datasourceSrvMock.get.and.returnValue(
+        datasourceSrvMock.get.returns(
           Promise.resolve({
             datasourceName: "monasca_datasource",
             token: "authentication token",
@@ -357,19 +377,21 @@ export function notificationMethodsTests() {
         monascaClient
           .deleteNotification("35cc6f1c-3a29-49fb-a6fc-d9d97d190509")
           .then(data => {
-            expect(backendSrvMock.datasourceRequest).toHaveBeenCalledWith({
-              method: "DELETE",
-              url:
-                "proxied/v2.0/notification-methods/35cc6f1c-3a29-49fb-a6fc-d9d97d190509",
-              params: undefined,
-              data: undefined,
-              headers: {
-                "Content-Type": "application/json",
-                "X-Auth-Token": "authentication token"
-              },
-              withCredentials: true
-            });
-            expect(data).toEqual(undefined);
+            expect(
+              backendSrvMock.datasourceRequest.calledWith({
+                method: "DELETE",
+                url:
+                  "proxied/v2.0/notification-methods/35cc6f1c-3a29-49fb-a6fc-d9d97d190509",
+                params: undefined,
+                data: undefined,
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-Auth-Token": "authentication token"
+                },
+                withCredentials: true
+              })
+            ).to.be.ok();
+            expect(data).to.eql(undefined);
             done();
           });
       });
