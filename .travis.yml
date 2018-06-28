@@ -1,21 +1,15 @@
 before_install:
   - npm install -g npm@latest
-install:
-  - npm install --no-optional
-  - npm dedupe
-  - npm install -g grunt
+  # Setup Grafana Repo
+  - cd /home/travis/build
+  - git clone https://github.com/grafana/grafana.git
+  - cd grafana && git reset --hard d09749eaaa340a3b5601f46e693b7246d1313edb
+  # Move plugin into grafana's public folder
+  - cp -r /home/travis/build/$TRAVIS_REPO_SLUG /home/travis/build/grafana/public/app/plugins
+script:
+  - ./node_modules/karma/bin/karma start --single-run
 language: node_js
 node_js:
   - 10.3.0
-
-# Configure Headless Chrome
-sudo: required
-dist: trusty
-addons:
-    chrome: stable
-before_script:
-    - sudo chown root /opt/google/chrome/chrome-sandbox
-    - sudo chmod 4755 /opt/google/chrome/chrome-sandbox
-    - grunt
 
 

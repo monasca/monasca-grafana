@@ -1,4 +1,4 @@
-import MonascaClient from "../../components/monasca_client.js";
+import MonascaClient from "../../components/monasca_client";
 import {
   console,
   beforeEach,

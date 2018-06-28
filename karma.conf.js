@@ -30,7 +30,7 @@ module.exports = function (config) {
       { pattern: 'dist/components/**/*.js', watched: true, included: false},
       // ======= Spec Files ========//
       { pattern: 'dist/spec/globals.js', watched: true, included: false},
-      { pattern: 'dist/spec/**/*_spec.js', watched: true, included: false},
+      { pattern: 'dist/spec/**/*_specs.js', watched: true, included: false},
     ],
 
     // list of files / patterns to exclude

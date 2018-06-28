@@ -1,4 +1,4 @@
-import MonascaClient from "../../components/monasca_client.js";
+import MonascaClient from "../../components/monasca_client";
 import {
   console,
   beforeEach,
@@ -89,9 +89,8 @@ export function _getDataSourceTests(): void {
         ._getDataSource()
         .then(data => done("No datasource should be returned"))
         .catch(err => {
-          expect(err).to.eql(
-            new Error("No datasource selected in app configuration")
-          );
+          expect(err).to.be.an(Error);
+          expect(err.message).to.eql("No datasource selected in app configuration");
           done();
         });
     });

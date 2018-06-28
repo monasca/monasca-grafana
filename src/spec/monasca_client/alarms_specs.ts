@@ -1,4 +1,4 @@
-import MonascaClient from "../../components/monasca_client.js";
+import MonascaClient from "../../components/monasca_client";
 import {
   console,
   beforeEach,
@@ -140,9 +140,7 @@ export function alarmsTests(): void {
           .deleteAlarm()
           .then(() => done("Should throw error on no input"))
           .catch(err => {
-            expect(err).to.eql(
-              new Error("No id given to alarm resource delete request")
-            );
+            expect(err.message).to.equal("No id given to alarm resource delete request");
             done();
           });
       });
@@ -248,9 +246,8 @@ export function alarmsTests(): void {
           .getAlarm()
           .then(() => done("getAlarm throws error on no id"))
           .catch(err => {
-            expect(err).to.eql(
-              new Error("No id given to alarm resource get request")
-            );
+            expect(err).to.be.an(Error);
+            expect(err.message).to.eql("No id given to alarm resource get request");
             done();
           });
       });
@@ -328,10 +325,9 @@ export function alarmsTests(): void {
         monascaClient
           .getAlarmHistory()
           .then(data => done("getAlarmHistory no input should throw error "))
-          .catch(data => {
-            expect(data).to.eql(
-              new Error("no id given to alarm history get request")
-            );
+          .catch(err => {
+            expect(err).to.be.an(Error);
+            expect(err.message).to.equal("no id given to alarm history get request");
             done();
           });
       });
