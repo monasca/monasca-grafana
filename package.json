@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "prettier": "prettier --debug-check 'src/**/*.ts' && prettier --write 'src/**/*.ts'",
-    "test": "prettier --list-different 'src/**/*.ts' && ./node_modules/.bin/eslint 'src/**/*.ts' && ./node_modules/.bin/karma start --single-run"
+    "test": "./node_modules/.bin/prettier --list-different 'src/**/*.ts' && ./node_modules/.bin/eslint 'src/**/*.ts'"
   },
   "repository": {
     "type": "git",

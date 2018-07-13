@@ -8,6 +8,9 @@ before_install:
   - cp -r /home/travis/build/$TRAVIS_REPO_SLUG /home/travis/build/grafana/public/app/plugins
 script:
   - ./node_modules/karma/bin/karma start --single-run
+  - cd /home/travis/build/$TRAVIS_REPO_SLUG
+  - npm install
+  - npm run test
 language: node_js
 node_js:
   - 10.3.0
