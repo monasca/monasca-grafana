@@ -5,7 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/karma start --single-run"
+    "prettier": "prettier --debug-check 'src/**/*.js' && prettier --write 'src/**/*.js'",
+    "test": "prettier --list-different 'src/**/*.js' && ./node_modules/.bin/eslint 'src/**/*.js' && ./node_modules/.bin/karma start --single-run"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,13 @@
     "babel-core": "^6.26.3",
     "babel-plugin-transform-es2015-modules-systemjs": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
+    "eslint": "^4.19.1",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0",
     "grunt": "^0.4.5",
     "grunt-babel": "^6.0.0",
     "grunt-contrib-clean": "^0.6.0",
@@ -29,6 +37,7 @@
     "karma": "^2.0.2",
     "karma-chrome-launcher": "^2.2.0",
     "karma-jasmine": "^1.1.2",
+    "prettier": "^1.13.5",
     "systemjs": "^0.21.4"
   },
   "dependencies": {

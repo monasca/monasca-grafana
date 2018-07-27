@@ -1,0 +1,19 @@
+{
+    "globals": {
+        "jasmine": false,
+        "__karma__": false,
+        "System": false,
+        "SystemJS": false,
+        "_": false,
+        "beforeEach": false,
+        "describe": false,
+        "expect": false,
+        "it": false
+    },
+
+    "extends": [
+        "standard",
+        "prettier",
+        "prettier/standard"
+    ]
+}

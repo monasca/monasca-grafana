@@ -1,13 +1,12 @@
-module.exports = function(grunt) {
-
-  grunt.loadNpmTasks('grunt-babel');
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-sass');
+module.exports = function (grunt) {
+  grunt.loadNpmTasks('grunt-babel')
+  grunt.loadNpmTasks('grunt-contrib-clean')
+  grunt.loadNpmTasks('grunt-contrib-copy')
+  grunt.loadNpmTasks('grunt-sass')
 
   grunt.initConfig({
 
-    clean: ["dist"],
+    clean: ['dist'],
 
     copy: {
       src_to_dist: {
@@ -19,7 +18,7 @@ module.exports = function(grunt) {
       pluginDef: {
         expand: true,
         src: ['README.md'],
-        dest: 'dist',
+        dest: 'dist'
       }
     },
 
@@ -28,14 +27,14 @@ module.exports = function(grunt) {
         files: ['src/**/*', 'README.md'],
         tasks: ['default'],
         options: {spawn: false}
-      },
+      }
     },
 
     babel: {
       options: {
         sourceMap: true,
-        presets:  ["es2015"],
-        plugins: ["transform-es2015-modules-systemjs"]
+        presets: ['es2015'],
+        plugins: ['transform-es2015-modules-systemjs']
       },
       dist: {
         files: [{
@@ -43,9 +42,9 @@ module.exports = function(grunt) {
           expand: true,
           src: ['**/*.js'],
           dest: 'dist',
-          ext:'.js'
+          ext: '.js'
         }]
-      },
+      }
     },
 
     sass: {
@@ -54,13 +53,13 @@ module.exports = function(grunt) {
       },
       dist: {
         files: {
-          "dist/css/monasca.dark.css": "src/sass/monasca.dark.scss",
-          "dist/css/monasca.light.css": "src/sass/monasca.light.scss",
+          'dist/css/monasca.dark.css': 'src/sass/monasca.dark.scss',
+          'dist/css/monasca.light.css': 'src/sass/monasca.light.scss'
         }
       }
     }
 
-  });
+  })
 
-  grunt.registerTask('default', ['clean', 'sass', 'copy', 'babel']);
-};
+  grunt.registerTask('default', ['clean', 'sass', 'copy', 'babel'])
+}

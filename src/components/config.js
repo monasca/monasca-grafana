@@ -21,21 +21,28 @@ export class MonascaAppConfigCtrl {
       this.appModel.jsonData = {};
     }
 
-    var show_types = ['monasca-grafana-datasource', 'monasca-datasource'];
+    var showTypes = ["monasca-grafana-datasource", "monasca-datasource"];
 
-    backendSrv.get('/api/datasources')
+    backendSrv
+      .get("/api/datasources")
       .then(response => {
-	console.log(response);
-	this.datasources = response
-	  .filter(ds => show_types.indexOf(ds.type) >= 0)
-	  .map(ds => ds.name);
+        console.log(response);
+        this.datasources = response
+          .filter(ds => showTypes.indexOf(ds.type) >= 0)
+          .map(ds => ds.name);
 
-	// If a datasource has not been selected yet, choose the first one.
-	if (!this.appModel.jsonData.datasourceName && this.datasources.length > 0) {
-	  this.appModel.jsonData.datasourceName = this.datasources[0];
-	}
+        // If a datasource has not been selected yet, choose the first one.
+        if (
+          !this.appModel.jsonData.datasourceName &&
+          this.datasources.length > 0
+        ) {
+          this.appModel.jsonData.datasourceName = this.datasources[0];
+        }
       })
-      .catch(err => { throw err; });
+      .catch(err => {
+        throw err;
+      });
   }
 }
-MonascaAppConfigCtrl.templateUrl = 'components/config.html';
+
+MonascaAppConfigCtrl.templateUrl = "components/config.html";

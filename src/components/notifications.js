@@ -14,13 +14,12 @@
  *   limitations under the License.
  */
 
-import appEvents from 'app/core/app_events';
+import appEvents from "app/core/app_events";
 
 export class NotificationsPageCtrl {
-
   /** @ngInject */
   constructor(alertSrv, monascaClientSrv) {
-    this.alertSrv = alertSrv
+    this.alertSrv = alertSrv;
     this.monasca = monascaClientSrv;
     this.pageLoaded = false;
     this.loadFailed = false;
@@ -29,14 +28,23 @@ export class NotificationsPageCtrl {
   }
 
   loadNotifications() {
-    this.monasca.listNotifications().then(notifications => {
-      this.notifications = notifications;
-    }).catch(err => {
-      this.alertSrv.set("Failed to get fetch notification methods.", err.message, 'error', 10000);
-      this.loadFailed = true;
-    }).then(() => {
-      this.pageLoaded = true;
-    });
+    this.monasca
+      .listNotifications()
+      .then(notifications => {
+        this.notifications = notifications;
+      })
+      .catch(err => {
+        this.alertSrv.set(
+          "Failed to get fetch notification methods.",
+          err.message,
+          "error",
+          10000
+        );
+        this.loadFailed = true;
+      })
+      .then(() => {
+        this.pageLoaded = true;
+      });
   }
 
   setNotificationDeleting(id, deleting) {
@@ -56,18 +64,26 @@ export class NotificationsPageCtrl {
   confirmDeleteNotification(id) {
     this.setNotificationDeleting(id, true);
 
-    this.monasca.deleteNotification(id).then(() => {
-      this.notificationDeleted(id);
-    }).catch(err => {
-      this.setNotificationDeleting(id, false);
-      this.alertSrv.set("Failed to delete notification method.", err.message, 'error', 10000);
-    });
+    this.monasca
+      .deleteNotification(id)
+      .then(() => {
+        this.notificationDeleted(id);
+      })
+      .catch(err => {
+        this.setNotificationDeleting(id, false);
+        this.alertSrv.set(
+          "Failed to delete notification method.",
+          err.message,
+          "error",
+          10000
+        );
+      });
   }
 
   deleteNotification(notification) {
-    appEvents.emit('confirm-modal', {
-      title: 'Delete',
-      text: 'Are you sure you want to delete this notification method?',
+    appEvents.emit("confirm-modal", {
+      title: "Delete",
+      text: "Are you sure you want to delete this notification method?",
       text2: notification.name,
       yesText: "Delete",
       icon: "fa-trash",
@@ -78,4 +94,4 @@ export class NotificationsPageCtrl {
   }
 }
 
-NotificationsPageCtrl.templateUrl = 'components/notifications.html';
+NotificationsPageCtrl.templateUrl = "components/notifications.html";

@@ -15,10 +15,9 @@
  *   limitations under the License.
  */
 
-import appEvents from 'app/core/app_events';
+import appEvents from "app/core/app_events";
 
 export class AlarmDefinitionsPageCtrl {
-
   /** @ngInject */
   constructor(alertSrv, monascaClientSrv) {
     this.alertSrv = alertSrv;
@@ -30,76 +29,104 @@ export class AlarmDefinitionsPageCtrl {
   }
 
   loadAlarmDefinitions() {
-    this.monasca.listAlarmDefinitions().then(alarm_definitions => {
-      this.alarm_definitions = alarm_definitions;
-    }).catch(err => {
-      this.alertSrv.set("Failed to get fetch alarm definitions.", err.message, 'error', 10000);
-      this.loadFailed = true;
-    }).then(() => {
-      this.pageLoaded = true;
-    });
+    this.monasca
+      .listAlarmDefinitions()
+      .then(alarmDefinitions => {
+        this.alarmDefinitions = alarmDefinitions;
+      })
+      .catch(err => {
+        this.alertSrv.set(
+          "Failed to get fetch alarm definitions.",
+          err.message,
+          "error",
+          10000
+        );
+        this.loadFailed = true;
+      })
+      .then(() => {
+        this.pageLoaded = true;
+      });
   }
 
-  setAlarmDefinitionActionsEnabled(id, actions_enabled) {
-    var index = this.alarm_definitions.findIndex(n => n.id === id);
+  setAlarmDefinitionActionsEnabled(id, actionsEnabled) {
+    var index = this.alarmDefinitions.findIndex(n => n.id === id);
     if (index !== -1) {
-      this.alarm_definitions[index].actions_enabled = actions_enabled;
+      this.alarmDefinitions[index].actionsEnabled = actionsEnabled;
     }
   }
 
   setAlarmDefinitionDeleting(id, deleting) {
-    var index = this.alarm_definitions.findIndex(n => n.id === id);
+    var index = this.alarmDefinitions.findIndex(n => n.id === id);
     if (index !== -1) {
-      this.alarm_definitions[index].deleting = deleting;
+      this.alarmDefinitions[index].deleting = deleting;
     }
   }
 
   alarmDefinitionDeleted(id) {
-    var index = this.alarm_definitions.find(n => n.id === id);
+    var index = this.alarmDefinitions.find(n => n.id === id);
     if (index !== -1) {
-      this.alarm_definitions.splice(index, 1);
+      this.alarmDefinitions.splice(index, 1);
     }
   }
 
   setAlarmDefinitionEnabling(id, enabling) {
-    var index = this.alarm_definitions.findIndex(n => n.id === id);
+    var index = this.alarmDefinitions.findIndex(n => n.id === id);
     if (index !== -1) {
-      this.alarm_definitions[index].enabling = enabling;
+      this.alarmDefinitions[index].enabling = enabling;
     }
   }
 
-  confirmEnableAlarmDefinition(id, actions_enabled) {
+  confirmEnableAlarmDefinition(id, actionsEnabled) {
     this.setAlarmDefinitionEnabling(id, true);
 
-    this.monasca.enableAlarmDefinition(id, actions_enabled).then(alarm_definition => {
-      this.setAlarmDefinitionActionsEnabled(id, alarm_definition.actions_enabled);
-    }).catch(err => {
-      this.alertSrv.set("Failed to enable or disable alarm definition.", err.message, 'error', 10000);
-    }).then(() => {
-      this.setAlarmDefinitionEnabling(id, false);
-    });
-
+    this.monasca
+      .enableAlarmDefinition(id, actionsEnabled)
+      .then(alarmDefinition => {
+        this.setAlarmDefinitionActionsEnabled(
+          id,
+          alarmDefinition.actions_enabled
+        );
+      })
+      .catch(err => {
+        this.alertSrv.set(
+          "Failed to enable or disable alarm definition.",
+          err.message,
+          "error",
+          10000
+        );
+      })
+      .then(() => {
+        this.setAlarmDefinitionEnabling(id, false);
+      });
   }
 
-  enableAlarmDefinition(alarm_definition, actions_enabled) {
-    this.confirmEnableAlarmDefinition(alarm_definition.id, actions_enabled);
+  enableAlarmDefinition(alarmDefinition, actionsEnabled) {
+    this.confirmEnableAlarmDefinition(alarmDefinition.id, actionsEnabled);
   }
 
   confirmDeleteAlarmDefinition(id) {
     this.setAlarmDefinitionDeleting(id, true);
 
-    this.monasca.deleteAlarmDefinition(id).then(() => {
-      this.alarmDefinitionDeleted(id);
-    }).catch(err => {
-      this.setAlarmDefinitionDeleting(id, false);
-      this.alertSrv.set("Failed to delete alarm definition.", err.message, 'error', 10000);
-    });
+    this.monasca
+      .deleteAlarmDefinition(id)
+      .then(() => {
+        this.alarmDefinitionDeleted(id);
+      })
+      .catch(err => {
+        this.setAlarmDefinitionDeleting(id, false);
+        this.alertSrv.set(
+          "Failed to delete alarm definition.",
+          err.message,
+          "error",
+          10000
+        );
+      });
   }
 
   deleteAlarmDefinition(definition) {
-    appEvents.emit('confirm-modal', {
-      title: 'Delete',
-      text: 'Are you sure you want to delete this alarm definition?',
+    appEvents.emit("confirm-modal", {
+      title: "Delete",
+      text: "Are you sure you want to delete this alarm definition?",
       text2: definition.name,
       yesText: "Delete",
       icon: "fa-trash",
@@ -108,6 +135,5 @@ export class AlarmDefinitionsPageCtrl {
       }
     });
   }
-
 }
-AlarmDefinitionsPageCtrl.templateUrl = 'components/alarm_definitions.html';
+AlarmDefinitionsPageCtrl.templateUrl = "components/alarm_definitions.html";
