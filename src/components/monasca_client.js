@@ -41,62 +41,16 @@ export default class MonascaClient {
 
 
   // Alarms
-
-  listAlarms(dimensions) {
+  listAlarms(query_parameters) {
     var params = {};
-    params.metric_dimensions = "";
-    params.state = "";
-    params.severity = "";
-    params.sort_by = "";
+    params.metric_dimensions = query_parameters.metric_dimensions ? query_parameters.metric_dimensions.join(",") : undefined;
+    params.state = query_parameters.state ? query_parameters.state.join("|") : undefined;
+    params.severity = query_parameters.severity ? query_parameters.severity.join("|") : undefined;
+    params.alarm_definition_id = query_parameters.alarm_definition_id ? query_parameters.alarm_definition_id : undefined;
+    params.sort_by = query_parameters.sort_by ? query_parameters.sort_by.join(",") : undefined;
 
-    if (dimensions) {
-      for(var i = 0; i < dimensions.length; i++){
-        if(dimensions[i].metric_dimensions){
-          if(params.metric_dimensions == ""){
-            params.metric_dimensions = dimensions[i].metric_dimensions;
-          }
-          else{
-            params.metric_dimensions += "," + dimensions[i].metric_dimensions;
-          }
-
-        }
-
-        if(dimensions[i].state){
-          if(params.state == ""){
-            params.state = dimensions[i].state;
-          }
-          else{
-            params.state += "|" + dimensions[i].state;
-          }
-
-        }
-
-        if(dimensions[i].severity){
-          if(params.severity == ""){
-            params.severity = dimensions[i].severity;
-          }
-          else{
-            params.severity += "|" + dimensions[i].severity;
-          }
-
-        }
-
-        if(dimensions[i].alarm_definition_id){
-          params.alarm_definition_id = dimensions[i].alarm_definition_id;
-        }
-
-        if(dimensions[i].sort_by){
-          if(params.sort_by == ""){
-            params.sort_by = dimensions[i].sort_by;
-          }
-          else{
-            params.sort_by += "," + dimensions[i].sort_by;
-          }
-        }
-      }
     return this._get('/v2.0/alarms/', params)
       .then(resp => resp.data.elements)
-    }
   }
 
   deleteAlarm(id) {
