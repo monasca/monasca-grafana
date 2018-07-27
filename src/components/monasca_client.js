@@ -27,7 +27,7 @@ export default class MonascaClient {
   // Dimensions
 
   listDimensionNames() {
-    return this._get('/v2.0/metrics/dimensions/names')
+    return this._get('/v2.0/metrics/dimensions/names/')
       .then(resp => resp.data.elements.map(e => e.dimension_name))
   }
 
@@ -35,7 +35,7 @@ export default class MonascaClient {
     var params = {
       dimension_name: dimension_name
     };
-    return this._get('/v2.0/metrics/dimensions/names/values', params)
+    return this._get('/v2.0/metrics/dimensions/names/values/', params)
       .then(resp => resp.data.elements.map(e => e.dimension_value))
   }
 
