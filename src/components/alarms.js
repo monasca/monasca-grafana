@@ -15,18 +15,14 @@
  *   limitations under the License.
  */
 
-import config from 'app/core/config';
 import appEvents from 'app/core/app_events';
-import MonascaClient from './monasca_client';
-
 
 export class AlarmsPageCtrl {
 
   /** @ngInject */
-  constructor($scope, $injector, $location, backendSrv, datasourceSrv,
-              alertSrv) {
+  constructor($scope, $location, alertSrv, monascaClientSrv) {
     this.alertSrv = alertSrv
-    this.monasca = new MonascaClient(backendSrv, datasourceSrv);
+    this.monasca = monascaClientSrv;
 
     this.metricFilters = [];
     this.stateFilters = [{state:""}];
@@ -101,7 +97,6 @@ export class AlarmsPageCtrl {
   }
 
   removeMetricFilter(index) {
-    var filter = this.metricFilters[index];
     this.metricFilters.splice(index, 1);
   }
 
@@ -112,7 +107,6 @@ export class AlarmsPageCtrl {
   }
 
   removeStateFilter(index) {
-    var filter = this.stateFilters[index];
     this.stateFilters.splice(index, 1);
   }
 
@@ -123,7 +117,6 @@ export class AlarmsPageCtrl {
   }
 
   removeSeverityFilter(index) {
-    var filter = this.severityFilters[index];
     this.severityFilters.splice(index, 1);
   }
 

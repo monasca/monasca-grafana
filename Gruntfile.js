@@ -1,9 +1,9 @@
 module.exports = function(grunt) {
 
-  require('load-grunt-tasks')(grunt);
-
-  grunt.loadNpmTasks('grunt-execute');
+  grunt.loadNpmTasks('grunt-babel');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-sass');
 
   grunt.initConfig({
 
@@ -35,7 +35,7 @@ module.exports = function(grunt) {
       options: {
         sourceMap: true,
         presets:  ["es2015"],
-        plugins: ['transform-es2015-modules-systemjs', "transform-es2015-for-of"],
+        plugins: ["transform-es2015-modules-systemjs"]
       },
       dist: {
         files: [{
