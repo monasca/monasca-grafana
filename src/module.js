@@ -15,25 +15,25 @@
  *   limitations under the License.
  */
 
-import coreModule from 'app/core/core_module';
-import MonascaClient from './components/monasca_client'
+import coreModule from "app/core/core_module";
+import MonascaClient from "./components/monasca_client";
 
-import {AlarmDefinitionsPageCtrl} from './components/alarm_definitions';
-import {OverviewPageCtrl} from './components/overview';
-import {AlarmsPageCtrl} from './components/alarms';
-import {NotificationsPageCtrl} from './components/notifications';
-import {EditNotificationPageCtrl} from './components/edit_notification';
-import {EditAlarmDefinitionPageCtrl} from './components/edit_alarm_definition';
-import {MonascaAppConfigCtrl} from './components/config';
-import {AlarmHistoryPageCtrl} from './components/alarm_history';
-import {loadPluginCss} from 'app/plugins/sdk';
+import { AlarmDefinitionsPageCtrl } from "./components/alarm_definitions";
+import { OverviewPageCtrl } from "./components/overview";
+import { AlarmsPageCtrl } from "./components/alarms";
+import { NotificationsPageCtrl } from "./components/notifications";
+import { EditNotificationPageCtrl } from "./components/edit_notification";
+import { EditAlarmDefinitionPageCtrl } from "./components/edit_alarm_definition";
+import { MonascaAppConfigCtrl } from "./components/config";
+import { AlarmHistoryPageCtrl } from "./components/alarm_history";
+import { loadPluginCss } from "app/plugins/sdk";
 
 loadPluginCss({
-  dark: 'plugins/monasca-app/css/monasca.dark.css',
-  light: 'plugins/monasca-app/css/monasca.light.css'
+  dark: "plugins/monasca-app/css/monasca.dark.css",
+  light: "plugins/monasca-app/css/monasca.light.css"
 });
 
-coreModule.service('monascaClientSrv', MonascaClient)
+coreModule.service("monascaClientSrv", MonascaClient);
 
 export {
   MonascaAppConfigCtrl as ConfigCtrl,

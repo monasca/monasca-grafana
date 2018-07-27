@@ -14,10 +14,9 @@
  *   limitations under the License.
  */
 
-import appEvents from 'app/core/app_events';
+import appEvents from "app/core/app_events";
 
 export class EditNotificationPageCtrl {
-
   /** @ngInject */
   constructor($location, alertSrv, monascaClientSrv) {
     this.$location = $location;
@@ -27,107 +26,146 @@ export class EditNotificationPageCtrl {
     this.updateFailed = false;
 
     this.id = null;
-    if ('id' in this.$location.search()) {
+    if ("id" in this.$location.search()) {
       this.id = this.$location.search().id;
     }
 
     this.savedNotification = null;
-    this.newNotification = {}
+    this.newNotification = {};
     this.saving = false;
     this.deleting = false;
     this.notificationTypes = [];
-    
+
     this.loadNotificationTypes();
     this.loadNotification();
   }
 
   loadNotificationTypes() {
-    this.monasca.listNotificationTypes().then(types => {
-      this.notificationTypes = types;
-      this.newNotification.type = _.first(this.notificationTypes)
-    }).catch(err => {
-      this.alertSrv.set("Failed to get fetch notification method types.", err.message, 'error', 10000);
-    });
+    this.monasca
+      .listNotificationTypes()
+      .then(types => {
+        this.notificationTypes = types;
+        this.newNotification.type = _.first(this.notificationTypes);
+      })
+      .catch(err => {
+        this.alertSrv.set(
+          "Failed to get fetch notification method types.",
+          err.message,
+          "error",
+          10000
+        );
+      });
   }
-  
+
   loadNotification() {
     if (!this.id) {
       this.updating = false;
       return;
     }
 
-    this.monasca.getNotification(this.id)
+    this.monasca
+      .getNotification(this.id)
       .then(notification => {
-	this.savedNotification = {
-	  name: notification.name,
-	  type: notification.type,
-	  address: notification.address
-	};
-	this.newNotification = this.savedNotification;
-      }).catch(err => {
-	this.alertSrv.set("Failed to get fetch notification method.", err.message, 'error', 10000);
-	this.updateFailed = true;
-      }).then(() => {
-	this.updating = false;
+        this.savedNotification = {
+          name: notification.name,
+          type: notification.type,
+          address: notification.address
+        };
+        this.newNotification = this.savedNotification;
+      })
+      .catch(err => {
+        this.alertSrv.set(
+          "Failed to get fetch notification method.",
+          err.message,
+          "error",
+          10000
+        );
+        this.updateFailed = true;
+      })
+      .then(() => {
+        this.updating = false;
       });
-  } 
+  }
 
   saveNotification() {
     this.saving = true;
-    
-    if (this.id) {
-      this.monasca.patchNotification(this.id, this.newNotification)
-	.then(notification => {
-	  
-	  this.savedNotification = {
-	    name: notification.name,
-	    type: notification.type,
-	    address: notification.address
-	  };
-	  
-	}).catch(err => {
-	  this.alertSrv.set("Failed to get save notification method.", err.message, 'error', 10000);
-	}).then(() => {
-	  this.saving = false;
-	});
-    }
-    else {
-      this.monasca.createNotification(this.newNotification)
-	.then(notification => {
-	  this.savedNotification = {
-	    name: notification.name,
-	    type: notification.type,
-	    address: notification.address
-	  };
-	  this.id = notification.id;
 
-	  // Want the address bar to update. Don't really have to reload though.
-	  this.$location.url('plugins/monasca-app/page/edit-notification?id=' + this.id);
-	  
-	}).catch(err => {
-	  this.alertSrv.set("Failed to get create notification method.", err.message, 'error', 10000);
-	}).then(() => {
-	  this.saving = false;
-	});
+    if (this.id) {
+      this.monasca
+        .patchNotification(this.id, this.newNotification)
+        .then(notification => {
+          this.savedNotification = {
+            name: notification.name,
+            type: notification.type,
+            address: notification.address
+          };
+        })
+        .catch(err => {
+          this.alertSrv.set(
+            "Failed to get save notification method.",
+            err.message,
+            "error",
+            10000
+          );
+        })
+        .then(() => {
+          this.saving = false;
+        });
+    } else {
+      this.monasca
+        .createNotification(this.newNotification)
+        .then(notification => {
+          this.savedNotification = {
+            name: notification.name,
+            type: notification.type,
+            address: notification.address
+          };
+          this.id = notification.id;
+
+          // Want the address bar to update. Don't really have to reload though.
+          this.$location.url(
+            "plugins/monasca-app/page/edit-notification?id=" + this.id
+          );
+        })
+        .catch(err => {
+          this.alertSrv.set(
+            "Failed to get create notification method.",
+            err.message,
+            "error",
+            10000
+          );
+        })
+        .then(() => {
+          this.saving = false;
+        });
     }
   }
-  
+
   confirmDeleteNotification() {
     this.deleting = true;
-    
-    this.monasca.deleteNotification(this.id).then(() => {
-      this.$location.url('plugins/monasca-app/page/notifications');
-    }).catch(err => {
-      this.alertSrv.set("Failed to get delete notification method.", err.message, 'error', 10000);
-    }).then(() => {
-      this.deleting = false;
-    });
+
+    this.monasca
+      .deleteNotification(this.id)
+      .then(() => {
+        this.$location.url("plugins/monasca-app/page/notifications");
+      })
+      .catch(err => {
+        this.alertSrv.set(
+          "Failed to get delete notification method.",
+          err.message,
+          "error",
+          10000
+        );
+      })
+      .then(() => {
+        this.deleting = false;
+      });
   }
 
   deleteNotification() {
-    appEvents.emit('confirm-modal', {
-      title: 'Delete',
-      text: 'Are you sure you want to delete this notification method?',
+    appEvents.emit("confirm-modal", {
+      title: "Delete",
+      text: "Are you sure you want to delete this notification method?",
       text2: this.savedNotification.name,
       yesText: "Delete",
       icon: "fa-trash",
@@ -136,7 +174,6 @@ export class EditNotificationPageCtrl {
       }
     });
   }
-  
 }
 
-EditNotificationPageCtrl.templateUrl = 'components/edit_notification.html';
+EditNotificationPageCtrl.templateUrl = "components/edit_notification.html";

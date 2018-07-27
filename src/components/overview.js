@@ -15,10 +15,9 @@
  *   limitations under the License.
  */
 
-import _ from 'lodash';
+import _ from "lodash";
 
 export class OverviewPageCtrl {
-
   /* * @ngInject */
   constructor(backendSrv, alertSrv, monascaClientSrv) {
     this.alertSrv = alertSrv;
@@ -33,74 +32,91 @@ export class OverviewPageCtrl {
   }
 
   loadTotals() {
-    this.monasca.countAlarms(['state']).then(data => {
-      var col_count = data.columns.indexOf('count');
-      var col_state = data.columns.indexOf('state');
+    this.monasca
+      .countAlarms(["state"])
+      .then(data => {
+        var colCount = data.columns.indexOf("count");
+        var colState = data.columns.indexOf("state");
 
-      var totals = {
-	OK: 0,
-	ALARM: 0,
-	UNDETERMINED: 0
-      }
-      data.counts.forEach(row => {
-	var count = row[col_count];
-	var state = row[col_state];
-	totals[state] = count;
+        var totals = {
+          OK: 0,
+          ALARM: 0,
+          UNDETERMINED: 0
+        };
+        data.counts.forEach(row => {
+          var count = row[colCount];
+          var state = row[colState];
+          totals[state] = count;
+        });
+
+        this.totals = totals;
+      })
+      .catch(err => {
+        this.alertSrv.set(
+          "Failed to get alarm total counts.",
+          err.message,
+          "error",
+          10000
+        );
       });
-
-      this.totals = totals;
-
-    }).catch(err => {
-      this.alertSrv.set("Failed to get alarm total counts.", err.message, 'error', 10000);
-    });
   }
 
   loadAlarmSets() {
-    this.monasca.countAlarms(['state', 'dimension_name', 'dimension_value']).then(data => {
-      var col_count = data.columns.indexOf('count');
-      var col_state = data.columns.indexOf('state');
-      var col_dim_name = data.columns.indexOf('dimension_name');
-      var col_dim_value = data.columns.indexOf('dimension_value');
+    this.monasca
+      .countAlarms(["state", "dimension_name", "dimension_value"])
+      .then(data => {
+        var colCount = data.columns.indexOf("count");
+        var colState = data.columns.indexOf("state");
+        var colDimName = data.columns.indexOf("dimension_name");
+        var colDimValue = data.columns.indexOf("dimension_value");
 
-      var counts = {};
+        var counts = {};
 
-      data.counts.forEach(row => {
-	var dim_name = row[col_dim_name];
-	var dim_value = row[col_dim_value];
-	counts[dim_name] = counts[dim_name] || {};
-	counts[dim_name][dim_value] = counts[dim_name][dim_value] || {};
-	counts[dim_name][dim_value][row[col_state]] = row[col_count];
+        data.counts.forEach(row => {
+          var dimName = row[colDimName];
+          var dimValue = row[colDimValue];
+          counts[dimName] = counts[dimName] || {};
+          counts[dimName][dimValue] = counts[dimName][dimValue] || {};
+          counts[dimName][dimValue][row[colState]] = row[colCount];
+        });
+
+        var entities = _.fromPairs(
+          Object.entries(counts).map(([dimName, entry]) => {
+            return [
+              dimName,
+              Object.entries(counts[dimName]).map(([dimValue, dimCounts]) => {
+                return {
+                  name: dimValue,
+                  ok_count: dimCounts.OK || 0,
+                  alarm_count: dimCounts.ALARM || 0,
+                  undetermined_count: dimCounts.UNDETERMINED || 0
+                };
+              })
+            ];
+          })
+        );
+
+        this.alarm_sets = [
+          {
+            title: "Hosts",
+            dimension: "hostname",
+            entities: entities.hostname
+          }
+        ];
+      })
+      .catch(err => {
+        this.alertSrv.set(
+          "Failed to get alarm counts.",
+          err.message,
+          "error",
+          10000
+        );
+        this.loadFailed = true;
+      })
+      .then(() => {
+        this.pageLoaded = true;
       });
-
-      var entities = _.fromPairs(
-	Object.entries(counts)
-	  .map(([dim_name, entry]) => {
-	    return [ dim_name, Object.entries(counts[dim_name])
-	      .map(([dim_value, dim_counts]) => {
-		return {
-		  name: dim_value,
-		  ok_count: dim_counts.OK || 0,
-		  alarm_count: dim_counts.ALARM || 0,
-		  undetermined_count: dim_counts.UNDETERMINED || 0,
-		};
-	      }) ];
-	  })
-      );
-
-      this.alarm_sets = [
-	{ title: 'Hosts',
-	  dimension: 'hostname',
-	  entities: entities.hostname },
-      ];
-
-    }).catch(err => {
-      this.alertSrv.set("Failed to get alarm counts.", err.message, 'error', 10000);
-      this.loadFailed = true;
-    }).then(() => {
-      this.pageLoaded = true;
-    });
   }
-
 }
 
-OverviewPageCtrl.templateUrl = 'components/overview.html';
+OverviewPageCtrl.templateUrl = "components/overview.html";

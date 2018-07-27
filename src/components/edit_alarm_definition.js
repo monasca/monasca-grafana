@@ -14,13 +14,20 @@
  *   limitations under the License.
  */
 
-import appEvents from 'app/core/app_events';
-import _ from 'lodash';
+import appEvents from "app/core/app_events";
+import _ from "lodash";
 
 export class EditAlarmDefinitionPageCtrl {
-
   /** @ngInject */
-  constructor($scope, $injector, $location, alertSrv, monascaClientSrv) {
+  constructor(
+    $scope,
+    $injector,
+    $location,
+    backendSrv,
+    datasourceSrv,
+    alertSrv,
+    monascaClientSrv
+  ) {
     this.$location = $location;
     this.alertSrv = alertSrv;
     this.monasca = monascaClientSrv;
@@ -28,13 +35,13 @@ export class EditAlarmDefinitionPageCtrl {
     this.updateFailed = false;
 
     this.id = null;
-    if ('id' in this.$location.search()) {
+    if ("id" in this.$location.search()) {
       this.id = this.$location.search().id;
     }
 
     this.savedAlarmDefinition = {};
     this.newAlarmDefinition = {
-      severity: 'LOW'
+      severity: "LOW"
     };
     this.saving = false;
     this.deleting = false;
@@ -44,16 +51,16 @@ export class EditAlarmDefinitionPageCtrl {
   }
 
   // UI Elements
- 
+
   _suggestMatchBy(query, callback) {
     this.monasca.listDimensionNames().then(callback);
   }
-  
+
   addMatchBy() {
     if (!this.newAlarmDefinition.match_by) {
       this.newAlarmDefinition.match_by = [];
     }
-    this.newAlarmDefinition.match_by.push('');
+    this.newAlarmDefinition.match_by.push("");
   }
 
   removeMatchBy(index) {
@@ -69,69 +76,107 @@ export class EditAlarmDefinitionPageCtrl {
       return;
     }
 
-    this.monasca.getAlarmDefinition(this.id)
-      .then(alarm_definition => {
-	this.savedAlarmDefinition = this.pickKnownFields(alarm_definition);
-	this.newAlarmDefinition = _.cloneDeep(this.savedAlarmDefinition);
-      }).catch(err => {
-	this.alertSrv.set("Failed to get fetch alarm definition method.", err.message, 'error', 10000);
-	this.updateFailed = true;
-      }).then(() => {
-	this.updating = false;
+    this.monasca
+      .getAlarmDefinition(this.id)
+      .then(alarmDefinition => {
+        this.savedAlarmDefinition = this.pickKnownFields(alarmDefinition);
+        this.newAlarmDefinition = _.cloneDeep(this.savedAlarmDefinition);
+      })
+      .catch(err => {
+        this.alertSrv.set(
+          "Failed to get fetch alarm definition method.",
+          err.message,
+          "error",
+          10000
+        );
+        this.updateFailed = true;
+      })
+      .then(() => {
+        this.updating = false;
       });
-  } 
-
-  pickKnownFields(alarm_definition) {
-    return _.pick(alarm_definition,
-		  ['name', 'description', 'expression', 'match_by', 'severity' ]);
   }
-  
+
+  pickKnownFields(alarmDefinition) {
+    return _.pick(alarmDefinition, [
+      "name",
+      "description",
+      "expression",
+      "match_by",
+      "severity"
+    ]);
+  }
+
   saveAlarmDefinition() {
     this.saving = true;
-    
-    if (this.id) {
-      this.monasca.patchAlarmDefinition(this.id, this.newAlarmDefinition)
-	.then(alarm_definition => {
-	  this.savedAlarmDefinition = this.pickKnownFields(alarm_definition);
-	}).catch(err => {
-	  this.alertSrv.set("Failed to save alarm definition.", err.message, 'error', 10000);
-	}).then(() => {
-	  this.saving = false;
-	});
-    }
-    else {
-      this.monasca.createAlarmDefinition(this.newAlarmDefinition)
-	.then(alarm_definition => {
-	  this.savedAlarmDefinition = this.pickKnownFields(alarm_definition);
-	  this.id = alarm_definition.id;
 
-	  // Want the address bar to update. Don't really have to reload though.
-	  this.$location.url('plugins/monasca-app/page/edit-alarm-definition?id=' + this.id);
-	  
-	}).catch(err => {
-	  this.alertSrv.set("Failed to create alarm definition.", err.message, 'error', 10000);
-	}).then(() => {
-	  this.saving = false;
-	});
+    if (this.id) {
+      this.monasca
+        .patchAlarmDefinition(this.id, this.newAlarmDefinition)
+        .then(alarmDefinition => {
+          this.savedAlarmDefinition = this.pickKnownFields(alarmDefinition);
+        })
+        .catch(err => {
+          this.alertSrv.set(
+            "Failed to save alarm definition.",
+            err.message,
+            "error",
+            10000
+          );
+        })
+        .then(() => {
+          this.saving = false;
+        });
+    } else {
+      this.monasca
+        .createAlarmDefinition(this.newAlarmDefinition)
+        .then(alarmDefinition => {
+          this.savedAlarmDefinition = this.pickKnownFields(alarmDefinition);
+          this.id = alarmDefinition.id;
+
+          // Want the address bar to update. Don't really have to reload though.
+          this.$location.url(
+            "plugins/monasca-app/page/edit-alarm-definition?id=" + this.id
+          );
+        })
+        .catch(err => {
+          this.alertSrv.set(
+            "Failed to create alarm definition.",
+            err.message,
+            "error",
+            10000
+          );
+        })
+        .then(() => {
+          this.saving = false;
+        });
     }
   }
-  
+
   confirmDeleteAlarmDefinition() {
     this.deleting = true;
-    
-    this.monasca.deleteAlarmDefinition(this.id).then(() => {
-      this.$location.url('plugins/monasca-app/page/alarm_definitions');
-    }).catch(err => {
-      this.alertSrv.set("Failed to get delete alarm definition method.", err.message, 'error', 10000);
-    }).then(() => {
-      this.deleting = false;
-    });
+
+    this.monasca
+      .deleteAlarmDefinition(this.id)
+      .then(() => {
+        this.$location.url("plugins/monasca-app/page/alarm_definitions");
+      })
+      .catch(err => {
+        this.alertSrv.set(
+          "Failed to get delete alarm definition method.",
+          err.message,
+          "error",
+          10000
+        );
+      })
+      .then(() => {
+        this.deleting = false;
+      });
   }
 
   deleteAlarmDefinition() {
-    appEvents.emit('confirm-modal', {
-      title: 'Delete',
-      text: 'Are you sure you want to delete this alarm definition method?',
+    appEvents.emit("confirm-modal", {
+      title: "Delete",
+      text: "Are you sure you want to delete this alarm definition method?",
       text2: this.savedAlarmDefinition.name,
       yesText: "Delete",
       icon: "fa-trash",
@@ -140,7 +185,7 @@ export class EditAlarmDefinitionPageCtrl {
       }
     });
   }
-  
 }
 
-EditAlarmDefinitionPageCtrl.templateUrl = 'components/edit_alarm_definition.html';
+EditAlarmDefinitionPageCtrl.templateUrl =
+  "components/edit_alarm_definition.html";
