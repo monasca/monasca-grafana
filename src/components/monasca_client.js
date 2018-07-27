@@ -54,9 +54,9 @@ export default class MonascaClient {
   }
 
   deleteAlarm(id) {
-    return this._delete('/v2.0/alarms/' + id)
-      .then(resp => null)
-      
+    return (id == undefined ? Promise.reject("No id given to alarm resource delete request") : Promise.resolve(id))
+      .then(() => this._delete('/v2.0/alarms/' + id))
+      .then(resp => undefined)
   }
 
   countAlarms(group_by) {
@@ -65,19 +65,19 @@ export default class MonascaClient {
   }
 
   getAlarm(id) {
-    return this._get('/v2.0/alarms/' + id)
-      .then(resp => resp.data)
+    return (id == undefined ? Promise.reject("No id given to alarm resource get request") : Promise.resolve(id))
+    .then(() => this._get('/v2.0/alarms/' + id))
+    .then(resp => resp.data)
   }
 
   getAlarmHistory(id){
-    return this._get('/v2.0/alarms/' + id + '/state-history')
+    return (id == undefined ? Promise.reject("no id given to alarm history get request") : Promise.resolve(id))
+      .then(() => this._get('/v2.0/alarms/' + id + "/state-history/"))
       .then(resp => resp.data)
   }
 
-  // API alarm sorting
-
-  sortAlarms(queries){
-    return this._get('/v2.0/alarms', { sort_by: queries })
+  sortAlarms(sort_by){
+    return this._get('/v2.0/alarms/', { sort_by: sort_by })
       .then(resp => resp.data.elements)
   }
 
@@ -89,7 +89,8 @@ export default class MonascaClient {
   }
 
   getAlarmDefinition(id) {
-    return this._get('/v2.0/alarm-definitions/' + id)
+    return (id == undefined ? Promise.reject("no id given to alarm definition get request") : Promise.resolve(id))
+      .then(() => this._get('/v2.0/alarm-definitions/' + id))
       .then(resp => resp.data)
   }
 
@@ -103,13 +104,15 @@ export default class MonascaClient {
   }
 
   patchAlarmDefinition(id, alarm_definition) {
-    return this._patch('/v2.0/alarm-definitions/' + id, alarm_definition)
+    return (id == undefined ? Promise.reject("no id given to alarm definition patch request") : Promise.resolve(id))
+      .then(() => this._patch('/v2.0/alarm-definitions/' + id, alarm_definition))
       .then(resp => resp.data)
   }
 
   deleteAlarmDefinition(id) {
-    return this._delete('/v2.0/alarm-definitions/' + id)
-      .then(resp => null)
+    return (id == undefined ? Promise.reject("no id given to alarm definition patch request") : Promise.resolve(id))
+      .then(() => this._delete('/v2.0/alarm-definitions/' + id))
+      .then(resp => undefined)
   }
 
   // Notification Method Types
@@ -127,12 +130,14 @@ export default class MonascaClient {
   }
 
   getNotification(id) {
-    return this._get('/v2.0/notification-methods/' + id)
+    return (id == undefined ? Promise.reject("no id given to notification methods get request") : Promise.resolve(id))
+      .then(() => this._get('/v2.0/notification-methods/' + id))
       .then(resp => resp.data)
   }
 
   patchNotification(id, notification) {
-    return this._patch('/v2.0/notification-methods/'+ id, notification)
+    return (id == undefined ? Promise.reject("no id given to notification methods patch request") : Promise.resolve(id))
+      .then(() => this._patch('/v2.0/notification-methods/'+ id, notification))
       .then(resp => resp.data)
   }
 
@@ -142,8 +147,9 @@ export default class MonascaClient {
   }
 
   deleteNotification(id) {
-    return this._delete('/v2.0/notification-methods/' + id)
-      .then(resp => null)
+    return (id == undefined ? Promise.reject("no id given to notification methods delete request") : Promise.resolve(id))
+      .then(() => this._delete('/v2.0/notification-methods/' + id))
+      .then(resp => undefined)
   }
 
 
