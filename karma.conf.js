@@ -20,12 +20,15 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
 
     files: [
-      { pattern: 'node_modules/systemjs/dist/system.src.js', watched: false, included: true},
-      
-      { pattern: 'systemjs.config.js', watched: true, included: false},
+      //======= SYSTEMJS ========//
+      { pattern: 'node_modules/systemjs/dist/system.src.js', watched: false, included: true}, //SystemJS module loader
+      { pattern: 'systemjs.config.js', watched: true, included: false}, //SystemJS configuration script
+      //======= TEST RUNNER ========//
       { pattern: 'karma-test-shim.js', watched: true, included: true},
+      //======= Source Files ========//
       { pattern: 'dist/components/monasca_client.js', watched: true, included: false},
-      { pattern: 'dist/spec/monasca_client_spec.js', watched: true, included: false},
+      //======= Spec Files ========//
+      { pattern: 'dist/spec/**/*_spec.js', watched: true, included: false},
     ],
 
     // list of files / patterns to exclude

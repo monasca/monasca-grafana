@@ -154,19 +154,19 @@ export default class MonascaClient {
 
 
   _delete(path, params) {
-    return this._request('DELETE', path, params, null);
+    return this._request('DELETE', path, params, undefined);
   };
 
   _get(path, params) {
-    return this._request('GET', path, params, null);
+    return this._request('GET', path, params, undefined);
   };
 
   _post(path, data) {
-    return this._request('POST', path, null, data);
+    return this._request('POST', path, undefined, data);
   };
 
   _patch(path, data) {
-    return this._request('PATCH', path, null, data);
+    return this._request('PATCH', path, undefined, data);
   };
 
   _getDataSource() {
