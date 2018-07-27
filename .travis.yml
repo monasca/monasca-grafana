@@ -1,0 +1,21 @@
+before_install:
+  - npm install -g npm@latest
+install:
+  - npm install --no-optional
+  - npm dedupe
+  - npm install -g grunt
+language: node_js
+node_js:
+  - 10.3.0
+
+# Configure Headless Chrome
+sudo: required
+dist: trusty
+addons:
+    chrome: stable
+before_script:
+    - sudo chown root /opt/google/chrome/chrome-sandbox
+    - sudo chmod 4755 /opt/google/chrome/chrome-sandbox
+    - grunt
+
+
