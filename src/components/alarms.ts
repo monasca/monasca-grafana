@@ -26,9 +26,13 @@ export class AlarmsPageCtrl {
   private totalFilters: Array<any>;
   private queryTracker: Array<any>;
   private queryString: String;
+  private nameActive: boolean;
   private nameClicked: boolean;
+  private severityActive: boolean;
   private severityClicked: boolean;
+  private stateActive: boolean;
   private stateClicked: boolean;
+  private timeActive: boolean;
   private timeClicked: boolean;
   private editFilterIndex: number;
   private alarmCount: number;
@@ -40,10 +44,13 @@ export class AlarmsPageCtrl {
   private pageLoaded: boolean;
   private loadFailed: boolean;
   private alarms: Array<any>;
+  private suggestDimensionNames: any;
+  private suggestDimensionValues: any;
+  private init: Promise<any>;
 
   /** @ngInject */
   public constructor(
-    private $scope,
+    private $timeout,
     private $location,
     private alertSrv,
     private monascaClientSrv
@@ -57,9 +64,13 @@ export class AlarmsPageCtrl {
 
     this.queryTracker = [];
     this.queryString = "";
+    this.nameActive = false;
     this.nameClicked = false;
+    this.severityActive = false;
     this.severityClicked = false;
+    this.stateActive = false;
     this.stateClicked = false;
+    this.timeActive = false;
     this.timeClicked = false;
 
     this.editFilterIndex = -1;
@@ -85,7 +96,11 @@ export class AlarmsPageCtrl {
         .search()
         .dimensions.split(",")
         .map(kv => kv.split(":"))
-        .map(([k, v]) => ({ metric_dimensions: k + ":" + v }));
+        .map(([k, v]) => ({
+          key: k,
+          value: v,
+          metric_dimensions: k + ":" + v
+        }));
     }
 
     if ("id" in $location.search()) {
@@ -95,7 +110,9 @@ export class AlarmsPageCtrl {
     this.pageLoaded = false;
     this.loadFailed = false;
     this.alarms = [];
-    this.loadAlarms();
+    this.suggestDimensionNames = this._suggestDimensionNames.bind(this);
+    this.suggestDimensionValues = this._suggestDimensionValues.bind(this);
+    this.init = this.loadAlarms();
   }
 
   public editFilter(index) {
@@ -137,7 +154,6 @@ export class AlarmsPageCtrl {
         return f.metric_dimensions;
       })
     ) {
-      this.refreshAlarms();
       this.refreshAlarms();
     }
   }
@@ -205,33 +221,30 @@ export class AlarmsPageCtrl {
   }
 
   private loadAlarms() {
-    this.totalFilters = [];
-    if (this.metricFilters) {
-      for (let i = 0; i < this.metricFilters.length; i++) {
-        this.totalFilters.push(this.metricFilters[i]);
-      }
-    }
+    var allFilters = {
+      metric_dimensions:
+        this.metricFilters && this.metricFilters.length > 0
+          ? this.metricFilters.map(
+              metricFilter => metricFilter.metric_dimensions
+            )
+          : undefined,
+      state:
+        this.stateFilters && this.stateFilters.length > 0
+          ? this.stateFilters.map(stateFilter => stateFilter.state)
+          : undefined,
+      severity:
+        this.severityFilters && this.severityFilters.length > 0
+          ? this.severityFilters.map(severityFilter => severityFilter.severity)
+          : undefined,
+      alarm_definition_id: this.defIdFilters[0],
+      sort_by:
+        this.queryTracker && this.queryTracker.length > 0
+          ? this.queryTracker
+          : undefined
+    };
 
-    if (this.stateFilters) {
-      for (let i = 0; i < this.stateFilters.length; i++) {
-        this.totalFilters.push(this.stateFilters[i]);
-      }
-    }
-
-    if (this.severityFilters) {
-      for (let i = 0; i < this.severityFilters.length; i++) {
-        this.totalFilters.push(this.severityFilters[i]);
-      }
-    }
-
-    if (this.defIdFilters.length > 0) {
-      var temp: { alarm_definition_id: number };
-      temp.alarm_definition_id = this.defIdFilters[0];
-      this.totalFilters.push(temp);
-    }
-
-    this.monascaClientSrv
-      .listAlarms(this.totalFilters)
+    return this.monascaClientSrv
+      .listAlarms(allFilters)
       .then(alarms => {
         this.alarms = alarms;
         this.slicedAlarms = alarms;
@@ -252,11 +265,12 @@ export class AlarmsPageCtrl {
       })
       .then(() => {
         this.pageLoaded = true;
+        this.$timeout();
       });
   }
 
   private alarmDeleted(id) {
-    var index = this.alarms.find(n => n.id === id);
+    var index = this.alarms.findIndex(n => n.id === id);
     if (index !== -1) {
       this.alarms.splice(index, 1);
     }
@@ -269,6 +283,7 @@ export class AlarmsPageCtrl {
       .deleteAlarm(id)
       .then(() => {
         this.alarmDeleted(id);
+        this.updateAlarmPage();
       })
       .catch(err => {
         this.setAlarmDeleting(id, false);
@@ -278,6 +293,9 @@ export class AlarmsPageCtrl {
           "error",
           10000
         );
+      })
+      .then(() => {
+        this.$timeout();
       });
   }
 
@@ -289,7 +307,7 @@ export class AlarmsPageCtrl {
       }
     }
     this.queryTracker.push("severity asc");
-    this.queryBuilder();
+    this.loadAlarms();
     this.severityClicked = true;
     this.queryToString();
   }
@@ -301,7 +319,7 @@ export class AlarmsPageCtrl {
       }
     }
     this.queryTracker.push("severity desc");
-    this.queryBuilder();
+    this.loadAlarms();
     this.severityClicked = false;
     this.queryToString();
   }
@@ -313,7 +331,7 @@ export class AlarmsPageCtrl {
       }
     }
     this.queryTracker.push("alarm_definition_name asc");
-    this.queryBuilder();
+    this.loadAlarms();
     this.nameClicked = true;
     this.queryToString();
   }
@@ -325,7 +343,7 @@ export class AlarmsPageCtrl {
       }
     }
     this.queryTracker.push("alarm_definition_name desc");
-    this.queryBuilder();
+    this.loadAlarms();
     this.nameClicked = false;
     this.queryToString();
   }
@@ -337,7 +355,7 @@ export class AlarmsPageCtrl {
       }
     }
     this.queryTracker.push("state_updated_timestamp asc");
-    this.queryBuilder();
+    this.loadAlarms();
     this.timeClicked = true;
     this.queryToString();
   }
@@ -349,7 +367,7 @@ export class AlarmsPageCtrl {
       }
     }
     this.queryTracker.push("state_updated_timestamp desc");
-    this.queryBuilder();
+    this.loadAlarms();
     this.timeClicked = false;
     this.queryToString();
   }
@@ -361,7 +379,7 @@ export class AlarmsPageCtrl {
       }
     }
     this.queryTracker.push("state asc");
-    this.queryBuilder();
+    this.loadAlarms();
     this.stateClicked = true;
     this.queryToString();
   }
@@ -373,75 +391,26 @@ export class AlarmsPageCtrl {
       }
     }
     this.queryTracker.push("state desc");
-    this.queryBuilder();
+    this.loadAlarms();
     this.stateClicked = false;
     this.queryToString();
   }
 
-  private queryBuilder() {
-    var toSend = "";
-    for (var i = 0; i < this.queryTracker.length; i++) {
-      if (i !== this.queryTracker.length - 1) {
-        toSend += this.queryTracker[i] + ",";
-      } else {
-        toSend += this.queryTracker[i];
-      }
-    }
-    this.monascaClientSrv.sortAlarms(toSend).then(alarms => {
-      this.alarms = alarms;
-      this.slicedAlarms = alarms;
-      // Remove Z and T from timestamp
-      for (let i = 0; i < this.slicedAlarms.length; i++) {
-        this.slicedAlarms[i].state_updated_timestamp = this.slicedAlarms[
-          i
-        ].state_updated_timestamp.replace(/[A-Z.]/g, " ");
-        this.slicedAlarms[i].state_updated_timestamp = this.slicedAlarms[
-          i
-        ].state_updated_timestamp.replace(/.{4}$/g, " ");
-      }
-      this.$scope.$apply();
-    });
-  }
-
   private queryToString() {
-    let tempStr = "";
-    for (var i = 0; i < this.queryTracker.length; i++) {
-      if (this.queryTracker[i] === "severity asc") {
-        tempStr += " " + "severity desc" + ",";
-      }
-      if (this.queryTracker[i] === "severity desc") {
-        tempStr += " " + "severity asc" + ",";
-      }
-      if (this.queryTracker[i] === "alarm_definition_name asc") {
-        tempStr += " " + "alarm_definition_name desc" + ",";
-      }
-      if (this.queryTracker[i] === "alarm_definition_name desc") {
-        tempStr += " " + "alarm_definition_name asc" + ",";
-      }
-      if (this.queryTracker[i] === "state asc") {
-        tempStr += " " + "state desc" + ",";
-      }
-      if (this.queryTracker[i] === "state desc") {
-        tempStr += " " + "state asc" + ",";
-      }
-      if (this.queryTracker[i] === "state_updated_timestamp asc") {
-        tempStr += " " + "state_updated_timestamp desc" + ",";
-      }
-      if (this.queryTracker[i] === "state_updated_timestamp desc") {
-        tempStr += " " + "state_updated_timestamp asc" + ",";
-      }
-    }
-    tempStr = tempStr.substring(0, tempStr.length - 1);
-    this.queryString = tempStr;
+    this.queryString = this.queryTracker.join(", ");
   }
 
   private clearQuery() {
     this.queryTracker = [];
-    this.queryBuilder();
+    this.loadAlarms();
     this.queryToString();
+    this.nameActive = false;
     this.nameClicked = false;
+    this.severityActive = false;
     this.severityClicked = false;
+    this.stateActive = false;
     this.stateClicked = false;
+    this.timeActive = false;
     this.timeClicked = false;
   }
 }
