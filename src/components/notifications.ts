@@ -22,9 +22,11 @@ export class NotificationsPageCtrl {
   private notifications: Array<any>;
   public pageLoaded: boolean;
   public loadFailed: boolean;
+  public init: Promise<any>;
 
   /** @ngInject */
   public constructor(
+    private $timeout,
     private alertSrv,
     private monascaClientSrv
   ) {
@@ -49,7 +51,7 @@ export class NotificationsPageCtrl {
 
   // Loading Notifications
   private loadNotifications() {
-    this.monascaClientSrv
+    return this.monascaClientSrv
       .listNotifications()
       .then(notifications => {
         this.notifications = notifications;
@@ -72,7 +74,7 @@ export class NotificationsPageCtrl {
   private setNotificationDeleting(id, deleting) {
     var index = this.notifications.findIndex(n => n.id === id);
     if (index !== -1) {
-      this.notifications[index].deleting = true;
+      this.notifications[index].deleting = deleting;
     }
   }
 
@@ -86,7 +88,7 @@ export class NotificationsPageCtrl {
   private confirmDeleteNotification(id) {
     this.setNotificationDeleting(id, true);
 
-    this.monascaClientSrv
+    return this.monascaClientSrv
       .deleteNotification(id)
       .then(() => {
         this.notificationDeleted(id);
@@ -99,6 +101,9 @@ export class NotificationsPageCtrl {
           "error",
           10000
         );
+      })
+      .then(() => {
+        this.$timeout();
       });
   }
 }

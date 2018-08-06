@@ -26,10 +26,12 @@ export class EditAlarmDefinitionPageCtrl {
   private newAlarmDefinition: any;
   private saving: boolean;
   private deleting: boolean;
+  public init: Promise<any>;
+  public suggestMatchBy: any;
 
   /** @ngInject */
   public constructor(
-    private $scope,
+    private $timeout,
     private $injector,
     private $location,
     private alertSrv,
@@ -47,7 +49,13 @@ export class EditAlarmDefinitionPageCtrl {
     this.newAlarmDefinition = {};
     this.saving = false;
     this.deleting = false;
-    this.loadAlarmDefinition();
+    this.suggestMatchBy = this._suggestMatchBy.bind(this);
+
+    if (!this.id) {
+      this.updating = false;
+    } else {
+      this.init = this.loadAlarmDefinition().then(() => this.$timeout());
+    }
   }
 
   public addMatchBy() {
@@ -68,10 +76,17 @@ export class EditAlarmDefinitionPageCtrl {
   public saveAlarmDefinition() {
     this.saving = true;
     if (this.id) {
-      this.monascaClientSrv
+      return this.monascaClientSrv
         .patchAlarmDefinition(this.id, this.newAlarmDefinition)
         .then(alarmDefinition => {
           this.savedAlarmDefinition = this.pickKnownFields(alarmDefinition);
+          this.alertSrv.set(
+            "Updated alarm definition",
+            undefined,
+            "success",
+            3000
+          );
+          this.$location.url("plugins/monasca-app/page/alarm-definitions");
         })
         .catch(err => {
           this.alertSrv.set(
@@ -83,9 +98,10 @@ export class EditAlarmDefinitionPageCtrl {
         })
         .then(() => {
           this.saving = false;
+          this.$timeout();
         });
     } else {
-      this.monascaClientSrv
+      return this.monascaClientSrv
         .createAlarmDefinition(this.newAlarmDefinition)
         .then(alarmDefinition => {
           this.savedAlarmDefinition = this.pickKnownFields(alarmDefinition);
@@ -94,6 +110,12 @@ export class EditAlarmDefinitionPageCtrl {
           // Want the address bar to update. Don't really have to reload though.
           this.$location.url(
             "plugins/monasca-app/page/edit-alarm-definition?id=" + this.id
+          );
+          this.alertSrv.set(
+            "Created alarm definition",
+            undefined,
+            "success",
+            3000
           );
         })
         .catch(err => {
@@ -106,6 +128,7 @@ export class EditAlarmDefinitionPageCtrl {
         })
         .then(() => {
           this.saving = false;
+          this.$timeout();
         });
     }
   }
@@ -140,12 +163,7 @@ export class EditAlarmDefinitionPageCtrl {
 
   // Load Alarm Definition
   private loadAlarmDefinition() {
-    if (!this.id) {
-      this.updating = false;
-      return;
-    }
-
-    this.monascaClientSrv
+    return this.monascaClientSrv
       .getAlarmDefinition(this.id)
       .then(alarmDefinition => {
         this.savedAlarmDefinition = this.pickKnownFields(alarmDefinition);
@@ -169,10 +187,10 @@ export class EditAlarmDefinitionPageCtrl {
   private confirmDeleteAlarmDefinition() {
     this.deleting = true;
 
-    this.monascaClientSrv
+    return this.monascaClientSrv
       .deleteAlarmDefinition(this.id)
       .then(() => {
-        this.$location.url("plugins/monasca-app/page/alarm_definitions");
+        this.$location.url("/plugins/monasca-app/page/alarm-definitions");
       })
       .catch(err => {
         this.alertSrv.set(
@@ -184,6 +202,7 @@ export class EditAlarmDefinitionPageCtrl {
       })
       .then(() => {
         this.deleting = false;
+        this.$timeout();
       });
   }
 }

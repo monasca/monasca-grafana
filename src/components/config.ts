@@ -16,34 +16,36 @@
 
 export class MonascaAppConfigCtrl {
   public static templateUrl = "components/config.html";
+  private showTypes: Array<String>;
   private datasources: Array<String>;
-  public appModel: any;
+  private jsonData: any;
+  private init: Promise<any>;
+  public appModel: any; //Persistant data respresenting the apps settings/configuration (found in plugin.json)
 
-  public constructor(private backendSrv: any) {
+  public constructor(private $timeout, private backendSrv: any) {
     this.datasources = [];
     if (!this.appModel.jsonData) {
       this.appModel.jsonData = {};
     }
 
-    var showTypes = ["monasca-grafana-datasource", "monasca-datasource"];
+    this.showTypes = ["monasca-grafana-datasource", "monasca-datasource"];
 
-    backendSrv
-      .get("/api/datasources")
-      .then((response: any) => {
-        this.datasources = response
-          .filter((ds: any) => showTypes.indexOf(ds.type) >= 0)
-          .map((ds: any) => ds.name);
+    this.init = this.loadDatasources().then(() => this.$timeout());
+  }
 
-        // If a datasource has not been selected yet, choose the first one.
-        if (
-          !this.appModel.jsonData.datasourceName &&
-          this.datasources.length > 0
-        ) {
-          this.appModel.jsonData.datasourceName = this.datasources[0];
-        }
-      })
-      .catch((err: any) => {
-        throw err;
-      });
+  private loadDatasources() {
+    return this.backendSrv.get("/api/datasources").then((response: any) => {
+      this.datasources = response
+        .filter((ds: any) => this.showTypes.indexOf(ds.type) >= 0)
+        .map((ds: any) => ds.name);
+
+      // If a datasource has not been selected yet, choose the first one.
+      if (
+        !this.appModel.jsonData.datasourceName &&
+        this.datasources.length > 0
+      ) {
+        this.appModel.jsonData.datasourceName = this.datasources[0];
+      }
+    });
   }
 }

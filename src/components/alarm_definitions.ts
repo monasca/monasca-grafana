@@ -22,16 +22,18 @@ export class AlarmDefinitionsPageCtrl {
   private alarmDefinitions: Array<any>;
   public pageLoaded: boolean;
   public loadFailed: boolean;
+  public init: Promise<any>;
 
   /** @ngInject */
   public constructor(
+    private $timeout,
     private alertSrv,
     private monascaClientSrv
   ) {
     this.pageLoaded = false;
     this.loadFailed = false;
     this.alarmDefinitions = [];
-    this.loadAlarmDefinitions();
+    this.init = this.loadAlarmDefinitions().then(() => this.$timeout());
   }
 
   public deleteAlarmDefinition(definition) {
@@ -48,7 +50,7 @@ export class AlarmDefinitionsPageCtrl {
   }
 
   private loadAlarmDefinitions() {
-    this.monascaClientSrv
+    return this.monascaClientSrv
       .listAlarmDefinitions()
       .then(alarmDefinitions => {
         this.alarmDefinitions = alarmDefinitions;
@@ -85,7 +87,7 @@ export class AlarmDefinitionsPageCtrl {
   private toggleEnableAlarmDefinition(id, actionsEnabled) {
     this.setAlarmDefinitionToggleEnabling(id, true);
 
-    this.monascaClientSrv
+    return this.monascaClientSrv
       .enableAlarmDefinition(id, actionsEnabled)
       .then(alarmDefinition => {
         this.setAlarmDefinitionActionsToggleEnabled(
@@ -103,6 +105,7 @@ export class AlarmDefinitionsPageCtrl {
       })
       .then(() => {
         this.setAlarmDefinitionEnabling(id, false);
+        this.$timeout();
       });
   }
 
@@ -124,19 +127,22 @@ export class AlarmDefinitionsPageCtrl {
   private confirmDeleteAlarmDefinition(id) {
     this.setAlarmDefinitionDeleting(id, true);
 
-    this.monascaClientSrv
+    return this.monascaClientSrv
       .deleteAlarmDefinition(id)
       .then(() => {
         this.alarmDefinitionDeleted(id);
       })
       .catch(err => {
-        this.setAlarmDefinitionDeleting(id, false);
         this.alertSrv.set(
           "Failed to delete alarm definition.",
           err.message,
           "error",
           10000
         );
+      })
+      .then(() => {
+        this.setAlarmDefinitionDeleting(id, false);
+        this.$timeout();
       });
   }
 }

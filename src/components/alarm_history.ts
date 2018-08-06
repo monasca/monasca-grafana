@@ -25,9 +25,11 @@ export class AlarmHistoryPageCtrl {
   private deleting: boolean;
   public loadFailed: boolean;
   public pageLoaded: boolean;
+  public init: Promise<any>;
 
   /** @ngInject */
   public constructor(
+    private $timeout,
     private $location,
     private alertSrv,
     private monascaClientSrv
@@ -44,8 +46,12 @@ export class AlarmHistoryPageCtrl {
     this.savedAlarm = {};
     this.saving = false;
     this.deleting = false;
-    this.savedAlarm = this.loadAlarm();
-    this.states = this.loadStates();
+
+    if (!this.id) {
+      this.updating = false;
+    } else {
+      this.init = this.loadStates(this.loadAlarm()).then(() => this.$timeout());
+    }
   }
 
   private pickKnownFields(alarm) {
@@ -56,41 +62,26 @@ export class AlarmHistoryPageCtrl {
   }
 
   private loadAlarm() {
-    var _this = this;
-    if (!this.id) {
-      this.updating = false;
-      return;
-    }
-
-    this.monascaClientSrv
+    return this.monascaClientSrv
       .getAlarm(this.id)
-      .then(function(alarm) {
-        _this.savedAlarm = _this.pickKnownFields(alarm);
+      .then(alarm => {
+        this.savedAlarm = this.pickKnownFields(alarm);
       })
       .catch(err => {
-        _this.alertSrv.set(
+        this.alertSrv.set(
           "Failed to fetch alarm method.",
           err.message,
           "error",
           10000
         );
-        _this.loadFailed = true;
-      })
-      .then(() => {
-        _this.pageLoaded = true;
+        this.loadFailed = true;
       });
-    return this.savedAlarm;
   }
 
-  private loadStates() {
-    if (!this.id) {
-      this.updating = false;
-      return;
-    }
-    var temp = [];
-    this.monascaClientSrv
-      .getAlarmHistory(this.id)
-      .then(function(alarmHistory) {
+  private loadStates(promiseChain) {
+    return promiseChain
+      .then(() => this.monascaClientSrv.getAlarmHistory(this.id))
+      .then(alarmHistory => {
         for (var i = 0; i < alarmHistory.elements.length; i++) {
           alarmHistory.elements[i].timestamp = alarmHistory.elements[
             i
@@ -98,7 +89,7 @@ export class AlarmHistoryPageCtrl {
           alarmHistory.elements[i].timestamp = alarmHistory.elements[
             i
           ].timestamp.replace(/.{4}$/g, " ");
-          temp.push(alarmHistory.elements[i]);
+          this.states.push(alarmHistory.elements[i]);
         }
       })
       .catch(err => {
@@ -113,6 +104,5 @@ export class AlarmHistoryPageCtrl {
       .then(() => {
         this.pageLoaded = true;
       });
-    return temp;
   }
 }

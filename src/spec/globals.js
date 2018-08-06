@@ -7,6 +7,7 @@ var it = _global.it;
 var sinon = _global.sinon;
 var expect = _global.expect;
 var console = _global.console;
+var angular = _global.angular;
 
 export {
   console,
@@ -16,5 +17,6 @@ export {
   describe,
   it,
   sinon,
-  expect
+  expect,
+  angular
 };

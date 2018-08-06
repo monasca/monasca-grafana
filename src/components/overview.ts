@@ -23,6 +23,7 @@ export class OverviewPageCtrl {
   public loadFailed: boolean;
   public alarmSets: Array<any>;
   public totals: any;
+  public init: Promise<any>;
 
   /* * @ngInject */
   public constructor(
@@ -34,13 +35,13 @@ export class OverviewPageCtrl {
     this.loadFailed = false;
 
     this.totals = null;
-    this.loadTotals();
-
-    this.loadAlarmSets();
+    this.init = this.loadAlarmSets(this.loadTotals()).then(() =>
+      this.$timeout()
+    );
   }
 
   private loadTotals() {
-    this.monascaClientSrv
+    return this.monascaClientSrv
       .countAlarms(["state"])
       .then(data => {
         var colCount = data.columns.indexOf("count");
@@ -70,7 +71,7 @@ export class OverviewPageCtrl {
   }
 
   private loadAlarmSets() {
-    this.monascaClientSrv
+    return this.monascaClientSrv
       .countAlarms(["state", "dimension_name", "dimension_value"])
       .then(data => {
         var colCount = data.columns.indexOf("count");

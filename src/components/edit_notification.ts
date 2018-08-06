@@ -27,15 +27,15 @@ export class EditNotificationPageCtrl {
   private notificationTypes: Array<any>;
   public saving: boolean;
   public deleting: boolean;
+  public init: Promise<any>;
 
   /** @ngInject */
   public constructor(
+    private $timeout,
     private $location,
     private alertSrv,
     private monascaClientSrv
   ) {
-    this.$location = $location;
-    this.alertSrv = alertSrv;
     this.updating = true;
     this.updateFailed = false;
 
@@ -50,8 +50,14 @@ export class EditNotificationPageCtrl {
     this.deleting = false;
     this.notificationTypes = [];
 
-    this.loadNotificationTypes();
-    this.loadNotification();
+    if (!this.id) {
+      this.updating = false;
+      this.init = this.loadNotificationTypes().then(() => this.$timeout());
+    } else {
+      this.init = this.loadNotification(this.loadNotificationTypes()).then(() =>
+        this.$timeout()
+      );
+    }
   }
 
   // Save Notification Methods
@@ -59,7 +65,7 @@ export class EditNotificationPageCtrl {
     this.saving = true;
 
     if (this.id) {
-      this.monascaClientSrv
+      return this.monascaClientSrv
         .patchNotification(this.id, this.newNotification)
         .then(notification => {
           this.savedNotification = {
@@ -67,6 +73,13 @@ export class EditNotificationPageCtrl {
             type: notification.type,
             address: notification.address
           };
+          this.alertSrv.set(
+            "Updated notification method.",
+            undefined,
+            "success",
+            3000
+          );
+          this.$location.url("plugins/monasca-app/page/notifications");
         })
         .catch(err => {
           this.alertSrv.set(
@@ -78,9 +91,10 @@ export class EditNotificationPageCtrl {
         })
         .then(() => {
           this.saving = false;
+          this.$timeout();
         });
     } else {
-      this.monascaClientSrv
+      return this.monascaClientSrv
         .createNotification(this.newNotification)
         .then(notification => {
           this.savedNotification = {
@@ -94,6 +108,12 @@ export class EditNotificationPageCtrl {
           this.$location.url(
             "plugins/monasca-app/page/edit-notification?id=" + this.id
           );
+          this.alertSrv.set(
+            "Created notification method.",
+            undefined,
+            "success",
+            3000
+          );
         })
         .catch(err => {
           this.alertSrv.set(
@@ -105,6 +125,7 @@ export class EditNotificationPageCtrl {
         })
         .then(() => {
           this.saving = false;
+          this.$timeout();
         });
     }
   }
@@ -139,14 +160,9 @@ export class EditNotificationPageCtrl {
       });
   }
 
-  private loadNotification() {
-    if (!this.id) {
-      this.updating = false;
-      return;
-    }
-
-    this.monascaClientSrv
-      .getNotification(this.id)
+  private loadNotification(promiseChain) {
+    return promiseChain
+      .then(() => this.monascaClientSrv.getNotification(this.id))
       .then(notification => {
         this.savedNotification = {
           name: notification.name,
@@ -173,7 +189,7 @@ export class EditNotificationPageCtrl {
   private confirmDeleteNotification() {
     this.deleting = true;
 
-    this.monascaClientSrv
+    return this.monascaClientSrv
       .deleteNotification(this.id)
       .then(() => {
         this.$location.url("plugins/monasca-app/page/notifications");
@@ -188,6 +204,7 @@ export class EditNotificationPageCtrl {
       })
       .then(() => {
         this.deleting = false;
+        this.$timeout();
       });
   }
 }
