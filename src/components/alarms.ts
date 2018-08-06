@@ -49,7 +49,6 @@ export class AlarmsPageCtrl {
     private monascaClientSrv
   ) {
     this.alertSrv = alertSrv;
-
     this.metricFilters = [];
     this.stateFilters = [{ state: "" }];
     this.severityFilters = [];
@@ -99,8 +98,91 @@ export class AlarmsPageCtrl {
     this.loadAlarms();
   }
 
-  private numberOfPages() {
+  public editFilter(index) {
+    this.editFilterIndex = index;
+  }
+
+  // Metric Dimension Filter add/remove
+  public addMetricFilter() {
+    this.metricFilters.push({});
+  }
+
+  public removeMetricFilter(index) {
+    this.metricFilters.splice(index, 1);
+  }
+
+  // State Filter add/remove
+  public addStateFilter() {
+    this.stateFilters.push({});
+  }
+
+  public removeStateFilter(index) {
+    this.stateFilters.splice(index, 1);
+  }
+
+  // Severity Filter add/remove
+  public addSeverityFilter() {
+    this.severityFilters.push({});
+  }
+
+  public removeSeverityFilter(index) {
+    this.severityFilters.splice(index, 1);
+  }
+
+  public applyFilter() {
+    // Check filter is complete before applying.
+    if (
+      this.metricFilters.every(function(f) {
+        f.metric_dimensions = f.key + ":" + f.value;
+        return f.metric_dimensions;
+      })
+    ) {
+      this.refreshAlarms();
+      this.refreshAlarms();
+    }
+  }
+
+  // Paginator
+  public numberOfPages() {
     return Math.ceil(this.alarms.length / this.pageSize);
+  }
+
+  public updateAlarmPage() {
+    var firstIndex = this.pageSize * this.currentPage;
+    var secondIndex = this.pageSize * (this.currentPage + 1);
+    this.slicedAlarms = this.alarms.slice(firstIndex, secondIndex);
+    this.slicedAlarms.forEach(slicedAlarm => {});
+  }
+
+  public nextPage() {
+    this.currentPage = this.currentPage + 1;
+    this.updateAlarmPage();
+  }
+
+  public previousPage() {
+    this.currentPage = this.currentPage - 1;
+    this.updateAlarmPage();
+  }
+
+  // Alarm Deletion
+  public setAlarmDeleting(id, deleting) {
+    var index = this.alarms.findIndex(n => n.id === id);
+    if (index !== -1) {
+      this.alarms[index].deleting = true;
+    }
+  }
+
+  public deleteAlarm(alarm) {
+    appEvents.emit("confirm-modal", {
+      title: "Delete",
+      text: "Are you sure you want to delete this alarm?",
+      text2: alarm.name,
+      yesText: "Delete",
+      icon: "fa-trash",
+      onConfirm: () => {
+        this.confirmDeleteAlarm(alarm.id);
+      }
+    });
   }
 
   private _suggestDimensionNames(query, callback) {
@@ -111,53 +193,6 @@ export class AlarmsPageCtrl {
     var filter = this.metricFilters[this.editFilterIndex];
     if (filter && filter.key) {
       this.monascaClientSrv.listDimensionValues(filter.key).then(callback);
-    }
-  }
-
-  private editFilter(index) {
-    this.editFilterIndex = index;
-  }
-
-  // Metric Dimension Filter add/remove
-
-  private addMetricFilter() {
-    this.metricFilters.push({});
-  }
-
-  private removeMetricFilter(index) {
-    this.metricFilters.splice(index, 1);
-  }
-
-  // State Filter add/remove
-
-  private addStateFilter() {
-    this.stateFilters.push({});
-  }
-
-  private removeStateFilter(index) {
-    this.stateFilters.splice(index, 1);
-  }
-
-  // Severity Filter add/remove
-
-  private addSeverityFilter() {
-    this.severityFilters.push({});
-  }
-
-  private removeSeverityFilter(index) {
-    this.severityFilters.splice(index, 1);
-  }
-
-  private applyFilter() {
-    // Check filter is complete before applying.
-    if (
-      this.metricFilters.every(function(f) {
-        f.metric_dimensions = f.key + ":" + f.value;
-        return f.metric_dimensions;
-      })
-    ) {
-      this.refreshAlarms();
-      this.refreshAlarms();
     }
   }
 
@@ -220,33 +255,6 @@ export class AlarmsPageCtrl {
       });
   }
 
-  private sliceAlarms() {
-    for (var i = 0; i < this.alarms.length; i++) {
-      if (this.currentPage === i) {
-        var firstIndex = this.pageSize * (i + 1);
-        var secondIndex = this.pageSize * (i + 2);
-        this.slicedAlarms = this.alarms.slice(firstIndex, secondIndex);
-      }
-    }
-  }
-
-  private sliceReverse() {
-    for (var i = 0; i < this.alarms.length; i++) {
-      if (this.currentPage === i) {
-        var firstIndex = this.pageSize * (i - 1);
-        var secondIndex = this.pageSize * i;
-        this.slicedAlarms = this.alarms.slice(firstIndex, secondIndex);
-      }
-    }
-  }
-
-  private setAlarmDeleting(id, deleting) {
-    var index = this.alarms.findIndex(n => n.id === id);
-    if (index !== -1) {
-      this.alarms[index].deleting = true;
-    }
-  }
-
   private alarmDeleted(id) {
     var index = this.alarms.find(n => n.id === id);
     if (index !== -1) {
@@ -273,19 +281,7 @@ export class AlarmsPageCtrl {
       });
   }
 
-  private deleteAlarm(alarm) {
-    appEvents.emit("confirm-modal", {
-      title: "Delete",
-      text: "Are you sure you want to delete this alarm?",
-      text2: alarm.name,
-      yesText: "Delete",
-      icon: "fa-trash",
-      onConfirm: () => {
-        this.confirmDeleteAlarm(alarm.id);
-      }
-    });
-  }
-
+  // Alarm Sorting
   private sortBySeverityAsc() {
     for (var i = 0; i < this.queryTracker.length; i++) {
       if (this.queryTracker[i] === "severity desc") {
@@ -394,7 +390,6 @@ export class AlarmsPageCtrl {
     this.monascaClientSrv.sortAlarms(toSend).then(alarms => {
       this.alarms = alarms;
       this.slicedAlarms = alarms;
-
       // Remove Z and T from timestamp
       for (let i = 0; i < this.slicedAlarms.length; i++) {
         this.slicedAlarms[i].state_updated_timestamp = this.slicedAlarms[
@@ -436,7 +431,6 @@ export class AlarmsPageCtrl {
         tempStr += " " + "state_updated_timestamp asc" + ",";
       }
     }
-
     tempStr = tempStr.substring(0, tempStr.length - 1);
     this.queryString = tempStr;
   }
@@ -446,8 +440,8 @@ export class AlarmsPageCtrl {
     this.queryBuilder();
     this.queryToString();
     this.nameClicked = false;
-    this.stateClicked = false;
     this.severityClicked = false;
+    this.stateClicked = false;
     this.timeClicked = false;
   }
 }

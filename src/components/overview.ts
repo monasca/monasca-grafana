@@ -19,18 +19,17 @@ import _ from "lodash";
 
 export class OverviewPageCtrl {
   public static templateUrl = "components/overview.html";
-  private pageLoaded: boolean;
-  private loadFailed: boolean;
-  private alarm_sets: Array<any>;
-  private totals: any;
+  public pageLoaded: boolean;
+  public loadFailed: boolean;
+  public alarmSets: Array<any>;
+  public totals: any;
 
   /* * @ngInject */
   public constructor(
-    private backendSrv,
+    private $timeout,
     private alertSrv,
     private monascaClientSrv
   ) {
-    this.backendSrv = backendSrv;
     this.pageLoaded = false;
     this.loadFailed = false;
 
@@ -97,9 +96,9 @@ export class OverviewPageCtrl {
                 ([dimValue, dimCounts]: any) => {
                   return {
                     name: dimValue,
-                    ok_count: dimCounts.OK || 0,
-                    alarm_count: dimCounts.ALARM || 0,
-                    undetermined_count: dimCounts.UNDETERMINED || 0
+                    okCount: dimCounts.OK || 0,
+                    alarmCount: dimCounts.ALARM || 0,
+                    undeterminedCount: dimCounts.UNDETERMINED || 0
                   };
                 }
               )
@@ -107,7 +106,7 @@ export class OverviewPageCtrl {
           })
         );
 
-        this.alarm_sets = [
+        this.alarmSets = [
           {
             title: "Hosts",
             dimension: "hostname",

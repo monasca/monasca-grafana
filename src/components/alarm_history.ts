@@ -87,7 +87,6 @@ export class AlarmHistoryPageCtrl {
       this.updating = false;
       return;
     }
-
     var temp = [];
     this.monascaClientSrv
       .getAlarmHistory(this.id)

@@ -51,8 +51,10 @@ export function _requestTests(): void {
         ._request()
         .then(() => done("Invalid operations should throw error"))
         .catch(err => {
-          expect(err).to.be.an(Error)
-          expect(err.message).to.equal("Monasca Error Response: " + "Resource not found");
+          expect(err).to.be.an(Error);
+          expect(err.message).to.equal(
+            "Monasca Error Response: " + "Resource not found"
+          );
           done();
         })
         .catch(err => done(err));

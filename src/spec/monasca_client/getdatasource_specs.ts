@@ -90,7 +90,9 @@ export function _getDataSourceTests(): void {
         .then(data => done("No datasource should be returned"))
         .catch(err => {
           expect(err).to.be.an(Error);
-          expect(err.message).to.eql("No datasource selected in app configuration");
+          expect(err.message).to.eql(
+            "No datasource selected in app configuration"
+          );
           done();
         });
     });

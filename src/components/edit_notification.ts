@@ -24,9 +24,9 @@ export class EditNotificationPageCtrl {
   private id: number;
   private savedNotification: any;
   private newNotification: any;
-  private saving: boolean;
-  private deleting: boolean;
   private notificationTypes: Array<any>;
+  public saving: boolean;
+  public deleting: boolean;
 
   /** @ngInject */
   public constructor(
@@ -54,54 +54,8 @@ export class EditNotificationPageCtrl {
     this.loadNotification();
   }
 
-  private loadNotificationTypes() {
-    this.monascaClientSrv
-      .listNotificationTypes()
-      .then(types => {
-        this.notificationTypes = types;
-        this.newNotification.type = _.first(this.notificationTypes);
-      })
-      .catch(err => {
-        this.alertSrv.set(
-          "Failed to get fetch notification method types.",
-          err.message,
-          "error",
-          10000
-        );
-      });
-  }
-
-  private loadNotification() {
-    if (!this.id) {
-      this.updating = false;
-      return;
-    }
-
-    this.monascaClientSrv
-      .getNotification(this.id)
-      .then(notification => {
-        this.savedNotification = {
-          name: notification.name,
-          type: notification.type,
-          address: notification.address
-        };
-        this.newNotification = this.savedNotification;
-      })
-      .catch(err => {
-        this.alertSrv.set(
-          "Failed to get fetch notification method.",
-          err.message,
-          "error",
-          10000
-        );
-        this.updateFailed = true;
-      })
-      .then(() => {
-        this.updating = false;
-      });
-  }
-
-  private saveNotification() {
+  // Save Notification Methods
+  public saveNotification() {
     this.saving = true;
 
     if (this.id) {
@@ -155,6 +109,67 @@ export class EditNotificationPageCtrl {
     }
   }
 
+  public deleteNotification() {
+    appEvents.emit("confirm-modal", {
+      title: "Delete",
+      text: "Are you sure you want to delete this notification method?",
+      text2: this.savedNotification.name,
+      yesText: "Delete",
+      icon: "fa-trash",
+      onConfirm: () => {
+        this.confirmDeleteNotification();
+      }
+    });
+  }
+
+  private loadNotificationTypes() {
+    return this.monascaClientSrv
+      .listNotificationTypes()
+      .then(types => {
+        this.notificationTypes = types;
+        this.newNotification.type = _.first(this.notificationTypes);
+      })
+      .catch(err => {
+        this.alertSrv.set(
+          "Failed to get fetch notification method types.",
+          err.message,
+          "error",
+          10000
+        );
+      });
+  }
+
+  private loadNotification() {
+    if (!this.id) {
+      this.updating = false;
+      return;
+    }
+
+    this.monascaClientSrv
+      .getNotification(this.id)
+      .then(notification => {
+        this.savedNotification = {
+          name: notification.name,
+          type: notification.type,
+          address: notification.address
+        };
+        this.newNotification = this.savedNotification;
+      })
+      .catch(err => {
+        this.alertSrv.set(
+          "Failed to get fetch notification method.",
+          err.message,
+          "error",
+          10000
+        );
+        this.updateFailed = true;
+      })
+      .then(() => {
+        this.updating = false;
+      });
+  }
+
+  // Delete Notification Method
   private confirmDeleteNotification() {
     this.deleting = true;
 
@@ -174,18 +189,5 @@ export class EditNotificationPageCtrl {
       .then(() => {
         this.deleting = false;
       });
-  }
-
-  private deleteNotification() {
-    appEvents.emit("confirm-modal", {
-      title: "Delete",
-      text: "Are you sure you want to delete this notification method?",
-      text2: this.savedNotification.name,
-      yesText: "Delete",
-      icon: "fa-trash",
-      onConfirm: () => {
-        this.confirmDeleteNotification();
-      }
-    });
   }
 }

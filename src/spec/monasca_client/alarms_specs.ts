@@ -140,7 +140,9 @@ export function alarmsTests(): void {
           .deleteAlarm()
           .then(() => done("Should throw error on no input"))
           .catch(err => {
-            expect(err.message).to.equal("No id given to alarm resource delete request");
+            expect(err.message).to.equal(
+              "No id given to alarm resource delete request"
+            );
             done();
           });
       });
@@ -247,7 +249,9 @@ export function alarmsTests(): void {
           .then(() => done("getAlarm throws error on no id"))
           .catch(err => {
             expect(err).to.be.an(Error);
-            expect(err.message).to.eql("No id given to alarm resource get request");
+            expect(err.message).to.eql(
+              "No id given to alarm resource get request"
+            );
             done();
           });
       });
@@ -327,7 +331,9 @@ export function alarmsTests(): void {
           .then(data => done("getAlarmHistory no input should throw error "))
           .catch(err => {
             expect(err).to.be.an(Error);
-            expect(err.message).to.equal("no id given to alarm history get request");
+            expect(err.message).to.equal(
+              "no id given to alarm history get request"
+            );
             done();
           });
       });

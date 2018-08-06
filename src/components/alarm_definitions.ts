@@ -19,16 +19,32 @@ import appEvents from "app/core/app_events";
 
 export class AlarmDefinitionsPageCtrl {
   public static templateUrl = "components/alarm_definitions.html";
-  private pageLoaded: boolean;
-  private loadFailed: boolean;
   private alarmDefinitions: Array<any>;
+  public pageLoaded: boolean;
+  public loadFailed: boolean;
 
   /** @ngInject */
-  public constructor(private alertSrv, private monascaClientSrv) {
+  public constructor(
+    private alertSrv,
+    private monascaClientSrv
+  ) {
     this.pageLoaded = false;
     this.loadFailed = false;
     this.alarmDefinitions = [];
     this.loadAlarmDefinitions();
+  }
+
+  public deleteAlarmDefinition(definition) {
+    appEvents.emit("confirm-modal", {
+      title: "Delete",
+      text: "Are you sure you want to delete this alarm definition?",
+      text2: definition.name,
+      yesText: "Delete",
+      icon: "fa-trash",
+      onConfirm: () => {
+        this.confirmDeleteAlarmDefinition(definition.id);
+      }
+    });
   }
 
   private loadAlarmDefinitions() {
@@ -51,41 +67,28 @@ export class AlarmDefinitionsPageCtrl {
       });
   }
 
-  private setAlarmDefinitionActionsEnabled(id, actionsEnabled) {
+  // Enable Alarm Definitions
+  private setAlarmDefinitionActionsToggleEnabled(id, actionsEnabled) {
     var index = this.alarmDefinitions.findIndex(n => n.id === id);
     if (index !== -1) {
       this.alarmDefinitions[index].actionsEnabled = actionsEnabled;
     }
   }
 
-  private setAlarmDefinitionDeleting(id, deleting) {
-    var index = this.alarmDefinitions.findIndex(n => n.id === id);
-    if (index !== -1) {
-      this.alarmDefinitions[index].deleting = deleting;
-    }
-  }
-
-  private alarmDefinitionDeleted(id) {
-    var index = this.alarmDefinitions.find(n => n.id === id);
-    if (index !== -1) {
-      this.alarmDefinitions.splice(index, 1);
-    }
-  }
-
-  private setAlarmDefinitionEnabling(id, enabling) {
+  private setAlarmDefinitionToggleEnabling(id, enabling) {
     var index = this.alarmDefinitions.findIndex(n => n.id === id);
     if (index !== -1) {
       this.alarmDefinitions[index].enabling = enabling;
     }
   }
 
-  private confirmEnableAlarmDefinition(id, actionsEnabled) {
-    this.setAlarmDefinitionEnabling(id, true);
+  private toggleEnableAlarmDefinition(id, actionsEnabled) {
+    this.setAlarmDefinitionToggleEnabling(id, true);
 
     this.monascaClientSrv
       .enableAlarmDefinition(id, actionsEnabled)
       .then(alarmDefinition => {
-        this.setAlarmDefinitionActionsEnabled(
+        this.setAlarmDefinitionActionsToggleEnabled(
           id,
           alarmDefinition.actions_enabled
         );
@@ -103,8 +106,19 @@ export class AlarmDefinitionsPageCtrl {
       });
   }
 
-  private enableAlarmDefinition(alarmDefinition, actionsEnabled) {
-    this.confirmEnableAlarmDefinition(alarmDefinition.id, actionsEnabled);
+  // Deleting Alarm Definitions
+  private setAlarmDefinitionDeleting(id, deleting) {
+    var index = this.alarmDefinitions.findIndex(n => n.id === id);
+    if (index !== -1) {
+      this.alarmDefinitions[index].deleting = deleting;
+    }
+  }
+
+  private alarmDefinitionDeleted(id) {
+    var index = this.alarmDefinitions.find(n => n.id === id);
+    if (index !== -1) {
+      this.alarmDefinitions.splice(index, 1);
+    }
   }
 
   private confirmDeleteAlarmDefinition(id) {
@@ -124,18 +138,5 @@ export class AlarmDefinitionsPageCtrl {
           10000
         );
       });
-  }
-
-  private deleteAlarmDefinition(definition) {
-    appEvents.emit("confirm-modal", {
-      title: "Delete",
-      text: "Are you sure you want to delete this alarm definition?",
-      text2: definition.name,
-      yesText: "Delete",
-      icon: "fa-trash",
-      onConfirm: () => {
-        this.confirmDeleteAlarmDefinition(definition.id);
-      }
-    });
   }
 }

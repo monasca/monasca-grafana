@@ -44,73 +44,29 @@ export class EditAlarmDefinitionPageCtrl {
     }
 
     this.savedAlarmDefinition = {};
-    this.newAlarmDefinition = {
-      severity: "LOW"
-    };
+    this.newAlarmDefinition = {};
     this.saving = false;
     this.deleting = false;
     this.loadAlarmDefinition();
   }
 
-  // UI Elements
-
-  private _suggestMatchBy(query, callback) {
-    this.monascaClientSrv.listDimensionNames().then(callback);
-  }
-
-  private addMatchBy() {
+  public addMatchBy() {
     if (!this.newAlarmDefinition.match_by) {
       this.newAlarmDefinition.match_by = [];
     }
     this.newAlarmDefinition.match_by.push("");
   }
 
-  private removeMatchBy(index) {
+  public removeMatchBy(index) {
     if (!this.newAlarmDefinition.match_by) {
       return;
     }
     this.newAlarmDefinition.match_by.splice(index, 1);
   }
 
-  private loadAlarmDefinition() {
-    if (!this.id) {
-      this.updating = false;
-      return;
-    }
-
-    this.monascaClientSrv
-      .getAlarmDefinition(this.id)
-      .then(alarmDefinition => {
-        this.savedAlarmDefinition = this.pickKnownFields(alarmDefinition);
-        this.newAlarmDefinition = _.cloneDeep(this.savedAlarmDefinition);
-      })
-      .catch(err => {
-        this.alertSrv.set(
-          "Failed to get fetch alarm definition method.",
-          err.message,
-          "error",
-          10000
-        );
-        this.updateFailed = true;
-      })
-      .then(() => {
-        this.updating = false;
-      });
-  }
-
-  private pickKnownFields(alarmDefinition) {
-    return _.pick(alarmDefinition, [
-      "name",
-      "description",
-      "expression",
-      "match_by",
-      "severity"
-    ]);
-  }
-
-  private saveAlarmDefinition() {
+  // Edit Alarm Definition
+  public saveAlarmDefinition() {
     this.saving = true;
-
     if (this.id) {
       this.monascaClientSrv
         .patchAlarmDefinition(this.id, this.newAlarmDefinition)
@@ -154,6 +110,62 @@ export class EditAlarmDefinitionPageCtrl {
     }
   }
 
+  public deleteAlarmDefinition() {
+    appEvents.emit("confirm-modal", {
+      title: "Delete",
+      text: "Are you sure you want to delete this alarm definition method?",
+      text2: this.savedAlarmDefinition.name,
+      yesText: "Delete",
+      icon: "fa-trash",
+      onConfirm: () => {
+        this.confirmDeleteAlarmDefinition();
+      }
+    });
+  }
+
+  // UI Elements
+  private _suggestMatchBy(query, callback) {
+    this.monascaClientSrv.listDimensionNames().then(callback);
+  }
+
+  private pickKnownFields(alarmDefinition) {
+    return _.pick(alarmDefinition, [
+      "name",
+      "description",
+      "expression",
+      "match_by",
+      "severity"
+    ]);
+  }
+
+  // Load Alarm Definition
+  private loadAlarmDefinition() {
+    if (!this.id) {
+      this.updating = false;
+      return;
+    }
+
+    this.monascaClientSrv
+      .getAlarmDefinition(this.id)
+      .then(alarmDefinition => {
+        this.savedAlarmDefinition = this.pickKnownFields(alarmDefinition);
+        this.newAlarmDefinition = _.cloneDeep(this.savedAlarmDefinition);
+      })
+      .catch(err => {
+        this.alertSrv.set(
+          "Failed to get fetch alarm definition method.",
+          err.message,
+          "error",
+          10000
+        );
+        this.updateFailed = true;
+      })
+      .then(() => {
+        this.updating = false;
+      });
+  }
+
+  // Delete Alarm Definition
   private confirmDeleteAlarmDefinition() {
     this.deleting = true;
 
@@ -173,18 +185,5 @@ export class EditAlarmDefinitionPageCtrl {
       .then(() => {
         this.deleting = false;
       });
-  }
-
-  private deleteAlarmDefinition() {
-    appEvents.emit("confirm-modal", {
-      title: "Delete",
-      text: "Are you sure you want to delete this alarm definition method?",
-      text2: this.savedAlarmDefinition.name,
-      yesText: "Delete",
-      icon: "fa-trash",
-      onConfirm: () => {
-        this.confirmDeleteAlarmDefinition();
-      }
-    });
   }
 }

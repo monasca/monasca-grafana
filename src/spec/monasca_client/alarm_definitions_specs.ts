@@ -79,8 +79,10 @@ export function alarmDefinitionsTests(): void {
           .getAlarmDefinition()
           .then(() => done("getAlarmDefinition shoud throw error on no input"))
           .catch(err => {
-            expect(err).to.be.an(Error)
-            expect(err.message).to.equal("no id given to alarm definition get request");
+            expect(err).to.be.an(Error);
+            expect(err.message).to.equal(
+              "no id given to alarm definition get request"
+            );
             done();
           });
       });
@@ -202,8 +204,10 @@ export function alarmDefinitionsTests(): void {
             done("patchAlarmDefinition, no id input, should throw error")
           )
           .catch(err => {
-            expect(err).to.be.an(Error)
-            expect(err.message).to.eql("no id given to alarm definition patch request");
+            expect(err).to.be.an(Error);
+            expect(err.message).to.eql(
+              "no id given to alarm definition patch request"
+            );
             done();
           });
       });
@@ -275,8 +279,10 @@ export function alarmDefinitionsTests(): void {
             done("enableAlarmDefinition, no id input, should throw error")
           )
           .catch(err => {
-            expect(err).to.be.an(Error)
-            expect(err.message).to.equal("no id given to alarm definition patch request");
+            expect(err).to.be.an(Error);
+            expect(err.message).to.equal(
+              "no id given to alarm definition patch request"
+            );
             done();
           });
       });
@@ -347,8 +353,10 @@ export function alarmDefinitionsTests(): void {
               done("deleteAlarmDefinition, no id input, should throw error")
             )
             .catch(err => {
-              expect(err).to.be.an(Error)
-              expect(err.message).to.equal("no id given to alarm definition patch request");
+              expect(err).to.be.an(Error);
+              expect(err.message).to.equal(
+                "no id given to alarm definition patch request"
+              );
               done();
             });
         });
