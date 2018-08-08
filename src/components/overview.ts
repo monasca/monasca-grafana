@@ -70,50 +70,53 @@ export class OverviewPageCtrl {
       });
   }
 
-  private loadAlarmSets() {
-    return this.monascaClientSrv
-      .countAlarms(["state", "dimension_name", "dimension_value"])
-      .then(data => {
-        var colCount = data.columns.indexOf("count");
-        var colState = data.columns.indexOf("state");
-        var colDimName = data.columns.indexOf("dimension_name");
-        var colDimValue = data.columns.indexOf("dimension_value");
+  private loadAlarmSets(promiseChain) {
+    return promiseChain
+      .then(() => {
+        return this.monascaClientSrv
+          .countAlarms(["state", "dimension_name", "dimension_value"])
+          .then(data => {
+            var colCount = data.columns.indexOf("count");
+            var colState = data.columns.indexOf("state");
+            var colDimName = data.columns.indexOf("dimension_name");
+            var colDimValue = data.columns.indexOf("dimension_value");
 
-        var counts = {};
+            var counts = {};
 
-        data.counts.forEach(row => {
-          var dimName = row[colDimName];
-          var dimValue = row[colDimValue];
-          counts[dimName] = counts[dimName] || {};
-          counts[dimName][dimValue] = counts[dimName][dimValue] || {};
-          counts[dimName][dimValue][row[colState]] = row[colCount];
-        });
+            data.counts.forEach(row => {
+              var dimName = row[colDimName];
+              var dimValue = row[colDimValue];
+              counts[dimName] = counts[dimName] || {};
+              counts[dimName][dimValue] = counts[dimName][dimValue] || {};
+              counts[dimName][dimValue][row[colState]] = row[colCount];
+            });
 
-        var entities = _.fromPairs(
-          Object.entries(counts).map(([dimName, entry]) => {
-            return [
-              dimName,
-              Object.entries(counts[dimName]).map(
-                ([dimValue, dimCounts]: any) => {
-                  return {
-                    name: dimValue,
-                    okCount: dimCounts.OK || 0,
-                    alarmCount: dimCounts.ALARM || 0,
-                    undeterminedCount: dimCounts.UNDETERMINED || 0
-                  };
-                }
-              )
+            var entities = _.fromPairs(
+              Object.entries(counts).map(([dimName, entry]) => {
+                return [
+                  dimName,
+                  Object.entries(counts[dimName]).map(
+                    ([dimValue, dimCounts]: any) => {
+                      return {
+                        name: dimValue,
+                        okCount: dimCounts.OK || 0,
+                        alarmCount: dimCounts.ALARM || 0,
+                        undeterminedCount: dimCounts.UNDETERMINED || 0
+                      };
+                    }
+                  )
+                ];
+              })
+            );
+
+            this.alarmSets = [
+              {
+                title: "Hosts",
+                dimension: "hostname",
+                entities: entities.hostname
+              }
             ];
-          })
-        );
-
-        this.alarmSets = [
-          {
-            title: "Hosts",
-            dimension: "hostname",
-            entities: entities.hostname
-          }
-        ];
+          });
       })
       .catch(err => {
         this.alertSrv.set(
