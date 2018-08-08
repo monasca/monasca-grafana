@@ -104,7 +104,7 @@ export class AlarmDefinitionsPageCtrl {
         );
       })
       .then(() => {
-        this.setAlarmDefinitionEnabling(id, false);
+        this.setAlarmDefinitionToggleEnabling(id, false);
         this.$timeout();
       });
   }
