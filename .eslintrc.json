@@ -1,19 +1,21 @@
 {
     "globals": {
-        "jasmine": false,
         "__karma__": false,
         "System": false,
         "SystemJS": false,
-        "_": false,
-        "beforeEach": false,
-        "describe": false,
-        "expect": false,
-        "it": false
+        "angular": false
     },
 
     "extends": [
         "standard",
         "prettier",
-        "prettier/standard"
-    ]
+        "prettier/standard",
+        "typescript",
+        "typescript/prettier"
+    ],
+
+    "rules": {
+        "require-jsdoc": "off",
+        "typescript/no-parameter-properties": "off"
+    }
 }

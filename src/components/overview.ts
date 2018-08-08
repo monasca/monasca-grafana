@@ -18,21 +18,30 @@
 import _ from "lodash";
 
 export class OverviewPageCtrl {
+  public static templateUrl = "components/overview.html";
+  public pageLoaded: boolean;
+  public loadFailed: boolean;
+  public alarmSets: Array<any>;
+  public totals: any;
+  public init: Promise<any>;
+
   /* * @ngInject */
-  constructor(backendSrv, alertSrv, monascaClientSrv) {
-    this.alertSrv = alertSrv;
-    this.monasca = monascaClientSrv;
+  public constructor(
+    private $timeout,
+    private alertSrv,
+    private monascaClientSrv
+  ) {
     this.pageLoaded = false;
     this.loadFailed = false;
 
     this.totals = null;
-    this.loadTotals();
-
-    this.loadAlarmSets();
+    this.init = this.loadAlarmSets(this.loadTotals()).then(() =>
+      this.$timeout()
+    );
   }
 
-  loadTotals() {
-    this.monasca
+  private loadTotals() {
+    return this.monascaClientSrv
       .countAlarms(["state"])
       .then(data => {
         var colCount = data.columns.indexOf("count");
@@ -61,8 +70,8 @@ export class OverviewPageCtrl {
       });
   }
 
-  loadAlarmSets() {
-    this.monasca
+  private loadAlarmSets() {
+    return this.monascaClientSrv
       .countAlarms(["state", "dimension_name", "dimension_value"])
       .then(data => {
         var colCount = data.columns.indexOf("count");
@@ -84,19 +93,21 @@ export class OverviewPageCtrl {
           Object.entries(counts).map(([dimName, entry]) => {
             return [
               dimName,
-              Object.entries(counts[dimName]).map(([dimValue, dimCounts]) => {
-                return {
-                  name: dimValue,
-                  ok_count: dimCounts.OK || 0,
-                  alarm_count: dimCounts.ALARM || 0,
-                  undetermined_count: dimCounts.UNDETERMINED || 0
-                };
-              })
+              Object.entries(counts[dimName]).map(
+                ([dimValue, dimCounts]: any) => {
+                  return {
+                    name: dimValue,
+                    okCount: dimCounts.OK || 0,
+                    alarmCount: dimCounts.ALARM || 0,
+                    undeterminedCount: dimCounts.UNDETERMINED || 0
+                  };
+                }
+              )
             ];
           })
         );
 
-        this.alarm_sets = [
+        this.alarmSets = [
           {
             title: "Hosts",
             dimension: "hostname",
@@ -118,5 +129,3 @@ export class OverviewPageCtrl {
       });
   }
 }
-
-OverviewPageCtrl.templateUrl = "components/overview.html";

@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "module": "system",
+        "noImplicitAny": false,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "rootDir": "src",
+        "outDir": "dist",
+        "sourceMap": true,
+        "noUnusedLocals": false,
+        "noImplicitReturns": false,
+        "target": "es5",
+        "lib": [
+            "es2017"
+        ]
+    },
+    "filesGlob": [
+        "node_modules/grafana-sdk-mocks/app/headers/common.d.ts",
+        "src/**/*.ts"
+    ]
+}

@@ -9,25 +9,29 @@ module.exports = function (config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: ['mocha', 'expect', 'sinon'],
 
     plugins: [
       'karma-chrome-launcher',
-      'karma-jasmine'
+      'karma-mocha',
+      'karma-expect',
+      'karma-sinon'
     ],
 
     // list of files / patterns to load in the browser
 
     files: [
-      //= ====== SYSTEMJS ========//
+      // ======= SYSTEMJS ========//
       { pattern: 'node_modules/systemjs/dist/system.src.js', watched: false, included: true}, // SystemJS module loader
       { pattern: 'systemjs.config.js', watched: true, included: false}, // SystemJS configuration script
-      //= ====== TEST RUNNER ========//
+      // ======= TEST RUNNER ========//
       { pattern: 'karma-test-shim.js', watched: true, included: true},
-      //= ====== Source Files ========//
-      { pattern: 'dist/components/monasca_client.js', watched: true, included: false},
-      //= ====== Spec Files ========//
-      { pattern: 'dist/spec/**/*_spec.js', watched: true, included: false}
+      // ======= Source Files ========//
+      { pattern: 'dist/components/**/*.js', watched: true, included: false},
+      // ======= Spec Files ========//
+      { pattern: 'dist/spec/globals.js', watched: true, included: false},
+      { pattern: 'dist/spec/monasca_client_specs.js', watched: true, included: false},
+      { pattern: 'dist/spec/monasca_client/**/*.js', watched: true, included: false},
     ],
 
     // list of files / patterns to exclude

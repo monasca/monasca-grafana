@@ -1,27 +1,37 @@
-import MonascaClient from "../../components/monasca_client.js";
+import MonascaClient from "../../components/monasca_client";
+import {
+  console,
+  beforeEach,
+  describe,
+  it,
+  sinon,
+  expect
+} from "../globals.js";
 
-export function alarmDefinitionsTests() {
+export function alarmDefinitionsTests(): void {
   var backendSrvMock, datasourceSrvMock, monascaClient;
   beforeEach(() => {
-    backendSrvMock = jasmine.createSpyObj("backendSrvMock", [
-      "get",
-      "datasourceRequest"
-    ]);
-    datasourceSrvMock = jasmine.createSpyObj("datasourceSrvMock", ["get"]);
+    backendSrvMock = {
+      get: sinon.stub(),
+      datasourceRequest: sinon.stub()
+    };
+    datasourceSrvMock = {
+      get: sinon.stub()
+    };
     monascaClient = new MonascaClient(backendSrvMock, datasourceSrvMock);
   });
 
   describe("Alarm Definitions", () => {
     describe("listAlarmDefinitions", () => {
       it("Tests: mock calls, mock parameters, output", done => {
-        backendSrvMock.get.and.returnValue(
+        backendSrvMock.get.returns(
           Promise.resolve({
             jsonData: {
               datasourceName: "monasca_datasource"
             }
           })
         );
-        backendSrvMock.datasourceRequest.and.returnValue(
+        backendSrvMock.datasourceRequest.returns(
           Promise.resolve({
             data: {
               elements: [
@@ -31,7 +41,7 @@ export function alarmDefinitionsTests() {
             }
           })
         );
-        datasourceSrvMock.get.and.returnValue(
+        datasourceSrvMock.get.returns(
           Promise.resolve({
             datasourceName: "monasca_datasource",
             token: "authentication token",
@@ -41,18 +51,20 @@ export function alarmDefinitionsTests() {
         );
 
         monascaClient.listAlarmDefinitions().then(data => {
-          expect(backendSrvMock.datasourceRequest).toHaveBeenCalledWith({
-            method: "GET",
-            url: "proxied/v2.0/alarm-definitions/",
-            params: undefined,
-            data: undefined,
-            headers: {
-              "Content-Type": "application/json",
-              "X-Auth-Token": "authentication token"
-            },
-            withCredentials: true
-          });
-          expect(data).toEqual([
+          expect(
+            backendSrvMock.datasourceRequest.calledWith({
+              method: "GET",
+              url: "proxied/v2.0/alarm-definitions/",
+              params: undefined,
+              data: undefined,
+              headers: {
+                "Content-Type": "application/json",
+                "X-Auth-Token": "authentication token"
+              },
+              withCredentials: true
+            })
+          ).to.be.ok();
+          expect(data).to.eql([
             { id: "f9935bcc-9641-4cbf-8224-0993a947ea83" },
             { id: "f9935bcc-9641-4cbf-8224-0993a947ea84" }
           ]);
@@ -65,33 +77,32 @@ export function alarmDefinitionsTests() {
       it("Inputs: none, Tests: throws error", done => {
         monascaClient
           .getAlarmDefinition()
-          .then(() =>
-            done.fail("getAlarmDefinition shoud throw error on no input")
-          )
+          .then(() => done("getAlarmDefinition shoud throw error on no input"))
           .catch(err => {
-            expect(err).toEqual(
-              new Error("no id given to alarm definition get request")
+            expect(err).to.be.an(Error);
+            expect(err.message).to.equal(
+              "no id given to alarm definition get request"
             );
             done();
           });
       });
 
       it("Inputs: alarm id, Tests: mock calls, mock parameters, output", done => {
-        backendSrvMock.get.and.returnValue(
+        backendSrvMock.get.returns(
           Promise.resolve({
             jsonData: {
               datasourceName: "monasca_datasource"
             }
           })
         );
-        backendSrvMock.datasourceRequest.and.returnValue(
+        backendSrvMock.datasourceRequest.returns(
           Promise.resolve({
             data: {
               id: "f9935bcc-9641-4cbf-8224-0993a947ea83"
             }
           })
         );
-        datasourceSrvMock.get.and.returnValue(
+        datasourceSrvMock.get.returns(
           Promise.resolve({
             datasourceName: "monasca_datasource",
             token: "authentication token",
@@ -101,18 +112,20 @@ export function alarmDefinitionsTests() {
         );
 
         monascaClient.getAlarmDefinition(5).then(data => {
-          expect(backendSrvMock.datasourceRequest).toHaveBeenCalledWith({
-            method: "GET",
-            url: "proxied/v2.0/alarm-definitions/5",
-            params: undefined,
-            data: undefined,
-            headers: {
-              "Content-Type": "application/json",
-              "X-Auth-Token": "authentication token"
-            },
-            withCredentials: true
-          });
-          expect(data).toEqual({
+          expect(
+            backendSrvMock.datasourceRequest.calledWith({
+              method: "GET",
+              url: "proxied/v2.0/alarm-definitions/5",
+              params: undefined,
+              data: undefined,
+              headers: {
+                "Content-Type": "application/json",
+                "X-Auth-Token": "authentication token"
+              },
+              withCredentials: true
+            })
+          ).to.be.ok();
+          expect(data).to.eql({
             id: "f9935bcc-9641-4cbf-8224-0993a947ea83"
           });
           done();
@@ -122,14 +135,14 @@ export function alarmDefinitionsTests() {
 
     describe("createAlarmDefinition", () => {
       it("Input: new alarm definition, Tests: mock calls, mock parameters, output", done => {
-        backendSrvMock.get.and.returnValue(
+        backendSrvMock.get.returns(
           Promise.resolve({
             jsonData: {
               datasourceName: "monasca_datasource"
             }
           })
         );
-        backendSrvMock.datasourceRequest.and.returnValue(
+        backendSrvMock.datasourceRequest.returns(
           Promise.resolve({
             data: {
               id: "f9935bcc-9641-4cbf-8224-0993a947ea83",
@@ -139,7 +152,7 @@ export function alarmDefinitionsTests() {
             }
           })
         );
-        datasourceSrvMock.get.and.returnValue(
+        datasourceSrvMock.get.returns(
           Promise.resolve({
             datasourceName: "monasca_datasource",
             token: "authentication token",
@@ -155,22 +168,24 @@ export function alarmDefinitionsTests() {
             expression: "(avg(cpu.user_perc{hostname=devstack}) > 10)"
           })
           .then(data => {
-            expect(backendSrvMock.datasourceRequest).toHaveBeenCalledWith({
-              method: "POST",
-              url: "proxied/v2.0/alarm-definitions/",
-              params: undefined,
-              data: {
-                name: "Average CPU percent greater than 10",
-                description: "The average CPU percent is greater than 10",
-                expression: "(avg(cpu.user_perc{hostname=devstack}) > 10)"
-              },
-              headers: {
-                "Content-Type": "application/json",
-                "X-Auth-Token": "authentication token"
-              },
-              withCredentials: true
-            });
-            expect(data).toEqual({
+            expect(
+              backendSrvMock.datasourceRequest.calledWith({
+                method: "POST",
+                url: "proxied/v2.0/alarm-definitions/",
+                params: undefined,
+                data: {
+                  name: "Average CPU percent greater than 10",
+                  description: "The average CPU percent is greater than 10",
+                  expression: "(avg(cpu.user_perc{hostname=devstack}) > 10)"
+                },
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-Auth-Token": "authentication token"
+                },
+                withCredentials: true
+              })
+            ).to.be.ok();
+            expect(data).to.eql({
               id: "f9935bcc-9641-4cbf-8224-0993a947ea83",
               name: "Average CPU percent greater than 10",
               description: "The average CPU percent is greater than 10",
@@ -186,25 +201,26 @@ export function alarmDefinitionsTests() {
         monascaClient
           .patchAlarmDefinition()
           .then(() =>
-            done.fail("patchAlarmDefinition, no id input, should throw error")
+            done("patchAlarmDefinition, no id input, should throw error")
           )
           .catch(err => {
-            expect(err).toEqual(
-              new Error("no id given to alarm definition patch request")
+            expect(err).to.be.an(Error);
+            expect(err.message).to.eql(
+              "no id given to alarm definition patch request"
             );
             done();
           });
       });
 
       it("Input: alarm id && new alarm definition fields, Tests: mock calls, mock parameters, output", done => {
-        backendSrvMock.get.and.returnValue(
+        backendSrvMock.get.returns(
           Promise.resolve({
             jsonData: {
               datasourceName: "monasca_datasource"
             }
           })
         );
-        backendSrvMock.datasourceRequest.and.returnValue(
+        backendSrvMock.datasourceRequest.returns(
           Promise.resolve({
             data: {
               id: "f9935bcc-9641-4cbf-8224-0993a947ea83",
@@ -214,7 +230,7 @@ export function alarmDefinitionsTests() {
             }
           })
         );
-        datasourceSrvMock.get.and.returnValue(
+        datasourceSrvMock.get.returns(
           Promise.resolve({
             datasourceName: "monasca_datasource",
             token: "authentication token",
@@ -228,21 +244,23 @@ export function alarmDefinitionsTests() {
             name: "Average CPU percent greater than 10,000!!!"
           })
           .then(data => {
-            expect(backendSrvMock.datasourceRequest).toHaveBeenCalledWith({
-              method: "PATCH",
-              url:
-                "proxied/v2.0/alarm-definitions/f9935bcc-9641-4cbf-8224-0993a947ea83",
-              params: undefined,
-              data: {
-                name: "Average CPU percent greater than 10,000!!!"
-              },
-              headers: {
-                "Content-Type": "application/json",
-                "X-Auth-Token": "authentication token"
-              },
-              withCredentials: true
-            });
-            expect(data).toEqual({
+            expect(
+              backendSrvMock.datasourceRequest.calledWith({
+                method: "PATCH",
+                url:
+                  "proxied/v2.0/alarm-definitions/f9935bcc-9641-4cbf-8224-0993a947ea83",
+                params: undefined,
+                data: {
+                  name: "Average CPU percent greater than 10,000!!!"
+                },
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-Auth-Token": "authentication token"
+                },
+                withCredentials: true
+              })
+            ).to.be.ok();
+            expect(data).to.eql({
               id: "f9935bcc-9641-4cbf-8224-0993a947ea83",
               name: "Average CPU percent greater than 10,000!",
               description: "The average CPU percent is greater than 10",
@@ -258,25 +276,26 @@ export function alarmDefinitionsTests() {
         monascaClient
           .enableAlarmDefinition()
           .then(() =>
-            done.fail("enableAlarmDefinition, no id input, should throw error")
+            done("enableAlarmDefinition, no id input, should throw error")
           )
           .catch(err => {
-            expect(err).toEqual(
-              new Error("no id given to alarm definition patch request")
+            expect(err).to.be.an(Error);
+            expect(err.message).to.equal(
+              "no id given to alarm definition patch request"
             );
             done();
           });
       });
 
       it("Input: alarm id && new alarm definition fields, Tests: mock calls, mock parameters, output", done => {
-        backendSrvMock.get.and.returnValue(
+        backendSrvMock.get.returns(
           Promise.resolve({
             jsonData: {
               datasourceName: "monasca_datasource"
             }
           })
         );
-        backendSrvMock.datasourceRequest.and.returnValue(
+        backendSrvMock.datasourceRequest.returns(
           Promise.resolve({
             data: {
               id: "f9935bcc-9641-4cbf-8224-0993a947ea83",
@@ -287,7 +306,7 @@ export function alarmDefinitionsTests() {
             }
           })
         );
-        datasourceSrvMock.get.and.returnValue(
+        datasourceSrvMock.get.returns(
           Promise.resolve({
             datasourceName: "monasca_datasource",
             token: "authentication token",
@@ -299,21 +318,23 @@ export function alarmDefinitionsTests() {
         monascaClient
           .enableAlarmDefinition("f9935bcc-9641-4cbf-8224-0993a947ea83", true)
           .then(data => {
-            expect(backendSrvMock.datasourceRequest).toHaveBeenCalledWith({
-              method: "PATCH",
-              url:
-                "proxied/v2.0/alarm-definitions/f9935bcc-9641-4cbf-8224-0993a947ea83",
-              params: undefined,
-              data: {
-                actions_enabled: true
-              },
-              headers: {
-                "Content-Type": "application/json",
-                "X-Auth-Token": "authentication token"
-              },
-              withCredentials: true
-            });
-            expect(data).toEqual({
+            expect(
+              backendSrvMock.datasourceRequest.calledWith({
+                method: "PATCH",
+                url:
+                  "proxied/v2.0/alarm-definitions/f9935bcc-9641-4cbf-8224-0993a947ea83",
+                params: undefined,
+                data: {
+                  actions_enabled: true
+                },
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-Auth-Token": "authentication token"
+                },
+                withCredentials: true
+              })
+            ).to.be.ok();
+            expect(data).to.eql({
               id: "f9935bcc-9641-4cbf-8224-0993a947ea83",
               name: "Average CPU percent greater than 10,000!",
               description: "The average CPU percent is greater than 10",
@@ -329,32 +350,31 @@ export function alarmDefinitionsTests() {
           monascaClient
             .deleteAlarmDefinition()
             .then(() =>
-              done.fail(
-                "deleteAlarmDefinition, no id input, should throw error"
-              )
+              done("deleteAlarmDefinition, no id input, should throw error")
             )
             .catch(err => {
-              expect(err).toEqual(
-                new Error("no id given to alarm definition patch request")
+              expect(err).to.be.an(Error);
+              expect(err.message).to.equal(
+                "no id given to alarm definition patch request"
               );
               done();
             });
         });
 
         it("Input: alarm id && new alarm definition fields, Tests: mock calls, mock parameters, output", done => {
-          backendSrvMock.get.and.returnValue(
+          backendSrvMock.get.returns(
             Promise.resolve({
               jsonData: {
                 datasourceName: "monasca_datasource"
               }
             })
           );
-          backendSrvMock.datasourceRequest.and.returnValue(
+          backendSrvMock.datasourceRequest.returns(
             Promise.resolve({
               data: undefined
             })
           );
-          datasourceSrvMock.get.and.returnValue(
+          datasourceSrvMock.get.returns(
             Promise.resolve({
               datasourceName: "monasca_datasource",
               token: "authentication token",
@@ -366,19 +386,21 @@ export function alarmDefinitionsTests() {
           monascaClient
             .deleteAlarmDefinition("f9935bcc-9641-4cbf-8224-0993a947ea83")
             .then(data => {
-              expect(backendSrvMock.datasourceRequest).toHaveBeenCalledWith({
-                method: "DELETE",
-                url:
-                  "proxied/v2.0/alarm-definitions/f9935bcc-9641-4cbf-8224-0993a947ea83",
-                params: undefined,
-                data: undefined,
-                headers: {
-                  "Content-Type": "application/json",
-                  "X-Auth-Token": "authentication token"
-                },
-                withCredentials: true
-              });
-              expect(data).toEqual(undefined);
+              expect(
+                backendSrvMock.datasourceRequest.calledWith({
+                  method: "DELETE",
+                  url:
+                    "proxied/v2.0/alarm-definitions/f9935bcc-9641-4cbf-8224-0993a947ea83",
+                  params: undefined,
+                  data: undefined,
+                  headers: {
+                    "Content-Type": "application/json",
+                    "X-Auth-Token": "authentication token"
+                  },
+                  withCredentials: true
+                })
+              ).to.be.ok();
+              expect(data).to.eql(undefined);
               done();
             });
         });

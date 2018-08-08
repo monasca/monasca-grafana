@@ -15,11 +15,25 @@
  */
 
 export class AlarmHistoryPageCtrl {
+  public static templateUrl = "components/alarm_history.html";
+  private updating: boolean;
+  private updateFailed: boolean;
+  private id: number;
+  private states: Array<any>;
+  private savedAlarm: any;
+  private saving: boolean;
+  private deleting: boolean;
+  public loadFailed: boolean;
+  public pageLoaded: boolean;
+  public init: Promise<any>;
+
   /** @ngInject */
-  constructor($location, alertSrv, monascaClientSrv) {
-    this.$location = $location;
-    this.alertSrv = alertSrv;
-    this.monasca = monascaClientSrv;
+  public constructor(
+    private $timeout,
+    private $location,
+    private alertSrv,
+    private monascaClientSrv
+  ) {
     this.updating = true;
     this.updateFailed = false;
 
@@ -32,54 +46,42 @@ export class AlarmHistoryPageCtrl {
     this.savedAlarm = {};
     this.saving = false;
     this.deleting = false;
-    this.savedAlarm = this.loadAlarm();
-    this.states = this.loadStates();
+
+    if (!this.id) {
+      this.updating = false;
+    } else {
+      this.init = this.loadStates(this.loadAlarm()).then(() => this.$timeout());
+    }
   }
 
-  pickKnownFields(alarm) {
+  private pickKnownFields(alarm) {
     this.savedAlarm.name = alarm.alarm_definition.name;
     this.savedAlarm.severity = alarm.alarm_definition.severity;
     this.savedAlarm.state = alarm.state;
     return this.savedAlarm;
   }
 
-  loadAlarm() {
-    var _this = this;
-    if (!this.id) {
-      this.updating = false;
-      return;
-    }
-
-    this.monasca
+  private loadAlarm() {
+    return this.monascaClientSrv
       .getAlarm(this.id)
-      .then(function(alarm) {
-        _this.savedAlarm = _this.pickKnownFields(alarm);
+      .then(alarm => {
+        this.savedAlarm = this.pickKnownFields(alarm);
       })
       .catch(err => {
-        _this.alertSrv.set(
+        this.alertSrv.set(
           "Failed to fetch alarm method.",
           err.message,
           "error",
           10000
         );
-        _this.loadFailed = true;
-      })
-      .then(() => {
-        _this.pageLoaded = true;
+        this.loadFailed = true;
       });
-    return this.savedAlarm;
   }
 
-  loadStates() {
-    if (!this.id) {
-      this.updating = false;
-      return;
-    }
-
-    var temp = [];
-    this.monasca
-      .getAlarmHistory(this.id)
-      .then(function(alarmHistory) {
+  private loadStates(promiseChain) {
+    return promiseChain
+      .then(() => this.monascaClientSrv.getAlarmHistory(this.id))
+      .then(alarmHistory => {
         for (var i = 0; i < alarmHistory.elements.length; i++) {
           alarmHistory.elements[i].timestamp = alarmHistory.elements[
             i
@@ -87,7 +89,7 @@ export class AlarmHistoryPageCtrl {
           alarmHistory.elements[i].timestamp = alarmHistory.elements[
             i
           ].timestamp.replace(/.{4}$/g, " ");
-          temp.push(alarmHistory.elements[i]);
+          this.states.push(alarmHistory.elements[i]);
         }
       })
       .catch(err => {
@@ -102,8 +104,5 @@ export class AlarmHistoryPageCtrl {
       .then(() => {
         this.pageLoaded = true;
       });
-    return temp;
   }
 }
-
-AlarmHistoryPageCtrl.templateUrl = "components/alarm_history.html";

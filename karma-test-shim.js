@@ -1,10 +1,9 @@
 Error.stackTraceLimit = 0
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000
 
 __karma__.loaded = function () { }
 
 function isSpecFile (path) {
-  return /^(.*)_spec.js$/.test(path)
+  return /^(.*)_specs.js$/.test(path)
 }
 
 var allSpecFiles = Object.keys(window.__karma__.files)

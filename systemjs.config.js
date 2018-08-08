@@ -1,8 +1,11 @@
 
-(function (System) {
-  SystemJS.config({
-    map: {
-    },
-    transpiler: null
-  })
-})(System)
+System.config({
+  map: {
+  },
+  transpiler: null,
+  packages: {
+    "." : { 
+      defaultExtension: 'js'
+    }
+  }
+})

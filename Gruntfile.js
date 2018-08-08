@@ -3,6 +3,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean')
   grunt.loadNpmTasks('grunt-contrib-copy')
   grunt.loadNpmTasks('grunt-sass')
+  grunt.loadNpmTasks("grunt-ts")
 
   grunt.initConfig({
 
@@ -12,7 +13,7 @@ module.exports = function (grunt) {
       src_to_dist: {
         cwd: 'src',
         expand: true,
-        src: ['**/*', '!**/*.js', '!**/*.scss'],
+        src: ['**/*', '!**/*.ts', '!**/*.js', '!**/*.scss'],
         dest: 'dist'
       },
       pluginDef: {
@@ -47,6 +48,15 @@ module.exports = function (grunt) {
       }
     },
 
+    ts: {
+      default : {
+        tsconfig: './tsconfig.json',
+        options: {
+          skipLibCheck: true
+        }
+      }
+    },
+
     sass: {
       options: {
         sourceMap: true
@@ -61,5 +71,5 @@ module.exports = function (grunt) {
 
   })
 
-  grunt.registerTask('default', ['clean', 'sass', 'copy', 'babel'])
+  grunt.registerTask('default', ['clean', 'sass', 'copy', 'babel', 'ts'])
 }

@@ -15,20 +15,43 @@
  */
 
 import appEvents from "app/core/app_events";
+import { console } from "../spec/globals";
 
 export class NotificationsPageCtrl {
+  public static templateUrl = "components/notifications.html";
+  private notifications: Array<any>;
+  public pageLoaded: boolean;
+  public loadFailed: boolean;
+  public init: Promise<any>;
+
   /** @ngInject */
-  constructor(alertSrv, monascaClientSrv) {
-    this.alertSrv = alertSrv;
-    this.monasca = monascaClientSrv;
+  public constructor(
+    private $timeout,
+    private alertSrv,
+    private monascaClientSrv
+  ) {
     this.pageLoaded = false;
     this.loadFailed = false;
     this.notifications = [];
-    this.loadNotifications();
+    this.init = this.loadNotifications().then(() => this.$timeout());
   }
 
-  loadNotifications() {
-    this.monasca
+  public deleteNotification(notification) {
+    appEvents.emit("confirm-modal", {
+      title: "Delete",
+      text: "Are you sure you want to delete this notification method?",
+      text2: notification.name,
+      yesText: "Delete",
+      icon: "fa-trash",
+      onConfirm: () => {
+        this.confirmDeleteNotification(notification.id);
+      }
+    });
+  }
+
+  // Loading Notifications
+  private loadNotifications() {
+    return this.monascaClientSrv
       .listNotifications()
       .then(notifications => {
         this.notifications = notifications;
@@ -47,24 +70,25 @@ export class NotificationsPageCtrl {
       });
   }
 
-  setNotificationDeleting(id, deleting) {
+  // Notification Deletion
+  private setNotificationDeleting(id, deleting) {
     var index = this.notifications.findIndex(n => n.id === id);
     if (index !== -1) {
-      this.notifications[index].deleting = true;
+      this.notifications[index].deleting = deleting;
     }
   }
 
-  notificationDeleted(id) {
+  private notificationDeleted(id) {
     var index = this.notifications.find(n => n.id === id);
     if (index !== -1) {
       this.notifications.splice(index, 1);
     }
   }
 
-  confirmDeleteNotification(id) {
+  private confirmDeleteNotification(id) {
     this.setNotificationDeleting(id, true);
 
-    this.monasca
+    return this.monascaClientSrv
       .deleteNotification(id)
       .then(() => {
         this.notificationDeleted(id);
@@ -77,21 +101,9 @@ export class NotificationsPageCtrl {
           "error",
           10000
         );
+      })
+      .then(() => {
+        this.$timeout();
       });
   }
-
-  deleteNotification(notification) {
-    appEvents.emit("confirm-modal", {
-      title: "Delete",
-      text: "Are you sure you want to delete this notification method?",
-      text2: notification.name,
-      yesText: "Delete",
-      icon: "fa-trash",
-      onConfirm: () => {
-        this.confirmDeleteNotification(notification.id);
-      }
-    });
-  }
 }
-
-NotificationsPageCtrl.templateUrl = "components/notifications.html";
