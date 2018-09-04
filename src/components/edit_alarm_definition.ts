@@ -24,10 +24,12 @@ export class EditAlarmDefinitionPageCtrl {
   private id: number;
   private savedAlarmDefinition: any;
   private newAlarmDefinition: any;
+  private notificationMethods: any;
   private saving: boolean;
   private deleting: boolean;
   public init: Promise<any>;
   public suggestMatchBy: any;
+  public suggestAlarmActions: any;
 
   /** @ngInject */
   public constructor(
@@ -50,11 +52,15 @@ export class EditAlarmDefinitionPageCtrl {
     this.saving = false;
     this.deleting = false;
     this.suggestMatchBy = this._suggestMatchBy.bind(this);
+    this.suggestAlarmActions = this._suggestAlarmActions.bind(this);
 
     if (!this.id) {
       this.updating = false;
+      this.loadNotificationMethods().then(() => this.$timeout());
     } else {
-      this.init = this.loadAlarmDefinition().then(() => this.$timeout());
+      this.init = this.loadNotificationMethods()
+        .then(() => this.loadAlarmDefinition())
+        .then(() => this.$timeout());
     }
   }
 
@@ -72,10 +78,31 @@ export class EditAlarmDefinitionPageCtrl {
     this.newAlarmDefinition.match_by.splice(index, 1);
   }
 
+  public addAlarmAction() {
+    if (!this.newAlarmDefinition.alarm_actions_by_name) {
+      this.newAlarmDefinition.alarm_actions_by_name = [];
+    }
+    this.newAlarmDefinition.alarm_actions_by_name.push("");
+  }
+
+  public removeAlarmAction(index) {
+    if (!this.newAlarmDefinition.alarm_actions_by_name) {
+      return;
+    }
+    this.newAlarmDefinition.alarm_actions_by_name.splice(index, 1);
+  }
+
   // Edit Alarm Definition
   public saveAlarmDefinition() {
     this.saving = true;
     if (this.id) {
+      this.newAlarmDefinition.alarm_actions = this.newAlarmDefinition.alarm_actions_by_name.map(
+        alarm_action_name =>
+          this.notificationMethods.find(
+            notification_method => notification_method.name == alarm_action_name
+          ).id
+      );
+      delete this.newAlarmDefinition.alarm_actions_by_name;
       return this.monascaClientSrv
         .patchAlarmDefinition(this.id, this.newAlarmDefinition)
         .then(alarmDefinition => {
@@ -146,6 +173,21 @@ export class EditAlarmDefinitionPageCtrl {
     });
   }
 
+  private _suggestAlarmActions(query, callback) {
+    return Promise.resolve(
+      this.notificationMethods.map(notification => notification.name)
+    ).then(callback);
+  }
+
+  private loadNotificationMethods() {
+    return this.monascaClientSrv
+      .listNotifications()
+      .then(
+        notification_methods =>
+          (this.notificationMethods = notification_methods)
+      );
+  }
+
   // UI Elements
   private _suggestMatchBy(query, callback) {
     this.monascaClientSrv.listDimensionNames().then(callback);
@@ -157,7 +199,8 @@ export class EditAlarmDefinitionPageCtrl {
       "description",
       "expression",
       "match_by",
-      "severity"
+      "severity",
+      "alarm_actions"
     ]);
   }
 
@@ -167,6 +210,12 @@ export class EditAlarmDefinitionPageCtrl {
       .getAlarmDefinition(this.id)
       .then(alarmDefinition => {
         this.savedAlarmDefinition = this.pickKnownFields(alarmDefinition);
+        this.savedAlarmDefinition.alarm_actions_by_name = this.savedAlarmDefinition.alarm_actions.map(
+          alarm_action =>
+            this.notificationMethods.find(
+              notification_method => notification_method.id === alarm_action
+            ).name
+        );
         this.newAlarmDefinition = _.cloneDeep(this.savedAlarmDefinition);
       })
       .catch(err => {

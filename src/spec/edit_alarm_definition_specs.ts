@@ -11,6 +11,7 @@ describe("EditAlarmDefinitionPageCtrl", () => {
     };
     $timeout = sinon.spy();
     monascaClientSrv = {
+      listNotifications: sinon.stub(),
       listDimensionNames: sinon.stub(),
       getAlarmDefinition: sinon.stub(),
       patchAlarmDefinition: sinon.stub(),
@@ -42,7 +43,11 @@ describe("EditAlarmDefinitionPageCtrl", () => {
     tests
   ): void {
     it(description, done => {
-      before(preBeforeConfigureMocks, preBeforeConfigureControllers);
+      var configureMocks = (): void => {
+        preBeforeConfigureMocks();
+        monascaClientSrv.listNotifications.returns(Promise.resolve([]));
+      };
+      before(configureMocks, preBeforeConfigureControllers);
 
       //Constructor
       new Promise((resolve, reject) => {
@@ -73,7 +78,8 @@ describe("EditAlarmDefinitionPageCtrl", () => {
             description: "Release the hounds",
             expression: "(avg(cpu.user_perc{hostname=devstack}) > 10)",
             match_by: ["hostname"],
-            severity: "CRITICAL"
+            severity: "CRITICAL",
+            alarm_actions: []
           })
         );
       },
@@ -91,14 +97,18 @@ describe("EditAlarmDefinitionPageCtrl", () => {
           description: "Release the hounds",
           expression: "(avg(cpu.user_perc{hostname=devstack}) > 10)",
           match_by: ["hostname"],
-          severity: "CRITICAL"
+          severity: "CRITICAL",
+          alarm_actions: [],
+          alarm_actions_by_name: []
         });
         expect(editAlarmDefinitionPageCtrl.newAlarmDefinition).to.eql({
           name: "CPU percent greater than 10",
           description: "Release the hounds",
           expression: "(avg(cpu.user_perc{hostname=devstack}) > 10)",
           match_by: ["hostname"],
-          severity: "CRITICAL"
+          severity: "CRITICAL",
+          alarm_actions: [],
+          alarm_actions_by_name: []
         });
         expect(editAlarmDefinitionPageCtrl.updating).to.eql(false);
       }
@@ -146,7 +156,8 @@ describe("EditAlarmDefinitionPageCtrl", () => {
               description: "Release the hounds",
               expression: "(avg(cpu.user_perc{hostname=devstack}) > 10)",
               match_by: ["hostname"],
-              severity: "CRITICAL"
+              severity: "CRITICAL",
+              alarm_actions: []
             })
           );
         monascaClientSrv.patchAlarmDefinition.returns(
@@ -188,7 +199,9 @@ describe("EditAlarmDefinitionPageCtrl", () => {
             description: "Release many hounds",
             expression: "(avg(cpu.user_perc{hostname=devstack}) > 10)",
             match_by: ["hostname"],
-            severity: "CRITICAL"
+            severity: "CRITICAL",
+            alarm_actions: [],
+            alarm_actions_by_name: []
           });
           expect(editAlarmDefinitionPageCtrl.saving).to.eql(false);
         });
@@ -206,7 +219,8 @@ describe("EditAlarmDefinitionPageCtrl", () => {
               description: "Release the hounds",
               expression: "(avg(cpu.user_perc{hostname=devstack}) > 10)",
               match_by: ["hostname"],
-              severity: "CRITICAL"
+              severity: "CRITICAL",
+              alarm_actions: []
             })
           );
         monascaClientSrv.patchAlarmDefinition.returns(
@@ -261,7 +275,8 @@ describe("EditAlarmDefinitionPageCtrl", () => {
               description: "Release the hounds",
               expression: "(avg(cpu.user_perc{hostname=devstack}) > 10)",
               match_by: ["hostname"],
-              severity: "CRITICAL"
+              severity: "CRITICAL",
+              alarm_actions: []
             })
           );
         monascaClientSrv.createAlarmDefinition.returns(
@@ -299,7 +314,9 @@ describe("EditAlarmDefinitionPageCtrl", () => {
             description: "Release the hounds",
             expression: "(avg(cpu.user_perc{hostname=devstack}) > 10)",
             match_by: ["hostname"],
-            severity: "CRITICAL"
+            severity: "CRITICAL",
+            alarm_actions: [],
+            alarm_actions_by_name: []
           });
           expect(editAlarmDefinitionPageCtrl.id).to.eql(
             "f9935bcc-9641-4cbf-8224-0993a947ea84"
@@ -324,7 +341,8 @@ describe("EditAlarmDefinitionPageCtrl", () => {
               description: "Release the hounds",
               expression: "(avg(cpu.user_perc{hostname=devstack}) > 10)",
               match_by: ["hostname"],
-              severity: "CRITICAL"
+              severity: "CRITICAL",
+              alarm_actions: []
             })
           );
         monascaClientSrv.createAlarmDefinition.returns(
