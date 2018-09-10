@@ -170,52 +170,53 @@
 
 <div ng-if="ctrl.pageLoaded && !ctrl.updateFailed && ctrl.alarms.length > 0">
 
+	<!-- Columns -->
   <table class="grafana-options-table">
     <tr class="muted">
-      <th ng-model="stateActive" ng-click="stateActive=true">
+      <th ng-model="ctrl.stateActive" ng-click="ctrl.stateActive=true">
 				State
-				<span ng-if="stateActive==true">
+				<span ng-if="ctrl.stateActive==true">
 					<a ng-if="ctrl.stateClicked==true" ng-click="ctrl.sortByStateDesc();">
-						<i ng-class="icon" class="fa fa-arrow-down" style="color:ForestGreen;font-size:80%;" bs-tooltip="'Descending Order'"></i>
+						<i ng-class="icon" class="fa fa-arrow-up" style="color: grey; font-size:80%;" bs-tooltip="'Sort by descending order'"></i>
 					</a>
 					<a ng-if="ctrl.stateClicked==false" ng-click="ctrl.sortByStateAsc();">
-						<i ng-class="icon" class="fa fa-arrow-up" style="color:OrangeRed;font-size:80%;" bs-tooltip="'Ascending Order'"></i>
+						<i ng-class="icon" class="fa fa-arrow-down" style="color: grey; font-size:80%;" bs-tooltip="'Sort by ascending order'"></i>
 					</a>
 				</span>
 			</th>
-			<th ng-model="severityActive" ng-click="severityActive=true">
+			<th ng-model="ctrl.severityActive" ng-click="ctrl.severityActive=true">
 				Severity
-				<span ng-if="severityActive==true">
+				<span ng-if="ctrl.severityActive==true">
 					<a ng-if="ctrl.severityClicked==true" ng-click="ctrl.sortBySeverityDesc();">
-						<i ng-class="icon" class="fa fa-arrow-down" style="color:ForestGreen;font-size:80%;" bs-tooltip="'Descending Order'"></i>
+						<i ng-class="icon" class="fa fa-arrow-up" style="color: grey; font-size:80%;" bs-tooltip="'Descending Order'"></i>
 					</a>
 					<a ng-if="ctrl.severityClicked==false" ng-click="ctrl.sortBySeverityAsc();">
-						<i ng-class="icon" class="fa fa-arrow-up" style="color:OrangeRed;font-size:80%;" bs-tooltip="'Ascending Order'"></i>
+						<i ng-class="icon" class="fa fa-arrow-down" style="color: grey; font-size:80%;" bs-tooltip="'Ascending Order'"></i>
 					</a>
 				</span>
 			</th>
-      <th ng-model="nameActive" ng-click="nameActive=true">
+      <th ng-model="ctrl.nameActive" ng-click="ctrl.nameActive=true">
 				Name
-				<span ng-if="nameActive==true">
+				<span ng-if="ctrl.nameActive==true">
 					<a ng-if="ctrl.nameClicked==true" ng-click="ctrl.sortByNameDesc();">
-						<i ng-class="icon" class="fa fa-arrow-down" style="color:ForestGreen;font-size:80%;" bs-tooltip="'Descending Order'"></i>
+						<i ng-class="icon" class="fa fa-arrow-up" style="color: grey; font-size:80%;" bs-tooltip="'Descending Order'"></i>
 					</a>
 					<a ng-if="ctrl.nameClicked==false" ng-click="ctrl.sortByNameAsc();">
-						<i ng-class="icon" class="fa fa-arrow-up" style="color:OrangeRed;font-size:80%;" bs-tooltip="'Ascending Order'"></i>
+						<i ng-class="icon" class="fa fa-arrow-down" style="color: grey; font-size:80%;" bs-tooltip="'Ascending Order'"></i>
 					</a>
 				</span>
 			</th>
       <th>
 				Metric
 			</th>
-			<th ng-model="timeActive" ng-init="timeActive=true;ctrl.sortTimeDesc();">
+			<th ng-model="ctrl.timeActive" ng-init="ctrl.timeActive=true; ctrl.sortTimeDesc();">
 				State Last Updated
-				<span ng-if="timeActive==true">
+				<span ng-if="ctrl.timeActive==true">
 					<a ng-if="ctrl.timeClicked==true" ng-click="ctrl.sortByTimeDesc();">
-						<i ng-class="icon" class="fa fa-arrow-down" style="color:ForestGreen;font-size:80%;" bs-tooltip="'Descending Order'"></i>
+						<i ng-class="icon" class="fa fa-arrow-up" style="color: grey; font-size:80%;" bs-tooltip="'Descending Order'"></i>
 					</a>
 					<a ng-if="ctrl.timeClicked==false" ng-click="ctrl.sortByTimeAsc();">
-						<i ng-class="icon" class="fa fa-arrow-up" style="color:OrangeRed;font-size:80%;" bs-tooltip="'Ascending Order'"></i>
+						<i ng-class="icon" class="fa fa-arrow-down" style="color: grey; font-size:80%;" bs-tooltip="'Ascending Order'"></i>
 					</a>
 				</span>
 			</th>
@@ -289,16 +290,15 @@
 
 	<!--Paginator-->
 <div style="padding-top: 25px">
-	 <button class="btn btn-inverse" ng-disabled="ctrl.currentPage == 0" ng-click="ctrl.sliceReverse();ctrl.currentPage=ctrl.currentPage-1">
-		 Previous
-	 </button>
-	 <text style="padding-left:5px; padding-right:5px;">
-	 {{ctrl.currentPage+1}}/{{ctrl.numberOfPages()}}
- 	</text>
-	 <button class="btn btn-inverse" ng-disabled="ctrl.currentPage >= (ctrl.alarms.length-1)/ctrl.pageSize - 1"
-		 ng-click="ctrl.sliceAlarms();ctrl.currentPage=ctrl.currentPage+1">
-		 Next
-	 </button>
+    <button class="btn btn-inverse" ng-disabled="ctrl.currentPage == 0"  ng-click="ctrl.previousPage();">
+        Previous
+    </button>
+    <text style="padding-left:5px; padding-right:5px;">
+        {{ctrl.currentPage+1}}/{{ctrl.numberOfPages()}}
+    </text>
+    <button class="btn btn-inverse" ng-disabled="ctrl.currentPage >= ctrl.numberOfPages() - 1" ng-click="ctrl.nextPage();">
+            Next
+		</button>
 </div>
 
 </div>

@@ -42,7 +42,7 @@
 
 </section>
 
-<div ng-repeat="set in ctrl.alarm_sets">
+<div ng-repeat="set in ctrl.alarmSets">
 
   <div class="page-header">
     <h3>{{set.title}}</h3>
@@ -59,20 +59,20 @@
 	<a class="card-item" ng-href="plugins/monasca-app/page/alarms?dimensions={{set.dimension}}:{{entity.name}}">
 
           <div class="card-item-header">
-	    <span class="{{entity.ok_count>0?'alert-state-ok':'alert-state-pending'}}">
-	      {{entity.ok_count}} OK
+	    <span class="{{entity.okCount>0?'alert-state-ok':'alert-state-pending'}}">
+	      {{entity.okCount}} OK
 	    </span>
 	    <span class="alert-state-pending">
 	      |
 	    </span>
-	    <span class="{{entity.alarm_count>0?'alert-state-critical':'alert-state-pending'}}">
-	      {{entity.alarm_count}} ALARM
+	    <span class="{{entity.alarmCount>0?'alert-state-critical':'alert-state-pending'}}">
+	      {{entity.alarmCount}} ALARM
 	    </span>
 	    <span class="alert-state-pending">
 	      |
 	    </span>
-	    <span class="{{entity.undetermined_count>0?'':'alert-state-pending'}}">
-	      {{entity.undetermined_count}} UNDETERMINED
+	    <span class="{{entity.undeterminedCount>0?'':'alert-state-pending'}}">
+	      {{entity.undeterminedCount}} UNDETERMINED
 	    </span>
           </div>
 
@@ -81,15 +81,15 @@
             <div class="card-item-details">
               <div class="card-item-name">
 
-		  <i ng-if="entity.alarm_count>0"
+		  <i ng-if="entity.alarmCount>0"
 		     class="icon-gf icon-gf-critical alert-state-critical"
 		     bs-tooltip="'ALARM'"></i>
 
-		  <i ng-if="entity.alarm_count==0 && entity.undetermined_count>0"
+		  <i ng-if="entity.alarmCount==0 && entity.undeterminedCount>0"
 		     class="icon-gf icon-gf-nodata alert-state-pending"
 		     bs-tooltip="'UNDETERMINED'"></i>
 
-		  <i ng-if="entity.alarm_count==0 && entity.undetermined_count==0"
+		  <i ng-if="entity.alarmCount==0 && entity.undeterminedCount==0"
 		     class="icon-gf icon-gf-online alert-state-ok"
 		     bs-tooltip="'OK'"></i>
 

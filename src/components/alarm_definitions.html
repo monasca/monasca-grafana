@@ -47,7 +47,7 @@
 	  <th style="text-align: center">Actions</th>
 	  <th></th>
 	</tr>
-	<tr ng-repeat="definition in ctrl.alarm_definitions">
+	<tr ng-repeat="definition in ctrl.alarmDefinitions">
 	  <td>
 		<!--<a href="plugins/monasca-app/page/alarm-definition-details?id={{definition.id}}">-->
 		<a href="plugins/monasca-app/page/alarms?id={{definition.id}}">
@@ -56,21 +56,21 @@
 	  </td>
 	  <td style="font-size: 90%;">{{definition.description}}</td>
 	  <td style="text-align: center">
-		<i ng-class="icon" class="icon-gf icon-gf-check-alt" ng-hide="!definition.actions_enabled" bs-tooltip="'Enabled'"></i>
+		<i ng-class="icon" class="icon-gf icon-gf-check-alt" ng-hide="!definition.actionsEnabled" bs-tooltip="'Enabled'"></i>
 	  </td>
 	  <td style="text-align: center;">
 		<a href="plugins/monasca-app/page/edit-alarm-definition?id={{definition.id}}">
 		  <i ng-class="icon" class="icon-gf icon-gf-settings" bs-tooltip="'Edit Alarm Definition'"></i>
 		</a>
 
-		<a ng-click="ctrl.enableAlarmDefinition(definition, true)" ng-if="definition.enabling">
-		  <i ng-class="icon" class="fa fa-spinner fa-spin" bs-tooltip="'Disabling Alarm Definition...'" ng-if="definition.actions_enabled"></i>
-		  <i ng-class="icon" class="fa fa-spinner fa-spin" bs-tooltip="'Enabling Alarm Definition...'" ng-if="!definition.actions_enabled"></i>
+		<a ng-if="definition.enabling">
+		  <i ng-class="icon" class="fa fa-spinner fa-spin" bs-tooltip="'Disabling Alarm Definition...'" ng-if="definition.actionsEnabled"></i>
+		  <i ng-class="icon" class="fa fa-spinner fa-spin" bs-tooltip="'Enabling Alarm Definition...'" ng-if="!definition.actionsEnabled"></i>
 		</a>
 
-		<a ng-click="ctrl.enableAlarmDefinition(definition, !definition.actions_enabled)"  ng-if="!definition.enabling">
-		  <i ng-class="icon" class="icon-gf icon-gf-alert" bs-tooltip="'Enable Alarm Definition'" ng-hide="definition.actions_enabled"></i>
-		  <i ng-class="icon" class="icon-gf icon-gf-alert-disabled" bs-tooltip="'Disable Alarm Definition'" ng-hide="!definition.actions_enabled"></i>
+		<a ng-click="ctrl.toggleEnableAlarmDefinition(definition.id, !definition.actionsEnabled)"  ng-if="!definition.enabling">
+		  <i ng-class="icon" class="icon-gf icon-gf-alert" bs-tooltip="'Enable Alarm Definition'" ng-hide="definition.actionsEnabled"></i>
+		  <i ng-class="icon" class="icon-gf icon-gf-alert-disabled" bs-tooltip="'Disable Alarm Definition'" ng-hide="!definition.actionsEnabled"></i>
 		</a>
 	  </td>
 	  <td>
