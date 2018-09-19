@@ -109,7 +109,7 @@
              class="gf-form-input max-width-7"
              placeholder="dimension"
              ng-model="ctrl.newAlarmDefinition.match_by[$index]"
-	     ng-disabled="ctrl.id"
+	         ng-disabled="ctrl.id"
              bs-typeahead="ctrl.suggestMatchBy"
              data-min-length=0
 	     required
@@ -154,6 +154,7 @@
                 placeholder="notification id"
                 ng-model="ctrl.newAlarmDefinition.alarm_actions_by_name[$index]"
                 bs-typeahead="ctrl.suggestAlarmActions"
+                data-min-length=0
                 required
                 style="margin-right:0;">
                 <label class="gf-form-label">

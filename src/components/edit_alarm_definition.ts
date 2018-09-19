@@ -95,14 +95,14 @@ export class EditAlarmDefinitionPageCtrl {
   // Edit Alarm Definition
   public saveAlarmDefinition() {
     this.saving = true;
+    this.newAlarmDefinition.alarm_actions = this.newAlarmDefinition.alarm_actions_by_name.map(
+      alarm_action_name =>
+        this.notificationMethods.find(
+          notification_method => notification_method.name == alarm_action_name
+        ).id
+    );
+    delete this.newAlarmDefinition.alarm_actions_by_name;
     if (this.id) {
-      this.newAlarmDefinition.alarm_actions = this.newAlarmDefinition.alarm_actions_by_name.map(
-        alarm_action_name =>
-          this.notificationMethods.find(
-            notification_method => notification_method.name == alarm_action_name
-          ).id
-      );
-      delete this.newAlarmDefinition.alarm_actions_by_name;
       return this.monascaClientSrv
         .patchAlarmDefinition(this.id, this.newAlarmDefinition)
         .then(alarmDefinition => {
