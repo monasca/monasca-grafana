@@ -168,6 +168,56 @@
             </div>
       </div>
 
+      <div class="gf-form-inline">
+            <div class="gf-form">
+                <label class="gf-form-label width-7"> Ok Actions </label>
+            </div>
+            <div class="gf-form" ng-repeat="notification_method in ctrl.newAlarmDefinition.ok_actions_by_name track by $index">
+                <input
+                type="text"
+                class="gf-form-input max-width-7"
+                placeholder="notification id"
+                ng-model="ctrl.newAlarmDefinition.ok_actions_by_name[$index]"
+                bs-typeahead="ctrl.suggestAlarmActions"
+                data-min-length=0
+                required
+                style="margin-right:0;">
+                <label class="gf-form-label">
+                    <a class="pointer" ng-click="ctrl.removeOkAction($index)"><i class="fa fa-close"></i></a>
+                </label>
+            </div>
+            <div class="gf-form">
+                <label class="gf-form-label">
+                    <a class="pointer" ng-click="ctrl.addOkAction()"><i class="fa fa-plus"></i></a>
+                </label>
+            </div>
+      </div>
+
+      <div class="gf-form-inline">
+            <div class="gf-form">
+                <label class="gf-form-label width-7"> Undetermined Actions </label>
+            </div>
+            <div class="gf-form" ng-repeat="notification_method in ctrl.newAlarmDefinition.undetermined_actions_by_name track by $index">
+                <input
+                type="text"
+                class="gf-form-input max-width-7"
+                placeholder="notification id"
+                ng-model="ctrl.newAlarmDefinition.undetermined_actions_by_name[$index]"
+                bs-typeahead="ctrl.suggestAlarmActions"
+                data-min-length=0
+                required
+                style="margin-right:0;">
+                <label class="gf-form-label">
+                    <a class="pointer" ng-click="ctrl.removeUndeterminedAction($index)"><i class="fa fa-close"></i></a>
+                </label>
+            </div>
+            <div class="gf-form">
+                <label class="gf-form-label">
+                    <a class="pointer" ng-click="ctrl.addUndeterminedAction()"><i class="fa fa-plus"></i></a>
+                </label>
+            </div>
+      </div>
+
       <br>
       <div class="gf-form-buttons-row">
 	<button

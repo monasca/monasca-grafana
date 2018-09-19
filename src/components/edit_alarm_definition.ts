@@ -92,16 +92,64 @@ export class EditAlarmDefinitionPageCtrl {
     this.newAlarmDefinition.alarm_actions_by_name.splice(index, 1);
   }
 
+  public addOkAction() {
+    if (!this.newAlarmDefinition.ok_actions_by_name) {
+      this.newAlarmDefinition.ok_actions_by_name = [];
+    }
+    this.newAlarmDefinition.ok_actions_by_name.push("");
+  }
+
+  public removeOkAction(index) {
+    if (!this.newAlarmDefinition.ok_actions_by_name) {
+      return;
+    }
+    this.newAlarmDefinition.ok_actions_by_name.splice(index, 1);
+  }
+
+  public addUndeterminedAction() {
+    if (!this.newAlarmDefinition.undetermined_actions_by_name) {
+      this.newAlarmDefinition.undetermined_actions_by_name = [];
+    }
+    this.newAlarmDefinition.undetermined_actions_by_name.push("");
+  }
+
+  public removeUndeterminedAction(index) {
+    if (!this.newAlarmDefinition.undetermined_actions_by_name) {
+      return;
+    }
+    this.newAlarmDefinition.undetermined_actions_by_name.splice(index, 1);
+  }
+
   // Edit Alarm Definition
   public saveAlarmDefinition() {
     this.saving = true;
-    this.newAlarmDefinition.alarm_actions = this.newAlarmDefinition.alarm_actions_by_name.map(
-      alarm_action_name =>
-        this.notificationMethods.find(
-          notification_method => notification_method.name == alarm_action_name
-        ).id
-    );
-    delete this.newAlarmDefinition.alarm_actions_by_name;
+    if(this.newAlarmDefinition.alarm_actions_by_name != null){
+        this.newAlarmDefinition.alarm_actions = this.newAlarmDefinition.alarm_actions_by_name.map(
+          alarm_action_name =>
+            this.notificationMethods.find(
+              notification_method => notification_method.name == alarm_action_name
+            ).id
+        );
+        delete this.newAlarmDefinition.alarm_actions_by_name;
+    }
+    if(this.newAlarmDefinition.ok_actions_by_name != null){
+        this.newAlarmDefinition.ok_actions = this.newAlarmDefinition.ok_actions_by_name.map(
+          ok_action_name =>
+            this.notificationMethods.find(
+              notification_method => notification_method.name == ok_action_name
+            ).id
+        );
+        delete this.newAlarmDefinition.ok_actions_by_name;
+    }
+    if(this.newAlarmDefinition.undetermined_actions_by_name != null){
+        this.newAlarmDefinition.undetermined_actions = this.newAlarmDefinition.undetermined_actions_by_name.map(
+          undetermined_action_name =>
+            this.notificationMethods.find(
+              notification_method => notification_method.name == undetermined_action_name
+            ).id
+        );
+        delete this.newAlarmDefinition.undetermined_actions_by_name;
+    }
     if (this.id) {
       return this.monascaClientSrv
         .patchAlarmDefinition(this.id, this.newAlarmDefinition)
@@ -200,7 +248,9 @@ export class EditAlarmDefinitionPageCtrl {
       "expression",
       "match_by",
       "severity",
-      "alarm_actions"
+      "alarm_actions",
+      "ok_actions",
+      "undetermined_actions"
     ]);
   }
 
@@ -214,6 +264,18 @@ export class EditAlarmDefinitionPageCtrl {
           alarm_action =>
             this.notificationMethods.find(
               notification_method => notification_method.id === alarm_action
+            ).name
+        );
+        this.savedAlarmDefinition.ok_actions_by_name = this.savedAlarmDefinition.ok_actions.map(
+          ok_action =>
+            this.notificationMethods.find(
+              notification_method => notification_method.id === ok_action
+            ).name
+        );
+        this.savedAlarmDefinition.undetermined_actions_by_name = this.savedAlarmDefinition.undetermined_actions.map(
+          undetermined_action =>
+            this.notificationMethods.find(
+              notification_method => notification_method.id === undetermined_action
             ).name
         );
         this.newAlarmDefinition = _.cloneDeep(this.savedAlarmDefinition);
