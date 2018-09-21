@@ -14,9 +14,9 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-import coreModule from "app/core/core_module";
-import MonascaClient from "./components/monasca_client";
+ 
+ import coreModule from "app/core/core_module";
+ import MonascaClient from "./components/monasca_client";
 
 import { AlarmDefinitionsPageCtrl } from "./components/alarm_definitions";
 import { OverviewPageCtrl } from "./components/overview";
