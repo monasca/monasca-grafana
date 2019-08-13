@@ -15,11 +15,11 @@ UI component. This currently includes the ability to view and configure:
 - Alarms
 - Notifications
 
-![Menu](https://raw.githubusercontent.com/stackhpc/monasca-grafana-app/master/src/img/monasca_menu.png)
-![Overview](https://raw.githubusercontent.com/stackhpc/monasca-grafana-app/master/src/img/monasca_overview.png)
-![Alarm Definitions](https://raw.githubusercontent.com/stackhpc/monasca-grafana-app/master/src/img/monasca_alarm_definitions.png)
-![Alarms](https://raw.githubusercontent.com/stackhpc/monasca-grafana-app/master/src/img/monasca_alarms.png)
-![Notifications](https://raw.githubusercontent.com/stackhpc/monasca-grafana-app/master/src/img/monasca_notifications.png)
+![Menu](https://raw.githubusercontent.com/monasca/monasca-grafana/master/src/img/monasca_menu.png)
+![Overview](https://raw.githubusercontent.com/monasca/monasca-grafana/master/src/img/monasca_overview.png)
+![Alarm Definitions](https://raw.githubusercontent.com/monasca/monasca-grafana/master/src/img/monasca_alarm_definitions.png)
+![Alarms](https://raw.githubusercontent.com/monasca/monasca-grafana/master/src/img/monasca_alarms.png)
+![Notifications](https://raw.githubusercontent.com/monasca/monasca-grafana/master/src/img/monasca_notifications.png)
 
 
 ## Installation
@@ -30,7 +30,7 @@ to proxy requests to the monasca-api services. Having that in place, do the
 following:
 
 ```
-sudo git clone https://github.com/stackhpc/monasca-grafana-app /var/lib/grafana/plugins/monasca-grafana-app
+sudo git clone https://github.com/monasca/monasca-grafana /var/lib/grafana/plugins/monasca-grafana-app
 sudo service grafana-server restart
 ```
 
